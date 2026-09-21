@@ -13,7 +13,7 @@ Este módulo permite a un organizador autenticado crear, visualizar, editar, pub
 | Joaquín Andrés Martínez | Backend |
 | Etienne Araya | Integración |
 | Christopher Okinggton | QA / Base de Datos |
-| María José Baxmann | Scrum Master |
+| Mariajosé Baxmann | Scrum Master |
 | Alonso Alejandro Vera | Frontend |
 
 ---

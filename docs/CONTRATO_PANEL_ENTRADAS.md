@@ -63,9 +63,6 @@ Nombre exacto del evento/tópico: PENDIENTE DE ACUERDO
 }
 ```
 
-> **Nota de diseño:** el Excel advierte que falta diferenciar el `id usuario` que compra del `id usuario` que genera el evento. Este contrato no debe cerrarse hasta acordar el significado exacto del campo; se recomienda resolverlo semánticamente en el contrato final.
-
-> **Pendiente de consistencia:** el documento previo del Panel menciona también `precio entradas` hacia Entradas. Sin embargo, la matriz más reciente no lo incluye como dato generado por Panel y la presentación asigna tipo/precio al dominio Catálogo. Se debe confirmar la propiedad de `precio`.
 
 ### 2.6 Response (lo que se recibe)
 

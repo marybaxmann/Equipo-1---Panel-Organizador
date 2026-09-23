@@ -42,20 +42,16 @@ Nombre exacto del evento/tópico: PENDIENTE DE ACUERDO
 | `id_evento` | string | Sí | Identificador del evento. |
 | `nuevo_estado` | string | Sí | Nuevo estado del evento. |
 | `fecha_cambio` | fecha-hora | Sí | Fecha y hora del cambio. |
-| `tipo_cambio` | string | Pendiente | Creación, edición, publicación, eliminación u otro cambio acordado. |
 
 **Ejemplo ilustrativo:**
 
 ```json
 {
   "id_evento": "evt-001",
-  "nuevo_estado": "Publicado",
+  "nuevo_estado": "Cancelado",
   "fecha_cambio": "2026-09-10T12:00:00",
-  "tipo_cambio": "publicacion"
 }
 ```
-
-> **Nota de diseño:** la matriz reciente de Notificaciones identifica expresamente `id evento`, `nuevo estado` y `fecha cambio` provenientes de Panel. El documento previo añade `tipo de cambio` y también menciona cantidad/precio de entradas “según corresponda”; esos campos adicionales deben confirmarse antes de incorporarlos como obligatorios.
 
 ### 2.6 Response (lo que se recibe)
 

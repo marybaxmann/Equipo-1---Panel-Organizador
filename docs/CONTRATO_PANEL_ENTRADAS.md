@@ -1,115 +1,105 @@
 # Contrato de interfaz: Panel Organizador ↔ Entradas / Inventario
 
-**Versión:** 1.0
+**Versión:** 1.1
 
-**Equipos consumidores/proveedores:** Panel Organizador y Entradas / Inventario, según la operación.
+**Equipos participantes:** Panel Organizador y Entradas / Inventario
 
-**Basado en:** HU-03 Eliminar evento; HU-04 Publicar evento; HU-07 Notificar cambios de estado.
+**Basado en:** HU-03, HU-04, HU-07, Matriz de Dependencia de Datos y contrato `Contrato_Entradas_Panel.docx`.
 
 ---
 
 ## 1. Propósito
 
-Panel Organizador debe entregar a Entradas / Inventario la información del evento necesaria para gestionar el stock/emisión de tickets. Además, para HU-03 Panel podría necesitar conocer si existen entradas asociadas o vendidas antes de eliminar/cancelar un evento.
+Definir cómo Panel Organizador y Entradas / Inventario intercambian información sobre los eventos.
 
-La segunda necesidad aparece expresamente como pendiente de definición, por lo que se documenta sin inventar aún el protocolo definitivo.
+- **Panel Organizador** es responsable de los datos maestros y del ciclo de vida del evento.
+- **Entradas / Inventario** es responsable del stock, emisión y entradas vendidas.
 
 ---
 
-## 2. Operación A: Entregar datos del evento a Entradas / Inventario
+## 2. Panel → Entradas: datos del evento
 
-### 2.1 Descripción
+Panel entrega a Entradas la información necesaria para gestionar tickets.
 
-Panel Organizador comunica a Entradas / Inventario los datos del evento necesarios para preparar o gestionar sus entradas.
-
-### 2.2 Quién la expone
-
-Equipo Panel Organizador.
-
-### 2.3 Quién la consume
-
-Equipo Entradas / Inventario, al publicarse o habilitarse un evento para emisión/reserva de entradas.
-
-### 2.4 Endpoint / canal propuesto
-
-```text
-Broker de eventos
-Nombre exacto del evento/tópico: PENDIENTE DE ACUERDO
-```
-
-### 2.5 Request (mensaje que se envía)
-
-| Campo | Tipo propuesto | Obligatorio | Descripción |
-|---|---|:---:|---|
-| `id_evento` | string | Sí | Identificador del evento. |
-| `id_usuario` | string | Pendiente | ID enviado desde Panel. Debe aclararse si corresponde al organizador/creador. |
-| `nombre_evento` | string | Sí | Nombre del evento. |
-| `horario` | string / estructura horaria | Sí | Horario del evento. |
-| `fecha_evento` | fecha | Sí | Fecha del evento. |
-| `cantidad_entradas` | integer | Sí | Cantidad de entradas definida para el evento. |
-| `tipo_entrada` | enum/string | Sí | `pago` o `gratis`. |
-
-**Ejemplo ilustrativo:**
-
-```json
-{
-  "id_evento": "evt-001",
-  "id_usuario": "usr-organizador-001",
-  "nombre_evento": "Seminario universitario",
-  "horario": "18:00",
-  "fecha_evento": "2026-10-15",
-  "cantidad_entradas": 300,
-  "tipo_entrada": "gratis"
-}
-```
-
-
-### 2.6 Response (lo que se recibe)
-
-No se define una respuesta de negocio síncrona para esta publicación por broker.
+### Datos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |---|---|:---:|---|
-| — | — | — | No aplica. |
+| `id_evento` | string | Sí | Identificador del evento. |
+| `id_usuario` | string | Sí | ID del organizador dueño del evento. |
+| `nombre_evento` | string | Sí | Nombre del evento. |
+| `fecha_evento` | string | Sí | Fecha del evento. |
+| `hora_evento` | string | Sí | Hora de inicio. |
+| `cantidad_entradas` | integer | Sí | Aforo/cantidad de entradas. |
+| `tipo_entrada` | string | Sí | `pago` o `gratis`. |
+| `estado_evento` | string | Sí | Estado vigente del evento. |
+| `precio` | number | Según corresponda | Precio del evento pagado. |
 
-### 2.7 Códigos de error
+### Pendiente
 
-No aplican códigos HTTP para el mensaje asíncrono. Política de reintentos/errores pendiente con plataforma.
-
-### 2.8 Tiempo de respuesta esperado (SLA)
-
-**Pendiente de acordar.**
+- Confirmar el mecanismo técnico del **Push Panel → Entradas**.
+- Confirmar si Entradas necesita recibir `precio`.
+- Alinear los valores válidos de `estado_evento`.
 
 ---
 
-## 3. Operación B: Consultar existencia de entradas asociadas/vendidas
+## 3. Entradas → Panel: consultar detalles del evento
 
-### 3.1 Descripción
+Entradas puede consultar al Panel para validar o recuperar los datos actuales de un evento.
 
-Permite a Panel Organizador saber si un evento posee entradas asociadas o vendidas antes de ejecutar la regla de eliminación/cancelación de HU-03.
+### Endpoint
 
-### 3.2 Quién la expone
-
-Equipo Entradas / Inventario.
-
-### 3.3 Quién la consume
-
-Equipo Panel Organizador, al intentar eliminar un evento cuando la regla de negocio requiera validar previamente la existencia de entradas.
-
-### 3.4 Endpoint propuesto
-
-```text
-PENDIENTE DE ACUERDO
-Protocolo por definir: REST vs evento asíncrono.
+```http
+GET /api/v1/panel/eventos/{id_evento}
 ```
 
-### 3.5 Request (lo que se envía)
+### Request
 
-| Campo | Tipo propuesto | Obligatorio | Descripción |
-|---|---|:---:|---|
-| `id_evento` | string | Sí | Evento cuya situación de entradas se desea consultar. |
+`id_evento` se envía en la URL.
 
-**Ejemplo ilustrativo:**
+**Ejemplo:**
+
+```http
+GET /api/v1/panel/eventos/evt-77889
+```
+
+### Response
+
+```json
+{
+  "id_usuario": "org-4455",
+  "nombre_evento": "Fiesta Mechona Info",
+  "fecha_evento": "2026-11-20",
+  "hora_evento": "22:00",
+  "cantidad_entradas": 500,
+  "tipo_entrada": "pago",
+  "estado_evento": "ACTIVO"
+}
+```
+
+### Errores
+
+| Código | Significado |
+|---|---|
+| `400` | `id_evento` inválido. |
+| `404` | Evento no encontrado. |
+| `500` | Error interno del Panel. |
+
+### SLA
+
+```text
+< 300 ms
+```
+
+Panel acepta este SLA para esta operación de lectura simple.
+
+---
+
+## 4. Panel → Entradas: consultar entradas vendidas para HU-03
+
+Antes de eliminar o cancelar un evento, Panel necesita saber si existen entradas vendidas o emitidas.
+
+### Request mínimo
 
 ```json
 {
@@ -117,66 +107,97 @@ Protocolo por definir: REST vs evento asíncrono.
 }
 ```
 
-### 3.6 Response (lo que se recibe)
-
-El documento de clase solo establece que Panel **podría recibir información sobre si existen entradas vendidas**. El esquema definitivo no está acordado.
-
-| Campo | Tipo propuesto | Obligatorio | Descripción |
-|---|---|:---:|---|
-| `existen_entradas_vendidas` | boolean | Pendiente | Indicaría si existen ventas asociadas al evento. Campo propuesto, no definitivo. |
-
-**Ejemplo propuesto:**
+### Response propuesto
 
 ```json
 {
-  "existen_entradas_vendidas": true
+  "id_evento": "evt-001",
+  "existen_entradas_vendidas": true,
+  "cantidad_vendida": 42
 }
 ```
 
-> **Nota de diseño:** este response es una propuesta mínima para representar la necesidad debatida. Debe ser validado por ambos equipos antes de implementación.
+### Regla propuesta
 
-### 3.7 Códigos de error
+- Si **no existen entradas vendidas o emitidas**, el evento puede eliminarse.
+- Si **existen entradas vendidas o emitidas**, el evento no se elimina y pasa a estado `Cancelado`.
 
-**Pendiente**, ya que el protocolo no está definido.
+### Pendiente
 
-### 3.8 Tiempo de respuesta esperado (SLA)
-
-**Pendiente de acordar.**
-
----
-
-## 4. Reglas de uso
-
-1. Panel no debe asumir por sí mismo el estado del inventario de entradas.
-2. Entradas / Inventario es responsable de sus datos de stock, emisión y tickets.
-3. Para HU-03, Panel debe aplicar la regla acordada una vez obtenida la información de Entradas.
-4. Hasta que se defina la regla de negocio, HU-03 debe mantener este punto como dependencia pendiente.
+- Confirmar qué operación expondrá Entradas para esta consulta.
+- Confirmar el response definitivo.
+- Confirmar la regla de eliminación/cancelación.
+- Confirmar SLA y manejo de errores para esta consulta.
 
 ---
 
-## 5. Versionado y cambios
+## 5. Acuerdos actuales
 
-- Todo cambio de esquema debe versionarse.
-- Breaking changes requieren transición acordada.
-- Cualquier resolución sobre `id_usuario`, `precio` o eliminación con entradas debe reflejarse aquí.
+- [x] `id_usuario` corresponde al **organizador dueño del evento**.
+- [x] Panel acepta `GET /api/v1/panel/eventos/{id_evento}` como consulta de validación/fallback.
+- [x] Panel acepta los campos definidos por Entradas para ese GET.
+- [x] Panel acepta los códigos `400`, `404` y `500`.
+- [x] Panel acepta SLA `< 300 ms` para ese GET.
+- [x] Panel propone ser la fuente de verdad del `precio`.
 
-## 6. Dueños del contrato
+## 6. Pendientes por confirmar con Entradas
+
+### 6.1 Precio
+
+**Propuesta de Panel:**  
+Panel Organizador será la fuente de verdad del precio y enviará el campo `precio`
+cuando el evento sea pagado.
+
+**Pendiente:**  
+Confirmar si Entradas necesita consumir este campo.
+
+---
+
+### 6.2 Estado del evento
+
+**Propuesta de Panel:**  
+Los valores enviados en `estado_evento` serán:
+
+- `Borrador`
+- `Publicado`
+- `Finalizado`
+- `Cancelado`
+
+**Pendiente:**  
+Confirmar si Entradas utilizará estos mismos valores o realizará un mapeo interno.
+
+---
+
+### 6.3 Consulta de entradas vendidas — HU-03
+
+**Necesidad de Panel:**  
+Antes de eliminar un evento, Panel necesita consultar a Entradas si existen
+entradas vendidas o emitidas asociadas al `id_evento`.
+
+**Propuesta de Panel:**  
+Entradas expone una operación de consulta utilizando `id_evento`.
+
+**Pendiente:**  
+Entradas debe confirmar el endpoint u operación exacta.
+
+---
+
+### 6.4 Response de la consulta HU-03
+
+**Propuesta de Panel:**
+
+```json
+{
+  "id_evento": "evt-001",
+  "existen_entradas_vendidas": true,
+  "cantidad_vendida": 42
+}
+
+---
+
+## 7. Dueños del contrato
 
 | Rol | Equipo | Contacto |
 |---|---|---|
-| Dueño Operación A | Panel Organizador | Pendiente |
-| Consumidor Operación A | Entradas / Inventario | Pendiente |
-| Dueño Operación B | Entradas / Inventario | Pendiente |
-| Consumidor Operación B | Panel Organizador | Pendiente |
-
----
-
-## 7. Pendientes a acordar
-
-- [ ] Diferenciar semánticamente el ID del organizador y el ID del comprador.
-- [ ] Confirmar nombre del evento/tópico usado en Operación A.
-- [ ] Confirmar propiedad y necesidad del dato `precio`.
-- [ ] Definir REST vs broker para consultar entradas en HU-03.
-- [ ] Definir respuesta exacta de la consulta.
-- [ ] Definir qué ocurre si ya existen entradas: impedir eliminación, cancelar u otra regla.
-- [ ] Confirmar SLA y manejo de errores.
+| Panel Organizador | Panel Organizador | Pendiente |
+| Entradas / Inventario | Entradas / Inventario | Sebastián Fuentes (Scrum Master) |

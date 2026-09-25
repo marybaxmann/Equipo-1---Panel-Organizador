@@ -1,203 +1,262 @@
 # Contrato de interfaz: Panel Organizador ↔ Entradas / Inventario
 
-**Versión:** 1.1
-
-**Equipos participantes:** Panel Organizador y Entradas / Inventario
-
-**Basado en:** HU-03, HU-04, HU-07, Matriz de Dependencia de Datos y contrato `Contrato_Entradas_Panel.docx`.
-
----
+**Versión:** 1.2
+**Proveedor:** Panel Organizador
+**Consumidor:** Entradas / Inventario
 
 ## 1. Propósito
 
-Definir cómo Panel Organizador y Entradas / Inventario intercambian información sobre los eventos.
+Definir la comunicación entre **Panel Organizador** y **Entradas / Inventario** para mantener sincronizada la información de los eventos y permitir que Entradas valide el estado actual de un evento.
 
-- **Panel Organizador** es responsable de los datos maestros y del ciclo de vida del evento.
-- **Entradas / Inventario** es responsable del stock, emisión y entradas vendidas.
+El **Panel Organizador es la fuente de verdad de la información y estado del evento**.
 
----
-
-## 2. Panel → Entradas: datos del evento
-
-Panel entrega a Entradas la información necesaria para gestionar tickets.
-
-### Datos
-
-| Campo | Tipo | Obligatorio | Descripción |
-|---|---|:---:|---|
-| `id_evento` | string | Sí | Identificador del evento. |
-| `id_usuario` | string | Sí | ID del organizador dueño del evento. |
-| `nombre_evento` | string | Sí | Nombre del evento. |
-| `fecha_evento` | string | Sí | Fecha del evento. |
-| `hora_evento` | string | Sí | Hora de inicio. |
-| `cantidad_entradas` | integer | Sí | Aforo/cantidad de entradas. |
-| `tipo_entrada` | string | Sí | `pago` o `gratis`. |
-| `estado_evento` | string | Sí | Estado vigente del evento. |
-| `precio` | number | Según corresponda | Precio del evento pagado. |
-
-### Pendiente
-
-- Confirmar el mecanismo técnico del **Push Panel → Entradas**.
-- Confirmar si Entradas necesita recibir `precio`.
-- Alinear los valores válidos de `estado_evento`.
+Entradas / Inventario es responsable de la gestión de entradas, inventario, reservas, ventas y emisiones.
 
 ---
 
-## 3. Entradas → Panel: consultar detalles del evento
+## 2. Sincronización de información del evento
 
-Entradas puede consultar al Panel para validar o recuperar los datos actuales de un evento.
+### 2.1 Panel → Entradas: notificación Push
 
-### Endpoint
+Se acuerda utilizar una comunicación **Push** para notificar a Entradas los cambios realizados sobre un evento.
+
+La notificación se enviará cuando ocurra alguno de los siguientes cambios:
+
+* Creación de un evento.
+* Edición de un evento.
+* Publicación de un evento.
+* Cancelación de un evento.
+* Eliminación de un evento.
+
+El mecanismo de transporte propuesto por Panel es utilizar un **broker de mensajes**, de forma que:
+
+```text
+Panel Organizador → Broker → Entradas / Inventario
+```
+
+Panel publicará la notificación después de guardar correctamente el cambio del evento.
+
+### Campos propuestos para el mensaje
+
+| Campo               | Tipo    | Obligatorio |
+| ------------------- | ------- | ----------- |
+| `id_evento`         | string  | Sí          |
+| `id_usuario`        | string  | Sí          |
+| `nombre_evento`     | string  | Sí          |
+| `fecha_evento`      | string  | Sí          |
+| `hora_evento`       | string  | Sí          |
+| `cantidad_entradas` | integer | Sí          |
+| `tipo_entrada`      | string  | Sí          |
+| `estado_evento`     | string  | Sí          |
+
+**Propuesta de tópico:** `panel.eventos.v1`
+
+### Pendiente de confirmación por Entradas
+
+* Aceptación del uso del broker como mecanismo de Push.
+* Confirmación del tópico `panel.eventos.v1`.
+* Confirmación de los campos necesarios para el mensaje.
+* Confirmación del mapeo interno de los datos recibidos.
+
+> El uso de Push como mecanismo principal de sincronización está acordado. Lo pendiente corresponde a su implementación concreta mediante broker, tópico y estructura definitiva del mensaje.
+
+---
+
+## 2.2 Entradas → Panel: consulta Pull
+
+Panel acepta el siguiente endpoint para que Entradas pueda consultar la información actual de un evento:
 
 ```http
 GET /api/v1/panel/eventos/{id_evento}
 ```
 
-### Request
+Esta consulta funcionará como mecanismo de **validación, respaldo y recuperación** cuando Entradas necesite comprobar la información del evento o recuperar datos después de una posible desincronización.
 
-`id_evento` se envía en la URL.
+La comunicación principal seguirá siendo:
 
-**Ejemplo:**
-
-```http
-GET /api/v1/panel/eventos/evt-77889
+```text
+Panel → Broker → Entradas
 ```
 
-### Response
+mientras que la consulta Pull funcionará como respaldo:
 
-```json
-{
-  "id_usuario": "org-4455",
-  "nombre_evento": "Fiesta Mechona Info",
-  "fecha_evento": "2026-11-20",
-  "hora_evento": "22:00",
-  "cantidad_entradas": 500,
-  "tipo_entrada": "pago",
-  "estado_evento": "ACTIVO"
-}
+```text
+Entradas → GET → Panel
 ```
 
-### Errores
+### Parámetro
 
-| Código | Significado |
-|---|---|
-| `400` | `id_evento` inválido. |
-| `404` | Evento no encontrado. |
-| `500` | Error interno del Panel. |
+| Parámetro   | Tipo   | Obligatorio |
+| ----------- | ------ | ----------- |
+| `id_evento` | string | Sí          |
+
+### Datos del evento
+
+La información entregada por Panel deberá permitir a Entradas validar, como mínimo:
+
+* `id_usuario`
+* `nombre_evento`
+* `fecha_evento`
+* `hora_evento`
+* `cantidad_entradas`
+* `tipo_entrada`
+* `estado_evento`
+
+### Respuestas de error
+
+| Código | Descripción             |
+| ------ | ----------------------- |
+| `400`  | ID de evento inválido   |
+| `404`  | Evento no encontrado    |
+| `500`  | Error interno del Panel |
 
 ### SLA
 
-```text
-< 300 ms
-```
+La respuesta del endpoint deberá ser inferior a **300 ms**.
 
-Panel acepta este SLA para esta operación de lectura simple.
+### Comportamiento de Entradas
+
+Como consumidor del endpoint:
+
+* Ante un `404`, Entradas deberá considerar que el evento fue eliminado o no fue creado correctamente y **invalidar temporalmente las ventas para dicho evento**.
+* Si los datos obtenidos desde Panel difieren de los almacenados localmente, Entradas deberá **actualizar su información local**.
+
+Estos comportamientos corresponden a reglas propuestas por Entradas y aceptadas para este contrato.
 
 ---
 
-## 4. Panel → Entradas: consultar entradas vendidas para HU-03
+## 2.3 Versionado
 
-Antes de eliminar o cancelar un evento, Panel necesita saber si existen entradas vendidas o emitidas.
+Los cambios que sean **incompatibles** con la versión actual de la interfaz deberán generar una nueva versión del endpoint.
 
-### Request mínimo
+Por ejemplo:
 
-```json
-{
-  "id_evento": "evt-001"
-}
+```text
+/api/v1/panel/eventos/{id_evento}
 ```
 
-### Response propuesto
+podría evolucionar a:
 
-```json
-{
-  "id_evento": "evt-001",
-  "existen_entradas_vendidas": true,
-  "cantidad_vendida": 42
-}
+```text
+/api/v2/panel/eventos/{id_evento}
 ```
+
+cuando exista un cambio que rompa la compatibilidad con la versión anterior.
+
+Panel deberá notificar a Entradas antes de utilizar la nueva versión.
+
+Los cambios compatibles podrán mantenerse dentro de la versión actual.
+
+---
+
+# 3. Consulta de operaciones antes de eliminar un evento
+
+Panel propone consultar a Entradas antes de realizar una eliminación física de un evento.
+
+Se propone el siguiente endpoint:
+
+```http
+GET /api/v1/entradas/eventos/{id_evento}/resumen
+```
+
+El objetivo es determinar si el evento posee operaciones asociadas, por ejemplo:
+
+* Reservas.
+* Ventas.
+* Emisiones.
+
 
 ### Regla propuesta
 
-- Si **no existen entradas vendidas o emitidas**, el evento puede eliminarse.
-- Si **existen entradas vendidas o emitidas**, el evento no se elimina y pasa a estado `Cancelado`.
+* Si el evento **no posee reservas, ventas ni emisiones**, Panel podrá eliminarlo físicamente.
+* Si el evento **posee alguna de estas operaciones**, Panel no deberá eliminarlo físicamente y deberá cambiar su estado a `CANCELADO`.
 
-### Pendiente
+### Pendiente de confirmación por Entradas
 
-- Confirmar qué operación expondrá Entradas para esta consulta.
-- Confirmar el response definitivo.
-- Confirmar la regla de eliminación/cancelación.
-- Confirmar SLA y manejo de errores para esta consulta.
-
----
-
-## 5. Acuerdos actuales
-
-- [x] `id_usuario` corresponde al **organizador dueño del evento**.
-- [x] Panel acepta `GET /api/v1/panel/eventos/{id_evento}` como consulta de validación/fallback.
-- [x] Panel acepta los campos definidos por Entradas para ese GET.
-- [x] Panel acepta los códigos `400`, `404` y `500`.
-- [x] Panel acepta SLA `< 300 ms` para ese GET.
-- [x] Panel propone ser la fuente de verdad del `precio`.
-
-## 6. Pendientes por confirmar con Entradas
-
-### 6.1 Precio
-
-**Propuesta de Panel:**  
-Panel Organizador será la fuente de verdad del precio y enviará el campo `precio`
-cuando el evento sea pagado.
-
-**Pendiente:**  
-Confirmar si Entradas necesita consumir este campo.
+* Aceptación del endpoint.
+* Estructura de la respuesta.
+* Campos necesarios para determinar si existen operaciones.
+* Códigos de error.
+* SLA de respuesta.
 
 ---
 
-### 6.2 Estado del evento
+# 4. Cancelación de eventos
 
-**Propuesta de Panel:**  
-Los valores enviados en `estado_evento` serán:
+Cuando un evento no pueda ser eliminado físicamente debido a que posee operaciones asociadas, Panel cambiará su estado a:
 
-- `Borrador`
-- `Publicado`
-- `Finalizado`
-- `Cancelado`
+```text
+CANCELADO
+```
 
-**Pendiente:**  
-Confirmar si Entradas utilizará estos mismos valores o realizará un mapeo interno.
+Una vez que Entradas reciba este estado, se propone que **bloquee nuevas operaciones** relacionadas con el evento, incluyendo:
 
----
+* Nuevas reservas.
+* Nuevas ventas.
+* Nuevas emisiones.
 
-### 6.3 Consulta de entradas vendidas — HU-03
+El tratamiento de **devoluciones o reembolsos** queda fuera de este contrato y deberá definirse con el microservicio de **Pagos**.
 
-**Necesidad de Panel:**  
-Antes de eliminar un evento, Panel necesita consultar a Entradas si existen
-entradas vendidas o emitidas asociadas al `id_evento`.
+### Pendiente de confirmación por Entradas
 
-**Propuesta de Panel:**  
-Entradas expone una operación de consulta utilizando `id_evento`.
-
-**Pendiente:**  
-Entradas debe confirmar el endpoint u operación exacta.
+* Aceptación de la regla de cancelación.
+* Confirmación del comportamiento esperado cuando el evento pasa a `CANCELADO`.
 
 ---
 
-### 6.4 Response de la consulta HU-03
+# 5. Estados del evento
 
-**Propuesta de Panel:**
+Panel propone los siguientes estados:
 
-```json
-{
-  "id_evento": "evt-001",
-  "existen_entradas_vendidas": true,
-  "cantidad_vendida": 42
-}
+| Estado       | Descripción                                     |
+| ------------ | ----------------------------------------------- |
+| `BORRADOR`   | Evento creado pero todavía no publicado.        |
+| `PUBLICADO`  | Evento disponible para operaciones de entradas. |
+| `FINALIZADO` | Evento realizado y cerrado.                     |
+| `CANCELADO`  | Evento cancelado por el organizador.            |
+
+### Consideraciones
+
+* Un evento en estado `BORRADOR` no debería requerir operaciones de Entradas.
+* `PUBLICADO` corresponde al estado en que Entradas puede comenzar a gestionar operaciones.
+* `CANCELADO` debe impedir nuevas operaciones.
+* Se debe confirmar si Entradas necesita recibir explícitamente la transición a `FINALIZADO`.
+
+### Pendiente de confirmación por Entradas
+
+* Aceptación de estos estados.
+* Correspondencia con sus estados internos.
+* Necesidad de recibir el estado `FINALIZADO`.
+* Comportamiento esperado para `BORRADOR`.
 
 ---
 
-## 7. Dueños del contrato
+# 6. Resumen de acuerdos
 
-| Rol | Equipo | Contacto |
-|---|---|---|
-| Panel Organizador | Panel Organizador | Pendiente |
-| Entradas / Inventario | Entradas / Inventario | Sebastián Fuentes (Scrum Master) |
+## Acuerdos confirmados
+
+* Panel Organizador es la fuente de verdad de la información del evento.
+* Se utilizará **Push** como mecanismo principal de sincronización.
+* Entradas podrá utilizar **Pull** mediante `GET /api/v1/panel/eventos/{id_evento}` como respaldo, validación y recuperación.
+* El endpoint Pull utilizará los códigos `400`, `404` y `500`.
+* El SLA propuesto para el endpoint Pull es menor a `300 ms`.
+* Ante un `404`, Entradas deberá invalidar temporalmente las ventas del evento.
+* Entradas deberá actualizar su información local cuando los datos obtenidos desde Panel sean diferentes.
+* Los cambios incompatibles deberán utilizar una nueva versión de la interfaz y ser notificados a Entradas.
+* El tratamiento de pagos, devoluciones y reembolsos corresponde al microservicio de **Pagos**.
+
+## Pendiente de confirmación por Entradas
+
+* Uso del broker para implementar el Push.
+* Tópico `panel.eventos.v1`.
+* Campos definitivos del mensaje Push.
+* Mapeo de los datos recibidos.
+* Endpoint para consultar operaciones antes de eliminar un evento.
+* Respuesta del endpoint de operaciones.
+* Errores y SLA del endpoint de operaciones.
+* Regla de eliminación física versus `CANCELADO`.
+* Bloqueo de nuevas operaciones para eventos `CANCELADO`.
+* Estados `BORRADOR`, `PUBLICADO`, `FINALIZADO` y `CANCELADO`.
+* Correspondencia entre los estados de Panel y los estados internos de Entradas.
+* Necesidad de recibir `FINALIZADO`.
+* Comportamiento de Entradas frente a eventos en `BORRADOR`.

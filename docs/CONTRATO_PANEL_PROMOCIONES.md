@@ -1,52 +1,28 @@
 # Contrato de interfaz: Panel Organizador ↔ Promociones
 
-**Versión:** 1.0
-
-**Equipo consumidor:** Promociones
-
-**Equipo proveedor:** Panel Organizador
-
-**Basado en:** Dependencia de datos definida en clase para asociación de promociones a eventos.
+**Versión:** 1.1  
+**Proveedor:** Panel Organizador  
+**Consumidor:** Promociones
 
 ---
 
 ## 1. Propósito
 
-Promociones necesita conocer el identificador del evento para asociar códigos o descuentos al evento correspondiente. La matriz de dependencias indica que `id evento` llega a Promociones desde Panel Organizador.
+Definir la comunicación mediante la cual **Panel Organizador** entrega a **Promociones** el identificador necesario para asociar promociones a un evento.
 
-La generación y gestión de promociones pertenece al microservicio Promociones, no a Panel Organizador.
+La creación y gestión de promociones corresponde exclusivamente a Promociones.
 
 ---
 
-## 2. Operación: Comunicar identificación del evento
+## 2. Base definida por Panel
 
-### 2.1 Descripción
+Panel dispone del siguiente dato para esta integración:
 
-Panel Organizador comunica a Promociones el identificador de un evento para permitir que el servicio de Promociones lo utilice como referencia.
+| Campo | Tipo | Fuente de verdad | Uso |
+|---|---|---|---|
+| `id_evento` | string | Panel Organizador | Asociar la promoción al evento correspondiente |
 
-### 2.2 Quién la expone
-
-Equipo Panel Organizador.
-
-### 2.3 Quién la consume
-
-Equipo Promociones, cuando necesite asociar una promoción/código a un evento.
-
-### 2.4 Endpoint / canal propuesto
-
-```text
-Broker de eventos o mecanismo de consulta: PENDIENTE DE ACUERDO
-```
-
-La documentación entregada no define aún si este dato será enviado proactivamente por broker o consultado mediante una API.
-
-### 2.5 Request (lo que se envía)
-
-| Campo | Tipo propuesto | Obligatorio | Descripción |
-|---|---|:---:|---|
-| `id_evento` | string | Sí | Identificador del evento generado por Panel Organizador. |
-
-**Ejemplo ilustrativo:**
+Ejemplo:
 
 ```json
 {
@@ -54,55 +30,48 @@ La documentación entregada no define aún si este dato será enviado proactivam
 }
 ```
 
-> **Nota de diseño:** el contrato se mantiene mínimo porque la matriz solo identifica `id evento (panel)` como dato recibido por Promociones desde este microservicio.
+Panel no genera ni administra:
 
-### 2.6 Response (lo que se recibe)
-
-No se identifica en los documentos proporcionados un dato que Promociones deba devolver directamente a Panel Organizador.
-
-| Campo | Tipo | Obligatorio | Descripción |
-|---|---|:---:|---|
-| — | — | — | No aplica según la información disponible. |
-
-> Promociones genera porcentaje de descuento, fechas de vigencia, cantidad de códigos y nombre del código, pero la matriz no indica que esos datos sean recibidos directamente por Panel Organizador.
-
-### 2.7 Códigos de error
-
-**Pendiente**, ya que el protocolo exacto no está acordado.
-
-### 2.8 Tiempo de respuesta esperado (SLA)
-
-**Pendiente de acordar.**
+- códigos promocionales;
+- porcentajes de descuento;
+- vigencia de promociones;
+- cantidad de códigos;
+- precio resultante de promociones.
 
 ---
 
-## 3. Reglas de uso (lado consumidor)
+## 3. Propuestas de Panel pendientes de confirmación
 
-1. Promociones utiliza `id_evento` para asociar la promoción al evento correcto.
-2. Panel no genera el porcentaje de descuento ni los códigos de promoción.
-3. No se deben añadir campos no acordados al contrato.
-4. Si se elige broker, el manejo de reintentos/errores se coordinará con plataforma.
+### 3.1 Comunicación Panel → Promociones
+
+**Panel propone:** compartir `id_evento` cuando el evento esté disponible para que Promociones pueda asociar sus promociones.
+
+El mecanismo definitivo queda pendiente:
+
+```text
+Broker o REST
+```
+
+**Pendiente de confirmación por Promociones:**
+
+- mecanismo de comunicación;
+- momento exacto en que necesita recibir `id_evento`;
+- tópico o endpoint correspondiente.
+
+### 3.2 Comunicación Promociones → Panel
+
+Con la información disponible, no se identifica actualmente ningún dato que Promociones deba devolver directamente a Panel.
+
+Por lo tanto, no se define por ahora una comunicación Promociones → Panel.
 
 ---
 
-## 4. Versionado y cambios
+## 4. Pendientes de confirmación
 
-- Versionar cualquier cambio.
-- Breaking changes requieren transición acordada.
-- El protocolo definitivo debe registrarse antes de implementación.
-
-## 5. Dueños del contrato
-
-| Rol | Equipo | Contacto |
-|---|---|---|
-| Dueño del contrato | Panel Organizador | Pendiente |
-| Consumidor principal | Promociones | Pendiente |
-
----
-
-## 6. Pendientes a acordar
-
-- [ ] Confirmar protocolo: broker o REST.
-- [ ] Confirmar nombre de evento/tópico o endpoint.
-- [ ] Confirmar momento en que se comparte `id_evento`.
-- [ ] Confirmar SLA y manejo de errores.
+1. Mecanismo de comunicación: broker o REST.
+2. Tópico o endpoint.
+3. Momento en que Promociones necesita recibir `id_evento`.
+4. Si Promociones requiere algún dato adicional del evento.
+5. Si Panel debe recibir algún dato desde Promociones.
+6. SLA y manejo de errores.
+7. Contactos responsables de ambos equipos.

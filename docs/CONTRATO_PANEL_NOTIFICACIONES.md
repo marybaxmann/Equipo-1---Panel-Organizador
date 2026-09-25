@@ -1,173 +1,156 @@
 # Contrato de interfaz: Panel Organizador ↔ Notificaciones
 
-**Versión:** 1.0
-
-**Equipos consumidor/proveedor:** Notificaciones / Panel Organizador
-
-**Basado en:** HU-04 Publicar evento; HU-07 Notificar cambios de estado.
+**Versión:** 1.1  
+**Proveedor:** Panel Organizador  
+**Consumidor:** Notificaciones
 
 ---
 
 ## 1. Propósito
 
-Panel Organizador comunica a Notificaciones los cambios relevantes de un evento para que dicho servicio pueda generar las notificaciones correspondientes a los usuarios afectados.
+Definir la comunicación entre **Panel Organizador** y **Notificaciones** cuando una modificación relevante de un evento deba ser informada a los usuarios afectados.
+
+Panel comunica el cambio del evento. Notificaciones identifica a los usuarios correspondientes y gestiona el envío de las notificaciones.
 
 ---
 
-# 2. Operación: Notificar cambio de evento
+## 2. Acuerdos confirmados
 
-## 2.1 Descripción
+### 2.1 Responsabilidades
 
-Panel Organizador publica un mensaje cuando ocurre un cambio en un evento que deba ser comunicado a los usuarios.
+| Información | Responsable |
+|---|---|
+| Datos y estado de gestión del evento | Panel Organizador |
+| Identificación de usuarios afectados | Notificaciones |
+| Generación y envío de notificaciones | Notificaciones |
+| Resultado del proceso de envío | Notificaciones |
 
-## 2.2 Quién la expone
+Panel no envía listas de asistentes. Notificaciones obtiene los usuarios que poseen entradas activas a partir del `id_evento`.
 
-Equipo Panel Organizador.
+### 2.2 Comunicación
 
-## 2.3 Quién la consume
+Ambos equipos contemplan comunicación asíncrona mediante broker:
 
-Equipo Notificaciones.
+```text
+Panel Organizador → Broker → Notificaciones
+```
 
-## 2.4 Canal de comunicación
+Panel envía:
 
-La comunicación será asíncrona mediante un **broker de mensajes**.
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `tipo` | string | Tipo de mensaje. Actualmente `evento_actualizado`. |
+| `id_evento` | string | Identificador del evento afectado. |
+| `nuevo_estado` | string | Estado de gestión actual del evento. |
+| `fecha_cambio` | datetime | Fecha y hora en que ocurrió el cambio. |
 
-**Nombre propuesto del tópico:**
+---
+
+## 3. Propuestas de Panel pendientes de confirmación
+
+### 3.1 Mensaje Panel → Notificaciones
+
+**Panel propone** utilizar:
 
 ```text
 panel.evento.notificaciones.v1
 ```
 
-Se propone este nombre para identificar los mensajes publicados por Panel destinados a Notificaciones y diferenciarlos de los tópicos utilizados por otros microservicios.
-
-> El nombre del tópico y la convención de versionado quedan pendientes de confirmación con Notificaciones.
-
-## 2.5 Request — mensaje enviado
-
-| Campo          | Tipo       | Obligatorio | Descripción                                       |
-| -------------- | ---------- | :---------: | ------------------------------------------------- |
-| `tipo`         | string     |      Sí     | Tipo de mensaje. Propuesto: `evento_actualizado`. |
-| `id_evento`    | string     |      Sí     | Identificador del evento modificado.              |
-| `nuevo_estado` | string     |      Sí     | Nuevo estado del evento.                          |
-| `fecha_cambio` | fecha-hora |      Sí     | Fecha y hora en que se realizó el cambio.         |
-
-**Ejemplo:**
+Mensaje:
 
 ```json
 {
   "tipo": "evento_actualizado",
   "id_evento": "evt-001",
   "nuevo_estado": "CANCELADO",
-  "fecha_cambio": "2026-09-10T12:00:00"
+  "fecha_cambio": "2026-09-13T20:00:00"
 }
 ```
 
-El campo `tipo` se mantiene dentro del mensaje según la propuesta de Notificaciones. Queda pendiente confirmar si este campo es necesario considerando que el tipo de mensaje también puede quedar identificado mediante el tópico.
-
----
-
-## 2.6 Comunicación posterior
-
-Al tratarse de una comunicación asíncrona mediante broker, no existe una respuesta síncrona de negocio asociada al mensaje.
-
-Notificaciones propone informar posteriormente el resultado del procesamiento mediante una comunicación asíncrona hacia Panel, incluyendo información como:
-
-* `id_evento`
-* `estado_envio`
-* `usuarios_notificados`
-* `usuarios_faltantes`
-* `fecha_envio`
-* `mensaje`
-
-La forma exacta de esta comunicación queda pendiente de definición.
-
----
-
-## 2.7 Códigos de error
-
-Al tratarse de una comunicación asíncrona, no se utilizan códigos HTTP como respuesta del evento.
-
-Los errores de procesamiento serán gestionados por Notificaciones.
-
-Notificaciones propone realizar hasta **3 intentos** antes de registrar el error correspondiente.
-
----
-
-## 2.8 Tiempo de respuesta esperado
-
-Notificaciones propone que Panel publique el evento inmediatamente después del cambio correspondiente, con un tiempo máximo de **5 segundos**.
-
----
-
-# 3. Reglas de uso
-
-1. Panel publica el mensaje cuando ocurre un cambio de evento que deba ser comunicado.
-2. Notificaciones permanece suscrito al tópico mediante el broker.
-3. Notificaciones identifica el evento mediante `id_evento`.
-4. Notificaciones obtiene los usuarios que poseen entradas activas para el evento.
-5. Notificaciones genera y almacena las notificaciones correspondientes.
-6. Notificaciones realiza hasta 3 intentos en caso de error.
-7. Una vez finalizado el procesamiento, Notificaciones podrá informar el resultado a Panel, sujeto a la definición de la comunicación posterior.
-
----
-
-# 4. Estados del evento
-
-Panel utiliza los siguientes estados:
-
-| Estado       | Descripción                          |
-| ------------ | ------------------------------------ |
-| `BORRADOR`   | Evento creado pero no publicado.     |
-| `PUBLICADO`  | Evento disponible para operaciones.  |
-| `FINALIZADO` | Evento realizado y cerrado.          |
-| `CANCELADO`  | Evento cancelado por el organizador. |
-
-Notificaciones propone además el estado:
+Panel mantiene como estados de gestión:
 
 ```text
-REPROGRAMADO
+BORRADOR
+PUBLICADO
+FINALIZADO
+CANCELADO
 ```
 
-### Pendiente de aclaración
+**Pendiente de confirmación:**
 
-Se debe confirmar con Notificaciones si `REPROGRAMADO` corresponde a:
-
-* un estado adicional que Panel debe manejar, o
-* un cambio de fecha/hora del evento que debe generar una notificación, sin convertirse necesariamente en un estado permanente.
-
-También se debe confirmar qué estados requieren una notificación y si todos los cambios indicados deben ser enviados mediante este contrato.
+- tópico `panel.evento.notificaciones.v1`;
+- necesidad del campo `tipo`.
 
 ---
 
-# 5. Versionado y cambios
+### 3.2 Reprogramación
 
-Los cambios en la estructura del mensaje deberán ser versionados cuando sean incompatibles con la versión anterior.
+Notificaciones propone `REPROGRAMADO`.
 
-Por ejemplo:
+**Panel propone:** tratar `REPROGRAMADO` como un **tipo de cambio del evento**, no como un nuevo valor de `estado_gestion`.
 
-```text
-panel.evento.notificaciones.v1
-```
-
-podría evolucionar a:
+El evento puede continuar, por ejemplo:
 
 ```text
-panel.evento.notificaciones.v2
+estado_gestion = PUBLICADO
 ```
 
-ante un cambio incompatible.
+aunque haya sido reprogramado.
 
-Los cambios de versión deberán ser comunicados y coordinados entre ambos equipos.
+Cuando ocurra una reprogramación, Panel propone enviar:
+
+```json
+{
+  "tipo": "evento_actualizado",
+  "id_evento": "evt-001",
+  "tipo_cambio": "REPROGRAMADO",
+  "nuevo_estado": "PUBLICADO",
+  "fecha_evento": "2026-10-20",
+  "hora_evento": "21:00",
+  "fecha_cambio": "2026-09-13T20:00:00"
+}
+```
+
+Donde:
+
+| Campo | Uso |
+|---|---|
+| `tipo_cambio` | Indica que el evento fue reprogramado. |
+| `fecha_evento` | Nueva fecha del evento. |
+| `hora_evento` | Nueva hora del evento. |
+
+**Pendiente de confirmación por Notificaciones:** aceptar esta interpretación y los datos propuestos para una reprogramación.
 
 ---
 
-# 6. Pendientes a acordar
+### 3.3 Resultado Notificaciones → Panel
 
-* [ ] Confirmar el nombre `panel.evento.notificaciones.v1`.
-* [ ] Confirmar la convención de versionado del tópico.
-* [ ] Confirmar si el campo `tipo` es necesario además del tópico.
-* [ ] Confirmar qué significa exactamente la comunicación de confirmación desde Notificaciones hacia Panel.
-* [ ] Confirmar si el resultado del procesamiento (`estado_envio`, `usuarios_notificados`, etc.) debe ser enviado a Panel.
-* [ ] Confirmar cómo se manejará el ACK técnico del broker y los errores de entrega/procesamiento.
-* [ ] Confirmar qué estados generan una notificación.
-* [ ] Confirmar si `REPROGRAMADO` es un estado o representa un cambio de fecha/hora.
+Notificaciones propone informar posteriormente el resultado del envío.
+
+**Panel propone:**
+
+```json
+{
+  "id_evento": "evt-001",
+  "estado_envio": "EXITOSO",
+  "usuarios_notificados": 155,
+  "usuarios_faltantes": 0,
+  "fecha_envio": "2026-09-13T20:05:00",
+  "mensaje": "Envío realizado correctamente"
+}
+```
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `id_evento` | string | Evento asociado al resultado. |
+| `estado_envio` | string | Resultado general: `EXITOSO` o `ERROR`. |
+| `usuarios_notificados` | integer | Usuarios notificados correctamente. |
+| `usuarios_faltantes` | integer | Usuarios que no pudieron ser notificados. |
+| `fecha_envio` | datetime | Finalización del proceso. |
+| `mensaje` | string | Información adicional. |
+
+No se utiliza `PARCIAL`, ya que cualquier envío incompleto puede identificarse mediante `usuarios_faltantes`.
+
+**Pendiente de confirmación:** definir si esta comunicación se enviará a Panel y mediante qué mecanismo o tópico.
+
+---

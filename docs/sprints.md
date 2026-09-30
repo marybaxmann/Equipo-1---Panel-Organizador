@@ -2,6 +2,7 @@
 
 ## Sprint 1 — Gestión básica del organizador
 
+**Fechas:** 17/09/2026 – 30/09/2026  
 **Milestone:** Avance 1 — 01/10/2026
 
 ### Objetivo
@@ -16,6 +17,7 @@ Permitir que un organizador autenticado pueda crear y visualizar sus propios eve
 
 ## Sprint 2 — Edición y publicación de eventos
 
+**Fechas:** 02/10/2026 – 22/10/2026  
 **Milestone:** Avance 2 — 22/10/2026
 
 ### Objetivo
@@ -29,6 +31,7 @@ Permitir que el organizador modifique y publique sus eventos.
 
 ## Sprint 3 — Eliminación y notificación de cambios
 
+**Fechas:** 23/10/2026 – 05/11/2026  
 **Milestone:** Avance 3 — 05/11/2026
 
 ### Objetivo
@@ -42,6 +45,7 @@ Completar el ciclo de vida del evento y comunicar sus cambios de estado a otros 
 
 ## Sprint 4 — Integración entre microservicios
 
+**Fechas:** 06/11/2026 – 19/11/2026  
 **Milestone:** Avance 4 — 18/11/2026
 
 ### Objetivo
@@ -57,6 +61,7 @@ Integrar el Panel Organizador con los servicios reales de los demás equipos.
 
 ## Sprint 5 — Cierre y entrega final
 
+**Fechas:** 20/11/2026 – 25/11/2026  
 **Milestone:** Entrega final — 25/11/2026
 
 ### Objetivo

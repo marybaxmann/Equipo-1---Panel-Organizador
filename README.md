@@ -89,9 +89,13 @@ Principales integraciones:
 
 ## Documentación
 
-### Diagramas de secuencia
+## Documentación
 
-Ubicados en:
-
-```text
-docs/diagrams/
+| Documento | Ubicación |
+|---|---|
+| Planificación por sprint | [docs/sprints.md](docs/sprints.md) |
+| Responsables | [RESPONSABLES.md](RESPONSABLES.md) |
+| Definition of Done | [docs/DEFINITION_OF_DONE.md](docs/DEFINITION_OF_DONE.md) |
+| Contratos de integración | [docs/](docs/) — `CONTRATO_PANEL_*.md` |
+| Diagramas de secuencia | [docs/diagrams/](docs/diagrams/) |
+| Tablero del proyecto | [GitHub Projects — Equipo 1](https://github.com/users/marybaxmann/projects/4/views/3) |

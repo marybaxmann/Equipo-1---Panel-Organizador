@@ -217,7 +217,7 @@ GET /api/v1/panel/eventos/{id_evento}
   "estado_gestion": "PUBLICADO"
 }
 ```
-
+> **Nota de diseño:** el endpoint es compartido con Entradas / Inventario, por lo que la respuesta puede incluir campos adicionales (`id_usuario`, `cantidad_entradas`, `tipo_entrada`). Check-in ignora los campos que no utiliza. Panel garantiza la presencia de los campos de la sección 3.2.
 
 #### Errores
 

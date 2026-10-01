@@ -1,0 +1,45 @@
+.nuevo-evento-page {
+  max-width: 640px;
+}
+
+.nuevo-evento-page__encabezado {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.etiqueta-borrador {
+  font-size: 10.5px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-secondary);
+  border: var(--border-standard);
+  padding: 3px 9px;
+  border-radius: var(--radius-control);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nuevo-evento-page__form {
+  margin-top: var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-standard);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.nuevo-evento-page__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.nuevo-evento-page__error {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  font-size: var(--fs-caption);
+  margin-top: var(--space-2);
+}

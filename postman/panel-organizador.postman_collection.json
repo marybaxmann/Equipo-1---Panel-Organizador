@@ -1,0 +1,559 @@
+{
+  "info": {
+    "name": "Panel Organizador - Integración (CA2)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 Auth (servicio consumido)",
+      "item": [
+        {
+          "name": "Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true",
+          "request": {
+            "method": "GET",
+            "url": "{{authUrl}}/validar-sesion",
+            "description": "Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es válido y organizador\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.valido).to.be.true;",
+                  "    pm.expect(data.usuario.rol).to.eql(\"organizador\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Auth directo: token expirado / Resultado esperado: 401",
+          "request": {
+            "method": "GET",
+            "url": "{{authUrl}}/validar-sesion",
+            "description": "Caso: Auth directo: token expirado / Resultado esperado: 401",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-expirado"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/mios",
+            "description": "Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Error es SESSION_INVALID\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"SESSION_INVALID\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/mios",
+            "description": "Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-asistente"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Error es FORBIDDEN_ROLE\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"FORBIDDEN_ROLE\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Panel con organizador (mis eventos) / Resultado esperado: 200",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/mios",
+            "description": "Caso: Panel con organizador (mis eventos) / Resultado esperado: 200",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Eventos con estados válidos y los 4 estados presentes (Org A)\", () => {",
+                  "    const eventos = pm.response.json().eventos;",
+                  "    const validos = [\"BORRADOR\", \"PUBLICADO\", \"FINALIZADO\", \"CANCELADO\"];",
+                  "    eventos.forEach(e => pm.expect(validos).to.include(e.estado_gestion));",
+                  "    pm.expect(new Set(eventos.map(e => e.estado_gestion)).size).to.eql(4);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Catálogo",
+      "item": [
+        {
+          "name": "Caso: Próximos / Resultado esperado: 200, no BORRADOR",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/organizador/eventos/proximos",
+            "description": "Caso: Próximos / Resultado esperado: 200, no BORRADOR",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Ningún evento en BORRADOR y trae estado_disponibilidad\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"array\");",
+                  "    data.forEach(e => {",
+                  "        pm.expect(e.estado_gestion).to.not.eql(\"BORRADOR\");",
+                  "        pm.expect(e).to.have.property(\"estado_disponibilidad\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/organizador/eventos/buscar",
+            "description": "Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"texto\":\"feria\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Todos PUBLICADO\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"array\");",
+                  "    data.forEach(e => pm.expect(e.estado_gestion).to.eql(\"PUBLICADO\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Detalle de un BORRADOR / Resultado esperado: 404",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/organizador/eventos/66f1a0000000000000000001",
+            "description": "Caso: Detalle de un BORRADOR / Resultado esperado: 404",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Detalle de un PUBLICADO / Resultado esperado: 200",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/organizador/eventos/66f1a0000000000000000002",
+            "description": "Caso: Detalle de un PUBLICADO / Resultado esperado: 200",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Tiene schema del contrato\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.have.property(\"id_evento\");",
+                  "    pm.expect(data).to.have.property(\"nombre_evento\");",
+                  "    pm.expect(data).to.have.property(\"estado_disponibilidad\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Entradas",
+      "item": [
+        {
+          "name": "Caso: Evento por id (sesión staff) / Resultado esperado: 200",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000002",
+            "description": "Caso: Evento por id (sesión staff) / Resultado esperado: 200",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-staff"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Tiene los campos de los contratos de Entradas y Check-in\", () => {",
+                  "    const data = pm.response.json();",
+                  "    const keys = [\"id_evento\", \"id_usuario\", \"nombre_evento\", \"direccion_evento\", \"fecha_evento\", \"hora_evento\", \"hora_fin_evento\", \"cantidad_entradas\", \"tipo_entrada\", \"estado_gestion\"];",
+                  "    pm.expect(Object.keys(data)).to.include.members(keys);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 Check-in",
+      "item": [
+        {
+          "name": "Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000004",
+            "description": "Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-staff"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Tiene hora_fin_evento y estado_gestion\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.have.property(\"hora_fin_evento\");",
+                  "    pm.expect([\"PUBLICADO\", \"FINALIZADO\", \"CANCELADO\"]).to.include(data.estado_gestion);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Consulta sin sesión / Resultado esperado: 401",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000004",
+            "description": "Caso: Consulta sin sesión / Resultado esperado: 401",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000004",
+            "description": "Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-asistente"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Error es FORBIDDEN_ROLE\", () => pm.expect(pm.response.json().error.codigo).to.eql(\"FORBIDDEN_ROLE\"));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Notificaciones",
+      "item": [
+        {
+          "name": "Caso: Cambios de estado / Resultado esperado: 200",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000002/cambios-estado",
+            "description": "Caso: Cambios de estado / Resultado esperado: 200",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"tipo es evento_actualizado y está ordenado\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"array\");",
+                  "    if(data.length > 0) {",
+                  "        pm.expect(data[0].tipo).to.eql(\"evento_actualizado\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Promociones",
+      "item": [
+        {
+          "name": "Caso: Eventos disponibles / Resultado esperado: 200",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos-disponibles",
+            "description": "Caso: Eventos disponibles / Resultado esperado: 200",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Sólo IDs de PUBLICADO\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"array\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 Flujo HU-01->HU-05",
+      "item": [
+        {
+          "name": "Caso: Crear evento / Resultado esperado: 201",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos",
+            "description": "Caso: Crear evento / Resultado esperado: 201",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre_evento\":\"Prueba Flujo\",\"descripcion\":\"desc\",\"fecha_evento\":\"2030-01-01\",\"hora_evento\":\"10:00\",\"direccion_evento\":\"Lugar\",\"tipo_entrada\":\"GRATUITA\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Guarda id_evento\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.id_evento).to.be.a(\"string\");",
+                  "    pm.environment.set(\"nuevoEventoId\", data.id_evento);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/organizador/eventos/proximos",
+            "description": "Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"El BORRADOR recién creado no aparece en Catálogo\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().map(e => e.id_evento)).to.not.include(pm.environment.get(\"nuevoEventoId\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Org B pide el evento de A / Resultado esperado: 403",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}",
+            "description": "Caso: Org B pide el evento de A / Resultado esperado: 403",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-b"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Error es EVENT_NOT_OWNED\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"EVENT_NOT_OWNED\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

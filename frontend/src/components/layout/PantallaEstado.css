@@ -1,0 +1,34 @@
+.pantalla-estado {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.pantalla-estado h2 {
+  max-width: 420px;
+}
+
+.pantalla-estado p {
+  max-width: 420px;
+  color: var(--color-text-secondary);
+}
+
+.pantalla-estado__spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}

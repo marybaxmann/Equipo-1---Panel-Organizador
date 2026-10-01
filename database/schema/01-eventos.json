@@ -1,0 +1,150 @@
+{
+  "collection": "eventos",
+  "jsonSchema": {
+    "bsonType": "object",
+    "title": "eventos",
+    "description": "Eventos creados y administrados por organizadores en el Panel Organizador. Fuente de verdad de los datos generales del evento para Catálogo, Entradas, Check-in, Notificaciones y Promociones.",
+    "required": [
+      "_id",
+      "id_organizador",
+      "nombre_evento",
+      "descripcion",
+      "fecha_evento",
+      "hora_evento",
+      "direccion_evento",
+      "estado_gestion",
+      "fecha_creacion",
+      "fecha_actualizacion"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "_id": {
+        "bsonType": "objectId",
+        "description": "[PK] Identificador único del evento. Se expone en la API como id_evento (string)."
+      },
+      "id_organizador": {
+        "bsonType": "string",
+        "minLength": 1,
+        "description": "[REF Auth.usuario.id_usuario] Organizador dueño del evento. Sólo se guarda el identificador; los datos personales viven en Auth."
+      },
+      "nombre_evento": {
+        "bsonType": "string",
+        "minLength": 3,
+        "maxLength": 120,
+        "description": "Nombre público del evento."
+      },
+      "descripcion": {
+        "bsonType": "string",
+        "minLength": 1,
+        "maxLength": 2000,
+        "description": "Descripción del evento mostrada en Catálogo."
+      },
+      "fecha_evento": {
+        "bsonType": "date",
+        "description": "Día en que se realiza el evento (medianoche UTC del día calendario)."
+      },
+      "hora_evento": {
+        "bsonType": "string",
+        "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+        "description": "Hora de inicio en formato HH:mm (America/Santiago)."
+      },
+      "hora_fin_evento": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+        "description": "Hora de término en formato HH:mm (America/Santiago). Si es menor o igual que hora_evento, el evento termina al día siguiente. Obligatoria para publicar (contrato Check-in v1.2)."
+      },
+      "direccion_evento": {
+        "bsonType": "string",
+        "minLength": 3,
+        "maxLength": 200,
+        "description": "Dirección o ubicación donde se realiza el evento."
+      },
+      "categoria": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "maxLength": 50,
+        "description": "Categoría del evento usada por Catálogo para filtrar."
+      },
+      "imagen": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "description": "URL de la imagen del evento."
+      },
+      "cantidad_entradas": {
+        "bsonType": [
+          "int",
+          "null"
+        ],
+        "minimum": 1,
+        "maximum": 100000,
+        "description": "Cantidad inicial de entradas habilitadas. La gestión del stock corresponde a Entradas."
+      },
+      "tipo_entrada": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "GRATUITA",
+          "PAGADA",
+          null
+        ],
+        "description": "Indica si las entradas del evento son gratuitas o pagadas."
+      },
+      "precio": {
+        "bsonType": [
+          "int",
+          "null"
+        ],
+        "minimum": 0,
+        "maximum": 10000000,
+        "description": "Precio de la entrada en pesos chilenos (CLP), máximo 10.000.000. 0 o nulo si es gratuita."
+      },
+      "estado_gestion": {
+        "bsonType": "string",
+        "enum": [
+          "BORRADOR",
+          "PUBLICADO",
+          "FINALIZADO",
+          "CANCELADO"
+        ],
+        "description": "Estado administrativo del evento. Todo evento nace en BORRADOR."
+      },
+      "fecha_creacion": {
+        "bsonType": "date",
+        "description": "Fecha y hora de creación del registro."
+      },
+      "fecha_actualizacion": {
+        "bsonType": "date",
+        "description": "Fecha y hora de la última modificación del registro."
+      }
+    }
+  },
+  "indexes": [
+    {
+      "key": {
+        "id_organizador": 1,
+        "fecha_evento": 1
+      },
+      "options": {
+        "name": "ix_eventos_organizador_fecha"
+      }
+    },
+    {
+      "key": {
+        "estado_gestion": 1,
+        "fecha_evento": 1
+      },
+      "options": {
+        "name": "ix_eventos_estado_fecha"
+      }
+    }
+  ]
+}

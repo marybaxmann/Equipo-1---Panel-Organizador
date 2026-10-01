@@ -1,0 +1,25 @@
+.pestanas-pantalla {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: var(--space-4);
+}
+
+.pestana {
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 12.5px;
+  font-weight: var(--fw-semibold);
+  padding: 8px 14px;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.pestana--activa {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.pestana:not(.pestana--activa):hover {
+  background: var(--color-bg-panel);
+}

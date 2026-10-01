@@ -1,101 +1,79 @@
-# TicketU — Panel Organizador
+# Panel Organizador (TicketU)
 
-Microservicio correspondiente al **Panel Organizador** del proyecto TicketU.
+Módulo encargado de la gestión de eventos para los organizadores, permitiendo crear, editar, publicar y gestionar el ciclo de vida de los eventos en la plataforma TicketU.
 
-Este módulo permite a un organizador autenticado crear, visualizar, editar, publicar y gestionar eventos dentro de la plataforma.
+## Plan del proyecto
 
----
+- **Hoja de ruta** (sprints, tareas, responsables, criterios de salida): [`docs/plan-proyecto.md`](docs/plan-proyecto.md)
+- **Qué hay en el área de cada integrante y cómo seguir:** [`docs/guia-equipo.md`](docs/guia-equipo.md)
+- **Decisiones técnicas (ADR):** [`docs/adr/`](docs/adr/README.md) · índice general de la documentación: [`docs/README.md`](docs/README.md)
 
-## Equipo
+## Repositorios
 
-| Integrante | Rol |
+| Repo | Uso |
 |---|---|
-| Joaquín Andrés Martínez | Backend |
-| Etienne Araya | Integración |
-| Christopher Okinggton | QA / Base de Datos |
-| Mariajosé Baxmann | Scrum Master |
-| Alonso Alejandro Vera | Frontend |
+| [`Joaquin-Martinez-Aravena/panel-organizador`](https://github.com/Joaquin-Martinez-Aravena/panel-organizador) | Repo de trabajo del equipo: desarrollo, pruebas y PRs |
+| [`marybaxmann/Equipo-1---Panel-Organizador`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador) | Repo de presentación al profesor. Se actualiza a mano en momentos acordados |
 
----
+## Requisitos
+- Node.js 26.x
+- Docker y Docker Compose
 
-## Historias de Usuario
+## Levantar el entorno local
 
-- HU-01 — Crear un evento
-- HU-02 — Editar un evento
-- HU-03 — Eliminar un evento
-- HU-04 — Publicar un evento
-- HU-05 — Ver mis eventos
-- HU-06 — Verificación de autorización del organizador
-- HU-07 — Notificar cambios de estado a otros microservicios
+En terminales separadas, ejecuta los siguientes 6 comandos:
 
----
+```bash
+# 1. Configurar variables de entorno
+cp .env.example .env
 
-## Planificación
+# 2. Instalar dependencias
+npm install
 
-### Sprint 1
-- HU-06 — Verificación de autorización
-- HU-01 — Crear evento
-- HU-05 — Ver mis eventos
+# 3. Levantar infraestructura (MongoDB y mock Auth)
+npm run infra:up
 
-**Milestone:** Avance 1 — 01/10/2026
+# 4. Inicializar base de datos y cargar seed determinista
+npm run db:init && npm run db:seed
 
-### Sprint 2
-- HU-02 — Editar evento
-- HU-04 — Publicar evento
+# 5. Iniciar la API
+npm run dev:api
 
-**Milestone:** Avance 2 — 22/10/2026
+# 6. Iniciar el Frontend (en otra terminal)
+npm run dev:web
+```
 
-### Sprint 3
-- HU-07 — Notificar cambios de estado
-- HU-03 — Eliminar evento
+La aplicación estará disponible en [http://localhost:5173](http://localhost:5173). La API en [http://localhost:3000](http://localhost:3000) y Swagger UI en [http://localhost:3000/api-docs](http://localhost:3000/api-docs).
 
-**Milestone:** Avance 3 — 05/11/2026
+## Usuarios de demo
 
-### Sprint 4
-- Integración entre microservicios
-- Pruebas de contratos
-- Pruebas funcionales
-- Corrección de errores
+En local, Auth está simulado (`tools/mock-auth`). El login simulado del frontend fija la cookie `jwt`:
 
-**Milestone:** Avance 4 — 18/11/2026
+| Botón | Token | Qué demuestra |
+|---|---|---|
+| Organizadora A | `token-org-a` | 5 eventos en los 4 estados (Borrador, Publicado, Finalizado, Cancelado) |
+| Organizador B | `token-org-b` | 2 eventos. Su evento `66f1b0000000000000000001` sirve para probar "no te pertenece" (403) siendo A |
+| Asistente | `token-asistente` | Rol distinto de organizador → acceso denegado (403) |
+| (sólo API) Staff | `token-staff` | Rol `staff` de Check-in: puede consultar `GET /api/v1/panel/eventos/{id}` (ADR-0011) |
+| Sesión expirada | `token-expirado` | Sesión inválida → vuelve al login (401) |
+| Auth lento | `token-lento` | Auth no responde a tiempo → fail-secure (503) |
 
-### Sprint 5
-- Pruebas finales
-- Correcciones finales
-- Documentación
-- Despliegue
-- Preparación de demo y presentación
+## Dónde está cada evidencia (rúbrica TITEC · Evaluación 1)
 
-**Milestone:** Entrega final — 25/11/2026
-
----
-
-## Arquitectura
-
-TicketU utiliza una arquitectura de microservicios.
-
-El Panel Organizador se integra con otros módulos mediante contratos definidos entre equipos.
-
-Principales integraciones:
-
-- Auth
-- Catálogo de Eventos
-- Entradas / Inventario
-- Check-in
-- Notificaciones
-- Promociones
-
----
-
-## Documentación
-
-## Documentación
-
-| Documento | Ubicación |
-|---|---|
-| Planificación por sprint | [docs/sprints.md](docs/sprints.md) |
-| Responsables | [RESPONSABLES.md](RESPONSABLES.md) |
-| Definition of Done | [docs/DEFINITION_OF_DONE.md](docs/DEFINITION_OF_DONE.md) |
-| Contratos de integración | [docs/](docs/) — `CONTRATO_PANEL_*.md` |
-| Diagramas de secuencia | [docs/diagrams/](docs/diagrams/) |
-| Tablero del proyecto | [GitHub Projects — Equipo 1](https://github.com/users/marybaxmann/projects/4/views/3) |
+| Ítem | Qué evalúa | Evidencia |
+|---|---|---|
+| **BE1** | Servicios propios (Swagger) | [`docs/api/openapi.yaml`](docs/api/openapi.yaml) · tags *Organizador* (HU-01/05/06 implementadas; HU-02/03/04 definidas) · UI en `http://localhost:3000/api-docs` |
+| **BE2** | Invocación a servicios de otros squads | [`backend/src/modules/auth/auth.client.ts`](backend/src/modules/auth/auth.client.ts) · contrato consumido en [`docs/api/auth-consumido.yaml`](docs/api/auth-consumido.yaml) |
+| **BE3** | Servicios que requieren otros squads (Swagger) | [`docs/api/openapi.yaml`](docs/api/openapi.yaml) · tags *Integración — Catálogo / Entradas / Check-in / Notificaciones / Promociones* · implementación en [`backend/src/modules/integraciones/`](backend/src/modules/integraciones/) |
+| **BD1** | Soporte a las historias | [`docs/bd/diagrama-er.md`](docs/bd/diagrama-er.md) (generado desde la BD) · `eventos` cubre HU-01..05 y `cambios_estado_evento` cubre HU-04/HU-07 |
+| **BD2** | Sin datos de negocio de otros squads | Sólo referencias `id_organizador` / `id_usuario_responsable` (REF Auth). Stock, QR y datos de usuario **no** se almacenan. Ver [`docs/bd/diccionario-datos.md`](docs/bd/diccionario-datos.md) |
+| **BD3** | Nomenclatura y documentación | [`docs/bd/diccionario-datos.md`](docs/bd/diccionario-datos.md) (generado desde la BD; convenciones al final) · script de creación [`database/scripts/create-collections.mjs`](database/scripts/create-collections.mjs) + [`database/schema/`](database/schema/) |
+| **BD4** | Diseño técnico (PK, tipos, FK, nulabilidad, sin ciclos) | Validadores `$jsonSchema` en [`database/schema/`](database/schema/) · diagrama con PK/FK/NULL · test [`backend/tests/database-schema.test.ts`](backend/tests/database-schema.test.ts) |
+| **UI1–UI3** | App funcional y estándares de UI | [`frontend/`](frontend/) · [`docs/ui/checklist-consistencia-visual.md`](docs/ui/checklist-consistencia-visual.md) (acordado entre squads) · [`docs/ui/estandares-ui.md`](docs/ui/estandares-ui.md) · se evalúa con la demo en vivo |
+| **GE1–GE3** | Planificación, historias y avance | [Issues](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues) · [Milestones](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/milestones) · tablero del proyecto (GitHub Projects) · [`docs/sprints.md`](docs/sprints.md) |
+| **GE4** | Trabajo de integración | [Issues con label `integracion`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues?q=label%3Aintegracion) · contratos en [`docs/`](docs/) |
+| **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (70 tests, cobertura 92 %) · CI en GitHub Actions |
+| **CA2** | Pruebas de integración | [`postman/`](postman/) · resultados en [`docs/evidencias/pruebas-integracion/`](docs/evidencias/pruebas-integracion/README.md) · pruebas de contrato OpenAPI en [`backend/tests/contrato-openapi.test.ts`](backend/tests/contrato-openapi.test.ts) |
+| — | Responsables por rol, HU, tarea y contrato | [`RESPONSABLES.md`](RESPONSABLES.md) |
+| — | Definition of Done | [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md) |
+| — | Tablero del proyecto | [GitHub Projects — Equipo 1](https://github.com/users/marybaxmann/projects/4/views/3) |

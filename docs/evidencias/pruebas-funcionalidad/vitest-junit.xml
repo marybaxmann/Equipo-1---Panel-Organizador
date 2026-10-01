@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="79" failures="0" errors="0" time="4.569016273">
+    <testsuite name="tests/auth.client.test.ts" timestamp="2026-09-30T23:33:46.122Z" hostname="JotaM" tests="10" failures="0" errors="0" skipped="0" time="0.291425863">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; forwards the jwt cookie untouched and returns id_usuario and rol" time="0.038533747">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 401 to SESSION_INVALID without retrying" time="0.019768936">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps valido:false to SESSION_INVALID" time="0.004928066">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 403 to ACCESS_DENIED without retrying" time="0.003091811">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 500 to AUTH_ERROR (502) without retrying" time="0.002935594">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; retries once on 503 and succeeds if the retry succeeds" time="0.004092691">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 after timeout + one retry" time="0.205927448">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth answers 503 twice" time="0.006187259">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth is unreachable" time="0.000766688">
+        </testcase>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps an unexpected body to AUTH_ERROR" time="0.003536648">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/contrato-openapi.test.ts" timestamp="2026-09-30T23:33:46.124Z" hostname="JotaM" tests="15" failures="0" errors="0" skipped="0" time="1.030387185">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos → Evento" time="0.131419013">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios → ListaMisEventos" time="0.031179605">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios/{id} → Evento" time="0.023786198">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos/mios/{id}/publicar → Evento" time="0.03081351">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 409 → Error" time="0.021127324">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/proximos → EventoCatalogo[]" time="0.021259084">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /organizador/eventos/buscar → EventoCatalogo[]" time="0.022718172">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/{id} → EventoCatalogo" time="0.020070359">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id} → EventoIntegracion" time="0.022653038">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id}/cambios-estado → CambioEstado[]" time="0.027528498">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos-disponibles → EventoPromocion[]" time="0.028340659">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 400 → Error" time="0.026963546">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 401 → Error" time="0.041050993">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 403 → Error" time="0.020649687">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 404 → Error" time="0.01362481">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/database-schema.test.ts" timestamp="2026-09-30T23:33:46.130Z" hostname="JotaM" tests="7" failures="0" errors="0" skipped="0" time="0.351142467">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; accepts a valid evento" time="0.003528891">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with missing nombre_evento" time="0.002898169">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid estado_gestion" time="0.000997025">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid hora_evento" time="0.000922344">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with extra field (other squad data)" time="0.000892959">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; creates the expected indexes" time="0.0020681">
+        </testcase>
+        <testcase classname="tests/database-schema.test.ts" name="demo seed &gt; loads 7 valid events (validator on) with 4 states for Org A and a coherent history" time="0.035776358">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu01-crear-evento.test.ts" timestamp="2026-09-30T23:33:46.132Z" hostname="JotaM" tests="11" failures="0" errors="0" skipped="0" time="0.483817861">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: crea el evento en BORRADOR asociado al organizador autenticado" time="0.059224061">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; registra el cambio de estado inicial (null → BORRADOR)" time="0.009934658">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: valida campos obligatorios y devuelve el detalle por campo" time="0.00570289">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza un precio fuera de rango con 400 (no 500)" time="0.004711118">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza una fecha pasada" time="0.003541268">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza evento PAGADA sin precio" time="0.003268691">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta campos opcionales y guarda precio entero" time="0.00605655">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta un evento que termina después de medianoche (contrato Check-in v1.2 §3.2)" time="0.009223499">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: no permite imponer dueño ni estado desde el body" time="0.003750595">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 401 sin sesión y 403 si no es organizador" time="0.004101912">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 503 si Auth no está disponible y no crea nada" time="0.011380672">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu04-publicar-evento.test.ts" timestamp="2026-09-30T23:33:46.134Z" hostname="JotaM" tests="6" failures="0" errors="0" skipped="0" time="0.686533842">
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: un BORRADOR propio pasa a PUBLICADO y queda registrado el cambio de estado" time="0.069810447">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: al publicarse aparece en Catálogo (antes no era visible)" time="0.049817094">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409)" time="0.017685122">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo eventos propios (evento de B siendo A → 403)" time="0.016359137">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; exige hora_fin_evento para publicar (contrato Check-in v1.2)" time="0.040228392">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404" time="0.018935946">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu05-mis-eventos.test.ts" timestamp="2026-09-30T23:33:46.136Z" hostname="JotaM" tests="7" failures="0" errors="0" skipped="0" time="0.501765683">
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: muestra únicamente los eventos del organizador, ordenados por fecha" time="0.079106613">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: cada evento trae nombre, fecha, ubicación y estado" time="0.010327694">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; filtra por estado_gestion y valida el filtro" time="0.014617784">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; devuelve lista vacía si no tiene eventos" time="0.003751688">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: permite seleccionar un evento propio (detalle)" time="0.008097062">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; HU-06: validación de propiedad — 403 al pedir el evento de otro organizador" time="0.007015089">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; 404 con id inexistente o mal formado" time="0.004799426">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/integraciones.test.ts" timestamp="2026-09-30T23:33:46.137Z" hostname="JotaM" tests="18" failures="0" errors="0" skipped="0" time="1.192735246">
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; próximos: sólo PUBLICADO con fecha futura, ordenados por fecha, con estado_disponibilidad" time="0.10296021">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: texto en nombre o descripción, case-insensitive, sólo PUBLICADO" time="0.048738989">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría" time="0.023122629">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: caracteres de regex se tratan como texto literal" time="0.021011013">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: body inválido → 400" time="0.022297414">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato" time="0.029372166">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; staff obtiene los campos de ambos contratos, con hora_fin_evento" time="0.021350276">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; organizador también puede consultar" time="0.018536308">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; un BORRADOR no se expone (404)" time="0.018033103">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; sin sesión 401 · rol no autorizado 403 · Auth caído 503" time="0.021769973">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; id inválido o inexistente → 404" time="0.020621785">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Notificaciones &gt; historial de cambios de estado, más reciente primero" time="0.021546238">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Promociones &gt; eventos disponibles: sólo PUBLICADO con id, nombre y fecha" time="0.018235888">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inválido o inexistente → 404: /organizador/eventos/no-es-id" time="0.016026446">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inválido o inexistente → 404: /panel/eventos/no-es-id/cambios-estado" time="0.015592272">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inválido o inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado" time="0.018975762">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401" time="0.016353246">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; swagger servido desde docs/api" time="0.017663362">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/require-organizer.test.ts" timestamp="2026-09-30T23:33:46.142Z" hostname="JotaM" tests="5" failures="0" errors="0" skipped="0" time="0.031208126">
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 without jwt cookie and never calls Auth" time="0.021524052">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 when Auth rejects the token (expired/invalid)" time="0.002368142">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 403 FORBIDDEN_ROLE when the user is not an organizer" time="0.001830534">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 503 when Auth is unavailable (fail-secure)" time="0.001704783">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; passes the Auth identity to the handler" time="0.002413054">
+        </testcase>
+    </testsuite>
+</testsuites>

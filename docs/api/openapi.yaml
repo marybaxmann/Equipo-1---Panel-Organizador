@@ -1,0 +1,1025 @@
+openapi: 3.1.0
+info:
+  title: TicketU — Panel Organizador API
+  version: 1.0.0-sprint1
+  description: |-
+    API REST del microservicio Panel Organizador (TicketU). Expone los servicios propios del organizador
+    (HU-01, HU-05, HU-06; HU-02/03/04 planificadas) y los servicios que consumen otros squads: Catálogo, Entradas, Check-in,
+    Notificaciones y Promociones.
+
+    **Política de autorización**
+    - Toda operación del organizador valida la sesión contra Auth (`GET /internal/validar-sesion`, ver `auth-consumido.yaml`)
+      reenviando la cookie `jwt` sin decodificarla.
+    - Sólo `rol = organizador` accede al panel (otro rol → 403 `FORBIDDEN_ROLE`). Sesión inválida o expirada → 401.
+    - La identidad (`id_usuario`) se toma sólo de la respuesta de Auth; el body nunca define dueño ni estado.
+    - Validación de propiedad: un evento ajeno → 403 `EVENT_NOT_OWNED`.
+    - Si Auth no responde en 1 s (con 1 reintento) → 503 `AUTH_UNAVAILABLE` (fail-secure).
+    - Endpoints de integración: sin cookie de usuario; acceso restringido a red interna vía API Gateway (mecanismo pendiente de acuerdo).
+
+    **Contratos:** [Auth](../CONTRATO_PANEL_AUTH.md) · [Catálogo](../CONTRATO_PANEL_CATALOGO.md) · [Entradas](../CONTRATO_PANEL_ENTRADAS.md) ·
+    [Check-in](../CONTRATO_PANEL_CHECKIN.md) · [Notificaciones](../CONTRATO_PANEL_NOTIFICACIONES.md) · [Promociones](../CONTRATO_PANEL_PROMOCIONES.md)
+  license:
+    name: ISC
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Organizador — Eventos (HU-01, HU-04, HU-05, HU-06)
+    description: Servicios propios del organizador autenticado. Implementados en Sprint 1 (HU-04 adelantada).
+  - name: Organizador — Planificado S2/S3
+    description: Servicios definidos para HU-02 y HU-03. No implementados en Sprint 1.
+  - name: Integración — Catálogo
+    description: Consumidos por Catálogo de Eventos. Sólo eventos PUBLICADO (contrato Catálogo v1.1).
+  - name: Integración — Entradas
+    description: Consumido por Entradas/Inventario (contrato v1.2 §2.3). Mismo endpoint que Check-in.
+  - name: Integración — Check-in
+    description: "Consumido por Check-in (contrato v1.2): usa el GET compartido con Entradas, con sesión de staff u organizador."
+  - name: Integración — Notificaciones
+    description: Consumido por Notificaciones (id evento, nuevo estado, fecha de cambio).
+  - name: Integración — Promociones
+    description: Consumido por Promociones (id evento).
+  - name: Sistema
+    description: Operación del servicio.
+paths:
+  /api/v1/panel/eventos:
+    post:
+      summary: Crear un evento
+      description: Crea un nuevo evento en estado BORRADOR. (HU-01)
+      tags:
+        - Organizador — Eventos (HU-01
+        - HU-05
+        - HU-06)
+      operationId: createEvento
+      security:
+        - cookieJwt: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventoCreate"
+            example:
+              nombre_evento: Feria de Innovación
+              descripcion: Muestra de proyectos.
+              fecha_evento: 2026-11-20
+              hora_evento: 10:00
+              hora_fin_evento: 18:00
+              direccion_evento: Auditorio Principal
+              categoria: academico
+              cantidad_entradas: 300
+              tipo_entrada: GRATUITA
+      responses:
+        "201":
+          description: Evento creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evento"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+  /api/v1/panel/eventos/mios:
+    get:
+      summary: Listar mis eventos
+      description: Lista los eventos creados por el organizador autenticado. (HU-05)
+      tags:
+        - Organizador — Eventos (HU-01
+        - HU-05
+        - HU-06)
+      operationId: listMisEventos
+      security:
+        - cookieJwt: []
+      parameters:
+        - in: query
+          name: estado_gestion
+          schema:
+            $ref: "#/components/schemas/EstadoGestion"
+      responses:
+        "200":
+          description: Lista de mis eventos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListaMisEventos"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+  /api/v1/panel/eventos/mios/{id_evento}:
+    get:
+      summary: Ver detalle de mi evento
+      description: Retorna los datos completos de un evento propio. (HU-05)
+      tags:
+        - Organizador — Eventos (HU-01
+        - HU-05
+        - HU-06)
+      operationId: getMiEvento
+      security:
+        - cookieJwt: []
+      parameters:
+        - in: path
+          name: id_evento
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detalle del evento.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evento"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+    patch:
+      summary: Editar un evento propio (HU-02 · Sprint 2)
+      description: |
+        **Planificado — no implementado en Sprint 1.**
+        Reglas: valida sesión y rol (HU-06) y propiedad del evento; sólo eventos en BORRADOR o PUBLICADO (otro estado → 409);
+        mismas validaciones de campos que la creación. Si el evento está PUBLICADO, notifica el cambio a Catálogo por broker
+        (tópico `panel.evento.catalogo.v1`, pendiente de acuerdo).
+      x-sprint: 2
+      tags:
+        - Organizador — Planificado S2/S3
+      operationId: updateEvento
+      security:
+        - cookieJwt: []
+      parameters:
+        - $ref: "#/components/parameters/IdEvento"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventoUpdate"
+            example:
+              hora_fin_evento: 19:00
+              cantidad_entradas: 350
+      responses:
+        "200":
+          description: Evento actualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evento"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+    delete:
+      summary: Eliminar un evento propio (HU-03 · Sprint 3)
+      description: |-
+        **Planificado — no implementado en Sprint 1.**
+        Reglas: valida sesión, rol y propiedad; permite eliminar eventos en BORRADOR; un evento PUBLICADO sólo si Entradas confirma que no hay entradas vendidas (a acordar con Entradas), si no → 409. Notifica a Catálogo y Notificaciones.
+      x-sprint: 3
+      tags:
+        - Organizador — Planificado S2/S3
+      operationId: deleteEvento
+      security:
+        - cookieJwt: []
+      parameters:
+        - $ref: "#/components/parameters/IdEvento"
+      responses:
+        "204":
+          description: Evento eliminado.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+  /api/v1/panel/eventos/mios/{id_evento}/publicar:
+    post:
+      summary: Publicar un evento propio (HU-04)
+      description: |-
+        Implementado en Sprint 1 (adelantado desde Sprint 2).
+        Reglas: valida sesión, rol y propiedad; sólo la transición BORRADOR → PUBLICADO (otro estado → 409 `INVALID_STATE_TRANSITION`); exige nombre, fecha, ubicación y `hora_fin_evento` (este último lo pide el contrato Check-in v1.2; faltantes → 400); registra el cambio en cambios_estado_evento. Desde ese momento el evento es visible en los endpoints de Catálogo. La notificación por broker (`panel.evento.catalogo.v1`, `panel.evento.notificaciones.v1`) llega con HU-07 en Sprint 3.
+      tags:
+        - Organizador — Eventos (HU-01, HU-04, HU-05, HU-06)
+      operationId: publicarEvento
+      security:
+        - cookieJwt: []
+      parameters:
+        - $ref: "#/components/parameters/IdEvento"
+      responses:
+        "200":
+          description: Evento publicado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evento"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+  /api/v1/organizador/eventos/proximos:
+    get:
+      summary: Próximos eventos
+      description: Retorna los eventos en estado PUBLICADO con fecha mayor o igual a hoy. Usado por Catálogo.
+      tags:
+        - Integración — Catálogo
+      operationId: proximosEventos
+      security: []
+      responses:
+        "200":
+          description: Lista de eventos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventoCatalogo"
+              example:
+                - id_evento: 66f1a0000000000000000002
+                  nombre_evento: Feria de Innovación TITEC
+                  descripcion: Muestra anual de proyectos de integración tecnológica.
+                  direccion_evento: Auditorio Principal
+                  fecha_evento: 2026-11-20
+                  hora_evento: 10:00
+                  hora_fin_evento: 18:00
+                  imagen: null
+                  categoria: academico
+                  precio: null
+                  tipo_entrada: GRATUITA
+                  estado_gestion: PUBLICADO
+                  estado_disponibilidad: DISPONIBLE
+  /api/v1/organizador/eventos/buscar:
+    post:
+      summary: Buscar eventos públicos
+      description: Busca eventos en estado PUBLICADO por texto (en nombre o descripción, sin distinguir mayúsculas; los caracteres especiales se tratan como texto literal), categoría y rango de fechas. Usado por Catálogo.
+      tags:
+        - Integración — Catálogo
+      operationId: buscarEventos
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BusquedaEventos"
+            example:
+              texto: Feria
+      responses:
+        "200":
+          description: Resultados de la búsqueda.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventoCatalogo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/v1/organizador/eventos/{id_evento}:
+    get:
+      summary: Obtener evento para Catálogo
+      description: Retorna los detalles de un evento en estado PUBLICADO para la vista de detalle del Catálogo.
+      tags:
+        - Integración — Catálogo
+      operationId: getEventoCatalogo
+      security: []
+      parameters:
+        - in: path
+          name: id_evento
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evento.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventoCatalogo"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v1/panel/eventos-disponibles:
+    get:
+      summary: Eventos disponibles
+      description: Retorna los eventos PUBLICADOS para que Promociones pueda aplicarles descuentos.
+      tags:
+        - Integración — Promociones
+      operationId: getEventosDisponibles
+      security: []
+      responses:
+        "200":
+          description: Eventos disponibles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventoPromocion"
+              example:
+                - id_evento: 66f1a0000000000000000002
+                  nombre_evento: Feria de Innovación TITEC
+                  fecha_evento: 2026-11-20
+  /api/v1/panel/eventos/{id_evento}:
+    get:
+      summary: Datos del evento para Entradas y Check-in
+      description: "Endpoint compartido por Entradas (contrato v1.2 §2.3) y Check-in (contrato v1.2 §3.4, consulta de respaldo). Requiere la cookie de sesión: Panel la valida con Auth y admite los roles `staff` y `organizador` (Check-in §2.4, confirmado por Auth). Sólo expone eventos PUBLICADO, FINALIZADO o CANCELADO; un BORRADOR responde 404. **Pendiente con Entradas:** su contrato no define autenticación; debe enviar una sesión con rol `staff` u `organizador` (issue INT-04)."
+      tags:
+        - Integración — Entradas
+        - Integración — Check-in
+      operationId: getEventoIntegracion
+      security:
+        - cookieJwt: []
+      parameters:
+        - in: path
+          name: id_evento
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Datos del evento.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventoIntegracion"
+              example:
+                id_evento: 66f1a0000000000000000004
+                id_usuario: 3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a
+                nombre_evento: Hackathon UV 2026
+                direccion_evento: Gimnasio Universitario
+                fecha_evento: 2026-08-20
+                hora_evento: 09:00
+                hora_fin_evento: 21:00
+                cantidad_entradas: 80
+                tipo_entrada: GRATUITA
+                estado_gestion: FINALIZADO
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "502":
+          $ref: "#/components/responses/AuthError"
+        "503":
+          $ref: "#/components/responses/AuthUnavailable"
+  /api/v1/panel/eventos/{id_evento}/cambios-estado:
+    get:
+      summary: Historial de cambios
+      description: Retorna la traza de cambios de estado del evento, usado por Notificaciones.
+      tags:
+        - Integración — Notificaciones
+      operationId: getCambiosEstado
+      security: []
+      parameters:
+        - in: path
+          name: id_evento
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de cambios de estado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CambioEstado"
+              example:
+                - tipo: evento_actualizado
+                  id_evento: 66f1a0000000000000000002
+                  nuevo_estado: PUBLICADO
+                  fecha_cambio: 2026-07-10T12:00:00.000Z
+                - tipo: evento_actualizado
+                  id_evento: 66f1a0000000000000000002
+                  nuevo_estado: BORRADOR
+                  fecha_cambio: 2026-07-01T12:00:00.000Z
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /health:
+    get:
+      summary: Healthcheck
+      description: Estado de salud del servicio.
+      tags:
+        - Sistema
+      operationId: health
+      security: []
+      responses:
+        "200":
+          description: Servicio OK.
+components:
+  securitySchemes:
+    cookieJwt:
+      type: apiKey
+      in: cookie
+      name: jwt
+      description: Cookie emitida por Auth; Panel la reenvía a GET /internal/validar-sesion sin decodificarla
+  schemas:
+    EstadoGestion:
+      type: string
+      enum:
+        - BORRADOR
+        - PUBLICADO
+        - FINALIZADO
+        - CANCELADO
+    EstadoDisponibilidad:
+      type: string
+      enum:
+        - DISPONIBLE
+        - AGOTADO
+        - PASADO
+    EventoCreate:
+      type: object
+      required:
+        - nombre_evento
+        - descripcion
+        - fecha_evento
+        - hora_evento
+        - direccion_evento
+      additionalProperties: false
+      properties:
+        nombre_evento:
+          type: string
+          minLength: 3
+          maxLength: 120
+        descripcion:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          description: Hora de inicio HH:mm (America/Santiago)
+        hora_fin_evento:
+          type:
+            - string
+            - "null"
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          description: Hora de término HH:mm (America/Santiago). Si es menor o igual que hora_evento, el evento termina al día siguiente (contrato Check-in v1.2 §3.2). Obligatoria para publicar.
+        direccion_evento:
+          type: string
+          minLength: 3
+          maxLength: 200
+        categoria:
+          type:
+            - string
+            - "null"
+          maxLength: 50
+        imagen:
+          type:
+            - string
+            - "null"
+          format: uri
+        cantidad_entradas:
+          type:
+            - integer
+            - "null"
+          minimum: 1
+          maximum: 100000
+        tipo_entrada:
+          type:
+            - string
+            - "null"
+          enum:
+            - GRATUITA
+            - PAGADA
+            - null
+        precio:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+          maximum: 10000000
+    Evento:
+      type: object
+      description: Evento completo, tal como lo devuelve el panel al organizador dueño.
+      required:
+        - id_evento
+        - id_organizador
+        - nombre_evento
+        - descripcion
+        - fecha_evento
+        - hora_evento
+        - hora_fin_evento
+        - direccion_evento
+        - categoria
+        - imagen
+        - cantidad_entradas
+        - tipo_entrada
+        - precio
+        - estado_gestion
+        - fecha_creacion
+        - fecha_actualizacion
+      properties:
+        id_evento:
+          type: string
+          pattern: ^[a-f0-9]{24}$
+          example: 66f1a0000000000000000002
+        id_organizador:
+          type: string
+          description: Referencia a Auth usuario.id_usuario
+        nombre_evento:
+          type: string
+          minLength: 3
+          maxLength: 120
+        descripcion:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+        hora_fin_evento:
+          type:
+            - string
+            - "null"
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          description: Hora de término HH:mm (America/Santiago). Si es menor o igual que hora_evento, el evento termina al día siguiente (contrato Check-in v1.2 §3.2). Obligatoria para publicar.
+        direccion_evento:
+          type: string
+          minLength: 3
+          maxLength: 200
+        categoria:
+          type:
+            - string
+            - "null"
+          maxLength: 50
+        imagen:
+          type:
+            - string
+            - "null"
+          format: uri
+        cantidad_entradas:
+          type:
+            - integer
+            - "null"
+          minimum: 1
+          maximum: 100000
+        tipo_entrada:
+          type:
+            - string
+            - "null"
+          enum:
+            - GRATUITA
+            - PAGADA
+            - null
+        precio:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+          maximum: 10000000
+        estado_gestion:
+          $ref: "#/components/schemas/EstadoGestion"
+        fecha_creacion:
+          type: string
+          format: date-time
+        fecha_actualizacion:
+          type: string
+          format: date-time
+    EventoResumen:
+      type: object
+      properties:
+        id_evento:
+          type: string
+        nombre_evento:
+          type: string
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+        direccion_evento:
+          type: string
+        estado_gestion:
+          $ref: "#/components/schemas/EstadoGestion"
+      required:
+        - id_evento
+        - nombre_evento
+        - fecha_evento
+        - hora_evento
+        - direccion_evento
+        - estado_gestion
+    ListaMisEventos:
+      type: object
+      properties:
+        eventos:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventoResumen"
+      required:
+        - eventos
+    EventoCatalogo:
+      type: object
+      properties:
+        id_evento:
+          type: string
+        nombre_evento:
+          type: string
+        descripcion:
+          type: string
+        direccion_evento:
+          type: string
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+        hora_fin_evento:
+          type:
+            - string
+            - "null"
+        imagen:
+          type:
+            - string
+            - "null"
+        categoria:
+          type:
+            - string
+            - "null"
+        precio:
+          type:
+            - integer
+            - "null"
+        tipo_entrada:
+          type:
+            - string
+            - "null"
+          enum:
+            - GRATUITA
+            - PAGADA
+            - null
+        estado_gestion:
+          $ref: "#/components/schemas/EstadoGestion"
+        estado_disponibilidad:
+          $ref: "#/components/schemas/EstadoDisponibilidad"
+      required:
+        - id_evento
+        - nombre_evento
+        - descripcion
+        - direccion_evento
+        - fecha_evento
+        - hora_evento
+        - hora_fin_evento
+        - imagen
+        - categoria
+        - precio
+        - tipo_entrada
+        - estado_gestion
+        - estado_disponibilidad
+    BusquedaEventos:
+      type: object
+      properties:
+        texto:
+          type: string
+        categoria:
+          type: string
+        fecha_desde:
+          type: string
+          format: date
+        fecha_hasta:
+          type: string
+          format: date
+      additionalProperties: false
+    CambioEstado:
+      type: object
+      properties:
+        tipo:
+          type: string
+          enum:
+            - evento_actualizado
+        id_evento:
+          type: string
+        nuevo_estado:
+          $ref: "#/components/schemas/EstadoGestion"
+        fecha_cambio:
+          type: string
+          format: date-time
+      required:
+        - tipo
+        - id_evento
+        - nuevo_estado
+        - fecha_cambio
+    EventoPromocion:
+      type: object
+      properties:
+        id_evento:
+          type: string
+        nombre_evento:
+          type: string
+        fecha_evento:
+          type: string
+          format: date
+      required:
+        - id_evento
+        - nombre_evento
+        - fecha_evento
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            codigo:
+              type: string
+            mensaje:
+              type: string
+            detalles:
+              type: array
+              items:
+                type: object
+                properties:
+                  campo:
+                    type: string
+                  mensaje:
+                    type: string
+          required:
+            - codigo
+            - mensaje
+      required:
+        - error
+    EventoUpdate:
+      type: object
+      description: HU-02 (S2). Mismos campos y reglas que EventoCreate, todos opcionales; al menos uno.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        nombre_evento:
+          type: string
+          minLength: 3
+          maxLength: 120
+        descripcion:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+        hora_fin_evento:
+          type:
+            - string
+            - "null"
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          description: Hora de término HH:mm (America/Santiago). Si es menor o igual que hora_evento, el evento termina al día siguiente (contrato Check-in v1.2 §3.2). Obligatoria para publicar.
+        direccion_evento:
+          type: string
+          minLength: 3
+          maxLength: 200
+        categoria:
+          type:
+            - string
+            - "null"
+          maxLength: 50
+        imagen:
+          type:
+            - string
+            - "null"
+          format: uri
+        cantidad_entradas:
+          type:
+            - integer
+            - "null"
+          minimum: 1
+          maximum: 100000
+        tipo_entrada:
+          type:
+            - string
+            - "null"
+          enum:
+            - GRATUITA
+            - PAGADA
+            - null
+        precio:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+          maximum: 10000000
+    EventoIntegracion:
+      type: object
+      description: Respuesta de GET /api/v1/panel/eventos/{id_evento}, compartida por Entradas (contrato v1.2 §2.2) y Check-in (contrato v1.2 §3.2). Cada consumidor ignora los campos que no usa.
+      required:
+        - id_evento
+        - id_usuario
+        - nombre_evento
+        - direccion_evento
+        - fecha_evento
+        - hora_evento
+        - hora_fin_evento
+        - cantidad_entradas
+        - tipo_entrada
+        - estado_gestion
+      properties:
+        id_evento:
+          type: string
+        id_usuario:
+          type: string
+          description: Organizador dueño (referencia a Auth)
+        nombre_evento:
+          type: string
+        direccion_evento:
+          type: string
+        fecha_evento:
+          type: string
+          format: date
+        hora_evento:
+          type: string
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+        hora_fin_evento:
+          type:
+            - string
+            - "null"
+          pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          description: Hora de término HH:mm (America/Santiago). Si es menor o igual que hora_evento, el evento termina al día siguiente (contrato Check-in v1.2 §3.2). Obligatoria para publicar.
+        cantidad_entradas:
+          type:
+            - integer
+            - "null"
+        tipo_entrada:
+          type:
+            - string
+            - "null"
+          enum:
+            - GRATUITA
+            - PAGADA
+            - null
+        estado_gestion:
+          type: string
+          enum:
+            - PUBLICADO
+            - FINALIZADO
+            - CANCELADO
+          description: Un BORRADOR no se expone (404).
+  responses:
+    BadRequest:
+      description: Datos inválidos o esquema incorrecto.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            VALIDATION_ERROR:
+              value:
+                error:
+                  codigo: VALIDATION_ERROR
+                  mensaje: Hay campos inválidos.
+                  detalles:
+                    - campo: nombre_evento
+                      mensaje: Este campo es obligatorio
+                    - campo: fecha_evento
+                      mensaje: La fecha del evento no puede ser anterior a hoy
+            INVALID_JSON:
+              value:
+                error:
+                  codigo: INVALID_JSON
+                  mensaje: El cuerpo de la solicitud no es JSON válido.
+    Unauthorized:
+      description: Sin sesión, token ausente o inválido.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            SIN_COOKIE:
+              value:
+                error:
+                  codigo: SESSION_INVALID
+                  mensaje: Debes iniciar sesión para continuar.
+            SESION_EXPIRADA:
+              value:
+                error:
+                  codigo: SESSION_INVALID
+                  mensaje: Sesión inválida o expirada. Inicia sesión nuevamente.
+    Forbidden:
+      description: Rol insuficiente o recurso no perteneciente al usuario.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            FORBIDDEN_ROLE:
+              value:
+                error:
+                  codigo: FORBIDDEN_ROLE
+                  mensaje: "Acceso restringido: sólo los organizadores pueden usar el panel."
+            EVENT_NOT_OWNED:
+              value:
+                error:
+                  codigo: EVENT_NOT_OWNED
+                  mensaje: No tienes permiso sobre este evento.
+            ACCESS_DENIED:
+              value:
+                error:
+                  codigo: ACCESS_DENIED
+                  mensaje: Auth denegó el acceso.
+            ROL_NO_AUTORIZADO:
+              value:
+                error:
+                  codigo: FORBIDDEN_ROLE
+                  mensaje: Rol no autorizado para consultar eventos.
+    NotFound:
+      description: Recurso no encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              codigo: EVENT_NOT_FOUND
+              mensaje: El evento no existe.
+    AuthError:
+      description: Auth respondió 500 o un cuerpo inesperado.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            AUTH_ERROR:
+              value:
+                error:
+                  codigo: AUTH_ERROR
+                  mensaje: No se pudo validar la sesión con Auth.
+    AuthUnavailable:
+      description: Auth no disponible, timeout excedido (fail-secure).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            AUTH_UNAVAILABLE:
+              value:
+                error:
+                  codigo: AUTH_UNAVAILABLE
+                  mensaje: El servicio de autenticación no está disponible. Intenta más tarde.
+    Conflict:
+      description: Conflicto de estado (p.ej. eliminar evento con entradas).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            ESTADO_NO_PERMITIDO:
+              value:
+                error:
+                  codigo: INVALID_STATE_TRANSITION
+                  mensaje: El evento no puede cambiar desde su estado actual.
+  parameters:
+    IdEvento:
+      in: path
+      name: id_evento
+      required: true
+      description: Identificador del evento (ObjectId, 24 hex).
+      schema:
+        type: string
+      example: 66f1a0000000000000000001

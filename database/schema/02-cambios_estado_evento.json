@@ -1,0 +1,71 @@
+{
+  "collection": "cambios_estado_evento",
+  "jsonSchema": {
+    "bsonType": "object",
+    "title": "cambios_estado_evento",
+    "description": "Historial de cambios de estado de gestión de cada evento. Origen de los datos 'nuevo estado' y 'fecha de cambio' que consume Notificaciones.",
+    "required": [
+      "_id",
+      "id_evento",
+      "estado_anterior",
+      "nuevo_estado",
+      "fecha_cambio",
+      "id_usuario_responsable"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "_id": {
+        "bsonType": "objectId",
+        "description": "[PK] Identificador único del cambio de estado."
+      },
+      "id_evento": {
+        "bsonType": "objectId",
+        "description": "[FK eventos._id] Evento cuyo estado cambió."
+      },
+      "estado_anterior": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "BORRADOR",
+          "PUBLICADO",
+          "FINALIZADO",
+          "CANCELADO",
+          null
+        ],
+        "description": "Estado previo al cambio. Nulo en el registro de creación."
+      },
+      "nuevo_estado": {
+        "bsonType": "string",
+        "enum": [
+          "BORRADOR",
+          "PUBLICADO",
+          "FINALIZADO",
+          "CANCELADO"
+        ],
+        "description": "Estado resultante del cambio."
+      },
+      "fecha_cambio": {
+        "bsonType": "date",
+        "description": "Fecha y hora en que ocurrió el cambio de estado."
+      },
+      "id_usuario_responsable": {
+        "bsonType": "string",
+        "minLength": 1,
+        "description": "[REF Auth.usuario.id_usuario] Usuario que ejecutó el cambio."
+      }
+    }
+  },
+  "indexes": [
+    {
+      "key": {
+        "id_evento": 1,
+        "fecha_cambio": -1
+      },
+      "options": {
+        "name": "ix_cambios_evento_fecha"
+      }
+    }
+  ]
+}

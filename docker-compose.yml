@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: mongo:8
+    ports: ["27017:27017"]
+    volumes: [mongo-data:/data/db]
+  mock-auth:
+    image: node:26-alpine
+    working_dir: /app
+    command: node server.mjs
+    volumes: ["./tools/mock-auth:/app:ro"]
+    ports: ["4001:4001"]
+volumes:
+  mongo-data:

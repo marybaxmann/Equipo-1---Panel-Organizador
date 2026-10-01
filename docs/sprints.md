@@ -1,5 +1,7 @@
 # Planificación de Historias de Usuario por Sprint
 
+> Resumen por sprint. El detalle (tareas, responsables y criterios de salida) está en [`plan-proyecto.md`](plan-proyecto.md). El sprint de cada HU sigue los milestones de GitHub.
+
 ## Sprint 1 — Gestión básica del organizador
 
 **Fechas:** 17/09/2026 – 30/09/2026  
@@ -12,6 +14,7 @@ Permitir que un organizador autenticado pueda crear y visualizar sus propios eve
 - HU-06 — Verificación de autorización del organizador
 - HU-01 — Crear un evento
 - HU-05 — Ver mis eventos
+- HU-04 — Publicar un evento *(adelantada desde el Sprint 2: publicar ya funciona; el mensaje al broker queda con HU-07, ver [`adr/0009`](adr/0009-hu04-adelantada-al-sprint-1.md))*
 
 ---
 
@@ -25,7 +28,7 @@ Permitir que el organizador modifique y publique sus eventos.
 
 ### Historias de Usuario
 - HU-02 — Editar un evento
-- HU-04 — Publicar un evento
+- HU-04 — Publicar un evento *(sólo queda dejar su notificación lista para el outbox, ADR-0003)*
 
 ---
 

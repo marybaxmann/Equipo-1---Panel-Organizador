@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+    branches: [main, sprint-1]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26.1.0
+          cache: 'npm'
+
+      - name: Cache MongoDB binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: ${{ runner.os }}-mongodb-memory-server
+          
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck backend
+        run: npm run typecheck -w backend
+        
+      - name: Run unit tests
+        run: npm test -w backend
+        
+      - name: Lint OpenAPI spec
+        run: npx @redocly/cli lint docs/api/openapi.yaml
+
+      - name: Lint consumed Auth spec
+        run: npx @redocly/cli lint docs/api/auth-consumido.yaml
+
+      - name: Build frontend
+        run: npm run build -w frontend

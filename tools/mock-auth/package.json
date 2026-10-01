@@ -1,0 +1,5 @@
+{
+  "name": "@panel/mock-auth",
+  "private": true,
+  "type": "module"
+}

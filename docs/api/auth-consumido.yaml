@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info:
+  title: Auth API — Consumido por Panel
+  version: 1.1.0
+  description: Servicio externo consumido por Panel (implementado en backend/src/modules/auth/auth.client.ts). Timeout 1 s, 1 reintento ante timeout/red/503, fail-secure → 503
+servers:
+  - url: http://localhost:4001
+paths:
+  /internal/validar-sesion:
+    get:
+      summary: Validar sesión interna
+      operationId: validarSesion
+      security: []
+      parameters:
+        - in: cookie
+          name: jwt
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Sesión válida.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valido:
+                    type: boolean
+                  usuario:
+                    type: object
+                    properties:
+                      id_usuario:
+                        type: string
+                      nombre_completo:
+                        type: string
+                      rut:
+                        type: string
+                      correo_electronico:
+                        type: string
+                      rol:
+                        type: string
+              example:
+                valido: true
+                usuario:
+                  id_usuario: 3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a
+                  nombre_completo: Juan Pérez
+                  rut: 12345678-9
+                  correo_electronico: juan@example.com
+                  rol: organizador
+        "401":
+          description: Sesión inválida o expirada.
+          content:
+            application/json:
+              example:
+                valido: false
+        "403":
+          description: Prohibido.
+        "500":
+          description: Error de servidor.
+        "503":
+          description: Servicio no disponible.

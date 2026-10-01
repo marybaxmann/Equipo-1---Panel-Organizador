@@ -1,0 +1,26 @@
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.badge-estado--borrador {
+  color: var(--estado-borrador-text);
+  background: var(--estado-borrador-bg);
+}
+.badge-estado--publicado {
+  color: var(--estado-publicado-text);
+  background: var(--estado-publicado-bg);
+}
+.badge-estado--finalizado {
+  color: var(--estado-finalizado-text);
+  background: var(--estado-finalizado-bg);
+}
+.badge-estado--cancelado {
+  color: var(--estado-cancelado-text);
+  background: var(--estado-cancelado-bg);
+}

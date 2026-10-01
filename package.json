@@ -1,0 +1,20 @@
+{
+  "name": "panel-organizador",
+  "private": true,
+  "type": "module",
+  "workspaces": ["backend", "frontend", "database", "tools/mock-auth"],
+  "scripts": {
+    "infra:up": "docker compose up -d",
+    "db:init": "npm run init -w database",
+    "db:seed": "npm run seed -w database",
+    "db:docs": "npm run docs -w database",
+    "dev:api": "npm run dev -w backend",
+    "dev:web": "npm run dev -w frontend",
+    "test": "npm test -w backend",
+    "test:integration": "newman run postman/panel-organizador.postman_collection.json -e postman/local.postman_environment.json -r cli,junit --reporter-junit-export docs/evidencias/pruebas-integracion/newman-junit.xml"
+  },
+  "devDependencies": { "newman": "^6" },
+  "overrides": {
+    "qs": "^6.16.0"
+  }
+}

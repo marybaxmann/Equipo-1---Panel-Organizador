@@ -1,0 +1,116 @@
+newman
+
+Panel Organizador - Integración (CA2)
+
+❏ 01 Auth (servicio consumido)
+↳ Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true
+  GET http://localhost:4001/internal/validar-sesion [200 OK, 358B, 61ms]
+  ✓  Status is 200
+  ✓  Es válido y organizador
+
+↳ Caso: Auth directo: token expirado / Resultado esperado: 401
+  GET http://localhost:4001/internal/validar-sesion [401 Unauthorized, 189B, 3ms]
+  ✓  Status is 401
+
+↳ Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID
+  GET http://localhost:3000/api/v1/panel/eventos/mios [401 Unauthorized, 439B, 17ms]
+  ✓  Status is 401
+  ✓  Error es SESSION_INVALID
+
+↳ Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE
+  GET http://localhost:3000/api/v1/panel/eventos/mios [403 Forbidden, 464B, 49ms]
+  ✓  Status is 403
+  ✓  Error es FORBIDDEN_ROLE
+
+↳ Caso: Panel con organizador (mis eventos) / Resultado esperado: 200
+  GET http://localhost:3000/api/v1/panel/eventos/mios [200 OK, 1.42kB, 23ms]
+  ✓  Status is 200
+  ✓  Eventos con estados válidos y los 4 estados presentes (Org A)
+
+❏ 02 Catálogo
+↳ Caso: Próximos / Resultado esperado: 200, no BORRADOR
+  GET http://localhost:3000/api/v1/organizador/eventos/proximos [200 OK, 1.6kB, 31ms]
+  ✓  Status is 200
+  ✓  Ningún evento en BORRADOR y trae estado_disponibilidad
+
+↳ Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO
+  POST http://localhost:3000/api/v1/organizador/eventos/buscar [200 OK, 764B, 22ms]
+  ✓  Status is 200
+  ✓  Todos PUBLICADO
+
+↳ Caso: Detalle de un BORRADOR / Resultado esperado: 404
+  GET http://localhost:3000/api/v1/organizador/eventos/66f1a0000000000000000001 [404 Not Found, 419B, 11ms]
+  ✓  Status is 404
+
+↳ Caso: Detalle de un PUBLICADO / Resultado esperado: 200
+  GET http://localhost:3000/api/v1/organizador/eventos/66f1a0000000000000000002 [200 OK, 762B, 6ms]
+  ✓  Status is 200
+  ✓  Tiene schema del contrato
+
+❏ 03 Entradas
+↳ Caso: Evento por id (sesión staff) / Resultado esperado: 200
+  GET http://localhost:3000/api/v1/panel/eventos/66f1a0000000000000000002 [200 OK, 676B, 9ms]
+  ✓  Status is 200
+  ✓  Tiene los campos de los contratos de Entradas y Check-in
+
+❏ 04 Check-in
+↳ Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento
+  GET http://localhost:3000/api/v1/panel/eventos/66f1a0000000000000000004 [200 OK, 670B, 7ms]
+  ✓  Status is 200
+  ✓  Tiene hora_fin_evento y estado_gestion
+
+↳ Caso: Consulta sin sesión / Resultado esperado: 401
+  GET http://localhost:3000/api/v1/panel/eventos/66f1a0000000000000000004 [401 Unauthorized, 439B, 4ms]
+  ✓  Status is 401
+
+↳ Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE
+  GET http://localhost:3000/api/v1/panel/eventos/66f1a0000000000000000004 [403 Forbidden, 439B, 5ms]
+  ✓  Status is 403
+  ✓  Error es FORBIDDEN_ROLE
+
+❏ 05 Notificaciones
+↳ Caso: Cambios de estado / Resultado esperado: 200
+  GET http://localhost:3000/api/v1/panel/eventos/66f1a0000000000000000002/cambios-estado [200 OK, 619B, 8ms]
+  ✓  Status is 200
+  ✓  tipo es evento_actualizado y está ordenado
+
+❏ 06 Promociones
+↳ Caso: Eventos disponibles / Resultado esperado: 200
+  GET http://localhost:3000/api/v1/panel/eventos-disponibles [200 OK, 694B, 6ms]
+  ✓  Status is 200
+  ✓  Sólo IDs de PUBLICADO
+
+❏ 07 Flujo HU-01->HU-05
+↳ Caso: Crear evento / Resultado esperado: 201
+  POST http://localhost:3000/api/v1/panel/eventos [201 Created, 813B, 24ms]
+  ✓  Status is 201
+  ✓  Guarda id_evento
+
+↳ Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado
+  GET http://localhost:3000/api/v1/organizador/eventos/proximos [200 OK, 1.6kB, 6ms]
+  ✓  El BORRADOR recién creado no aparece en Catálogo
+
+↳ Caso: Org B pide el evento de A / Resultado esperado: 403
+  GET http://localhost:3000/api/v1/panel/eventos/mios/6abd9c7bb325081863175eb8 [403 Forbidden, 435B, 7ms]
+  ✓  Status is 403
+  ✓  Error es EVENT_NOT_OWNED
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               18 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               18 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                0 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               32 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 613ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 6.93kB (approx)                          │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 16ms [min: 3ms, max: 61ms, s.d.: 15ms] │
+└───────────────────────────────────────────────────────────────┘

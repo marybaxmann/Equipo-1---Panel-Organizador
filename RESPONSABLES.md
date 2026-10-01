@@ -5,7 +5,7 @@
 | Mariajosé Baxmann | Scrum Master | `marybaxmann` | GE1–GE4 |
 | Joaquín Andrés Martínez | Backend | `Joaquin-Martinez-Aravena` | BE1–BE3 |
 | Alonso Alejandro Vera | Frontend | `Alonso046` | UI1–UI3 |
-| Christopher Okinggton | QA / Base de Datos | `[usuario]` | BD1–BD4 |
+| Christopher Okinggton | QA / Base de Datos | `chriss-18` | BD1–BD4 |
 | Etienne Araya | Integración | `maikfeouWu` | CA1–CA2 |
 
 ## Responsables por historia de usuario

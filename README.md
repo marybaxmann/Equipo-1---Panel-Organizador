@@ -58,6 +58,16 @@ En local, Auth está simulado (`tools/mock-auth`). El login simulado del fronten
 | Sesión expirada | `token-expirado` | Sesión inválida → vuelve al login (401) |
 | Auth lento | `token-lento` | Auth no responde a tiempo → fail-secure (503) |
 
+## Responsables por rol (rúbrica Evaluación 1)
+
+| Rol | Ítems de la rúbrica | Responsable(s) |
+|---|---|---|
+| Back End | BE1, BE2, BE3 | Joaquín Andrés Martínez |
+| Base de Datos | BD1, BD2, BD3, BD4 | Christopher Okinggton |
+| UI/UX (front end) | UI1, UI2, UI3 | Alonso Alejandro Vera |
+| Gestión | GE1, GE2, GE3, GE4 | Mariajosé Baxmann |
+| Calidad | CA1, CA2 | Etienne Araya |
+
 ## Dónde está cada evidencia (rúbrica TITEC · Evaluación 1)
 
 | Ítem | Qué evalúa | Evidencia |

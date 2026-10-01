@@ -1,6 +1,6 @@
 # Contrato de interfaz: Panel Organizador ↔ Notificaciones
 
-**Versión:** 1.1  
+**Versión:** 1.2  
 **Proveedor:** Panel Organizador  
 **Consumidor:** Notificaciones
 
@@ -62,6 +62,7 @@ Mensaje:
 {
   "tipo": "evento_actualizado",
   "id_evento": "evt-001",
+  "id_usuario": "usr-001",
   "nuevo_estado": "CANCELADO",
   "fecha_cambio": "2026-09-13T20:00:00"
 }
@@ -79,7 +80,8 @@ CANCELADO
 **Pendiente de confirmación:**
 
 - tópico `panel.evento.notificaciones.v1`;
-- necesidad del campo `tipo`.
+- necesidad del campo `tipo`;
+- incorporación de `id_usuario` del organizador (ver 3.3).
 
 ---
 
@@ -103,6 +105,7 @@ Cuando ocurra una reprogramación, Panel propone enviar:
 {
   "tipo": "evento_actualizado",
   "id_evento": "evt-001",
+  "id_usuario": "usr-001",
   "tipo_cambio": "REPROGRAMADO",
   "nuevo_estado": "PUBLICADO",
   "fecha_evento": "2026-10-20",
@@ -123,34 +126,51 @@ Donde:
 
 ---
 
-### 3.3 Resultado Notificaciones → Panel
+### 3.3 Resultado del envío
 
 Notificaciones propone informar posteriormente el resultado del envío.
 
-**Panel propone:**
+**Panel propone:** que Notificaciones informe el resultado **directamente al organizador**, mediante su propio sistema de notificaciones, en lugar de enviarlo a Panel.
 
-```json
-{
-  "id_evento": "evt-001",
-  "estado_envio": "EXITOSO",
-  "usuarios_notificados": 155,
-  "usuarios_faltantes": 0,
-  "fecha_envio": "2026-09-13T20:05:00",
-  "mensaje": "Envío realizado correctamente"
-}
+```text
+Panel Organizador → Broker → Notificaciones → Asistentes con entradas activas
+                                            → Organizador del evento (resultado del envío)
 ```
+
+Para ello, Panel incluye en el mensaje (3.1 y 3.2) el campo:
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `id_evento` | string | Evento asociado al resultado. |
-| `estado_envio` | string | Resultado general: `EXITOSO` o `ERROR`. |
-| `usuarios_notificados` | integer | Usuarios notificados correctamente. |
-| `usuarios_faltantes` | integer | Usuarios que no pudieron ser notificados. |
-| `fecha_envio` | datetime | Finalización del proceso. |
-| `mensaje` | string | Información adicional. |
+| `id_usuario` | string | Identificador del organizador dueño del evento, según Auth. |
 
-No se utiliza `PARCIAL`, ya que cualquier envío incompleto puede identificarse mediante `usuarios_faltantes`.
+Ejemplo de notificación al organizador (definida por Notificaciones):
 
-**Pendiente de confirmación:** definir si esta comunicación se enviará a Panel y mediante qué mecanismo o tópico.
+```text
+"Se notificó a 155 asistentes del cambio en tu evento Feria de Innovación TITEC."
+```
+
+De esta forma:
+
+- el resultado del envío permanece bajo responsabilidad de Notificaciones (2.1);
+- no se requiere una comunicación Notificaciones → Panel;
+- Panel no almacena ni muestra resultados de envío;
+- si Notificaciones requiere el correo del organizador, lo obtiene desde Auth a partir de `id_usuario`. Panel no comparte correos ni datos personales.
+
+**Pendiente de confirmación por Notificaciones:**
+
+- aceptar que el resultado se informe directamente al organizador;
+- confirmar el canal: notificación en la aplicación, correo o ambos.
 
 ---
+
+## 4. Pendientes de confirmación
+
+Notificaciones debe confirmar:
+
+1. Tópico `panel.evento.notificaciones.v1`.
+2. Necesidad del campo `tipo`.
+3. Tratamiento de `REPROGRAMADO` como `tipo_cambio` y datos enviados en una reprogramación.
+4. Incorporación de `id_usuario` del organizador en el mensaje.
+5. Resultado del envío informado directamente al organizador y canal utilizado.
+6. Política de ACK y reintentos.
+7. Contactos responsables de ambos equipos.

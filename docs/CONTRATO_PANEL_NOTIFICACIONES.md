@@ -1,16 +1,17 @@
 # Contrato de interfaz: Panel Organizador ↔ Notificaciones
 
-**Versión:** 1.2  
+**Versión:** 1.3  
 **Proveedor:** Panel Organizador  
-**Consumidor:** Notificaciones
+**Consumidor:** Notificaciones  
+**Basado en:** Contrato Panel ↔ Notificaciones v1.2 (Panel) y contrato Panel ↔ Notificaciones v1.0 (Notificaciones).
 
 ---
 
 ## 1. Propósito
 
-Definir la comunicación entre **Panel Organizador** y **Notificaciones** cuando una modificación relevante de un evento deba ser informada a los usuarios afectados.
+Definir la comunicación entre **Panel Organizador** y **Notificaciones** cuando un cambio en un evento deba ser informado a los usuarios con entradas activas.
 
-Panel comunica el cambio del evento. Notificaciones identifica a los usuarios correspondientes y gestiona el envío de las notificaciones.
+Panel comunica el cambio del evento. Notificaciones identifica a los usuarios afectados, envía las notificaciones e informa el resultado al organizador.
 
 ---
 
@@ -20,157 +21,145 @@ Panel comunica el cambio del evento. Notificaciones identifica a los usuarios co
 
 | Información | Responsable |
 |---|---|
-| Datos y estado de gestión del evento | Panel Organizador |
-| Identificación de usuarios afectados | Notificaciones |
+| Datos y estado del evento | Panel Organizador |
+| Publicación del mensaje en el broker | Panel Organizador |
+| Identificación de usuarios con entradas activas | Notificaciones |
 | Generación y envío de notificaciones | Notificaciones |
-| Resultado del proceso de envío | Notificaciones |
+| Resultado del envío e informe al organizador | Notificaciones |
 
-Panel no envía listas de asistentes. Notificaciones obtiene los usuarios que poseen entradas activas a partir del `id_evento`.
+Panel no envía listas de asistentes. Notificaciones obtiene los usuarios con entradas activas a partir del `id_evento`.
 
 ### 2.2 Comunicación
-
-Ambos equipos contemplan comunicación asíncrona mediante broker:
 
 ```text
 Panel Organizador → Broker → Notificaciones
 ```
 
-Panel envía:
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `tipo` | string | Tipo de mensaje. Actualmente `evento_actualizado`. |
-| `id_evento` | string | Identificador del evento afectado. |
-| `nuevo_estado` | string | Estado de gestión actual del evento. |
-| `fecha_cambio` | datetime | Fecha y hora en que ocurrió el cambio. |
-
----
-
-## 3. Propuestas de Panel pendientes de confirmación
-
-### 3.1 Mensaje Panel → Notificaciones
-
-**Panel propone** utilizar:
+**Exchange:**
 
 ```text
 panel.evento.notificaciones.v1
 ```
 
-Mensaje:
+Panel publica dos tipos de mensaje: `evento_actualizado` y `evento_reprogramado`.
+
+### 2.3 Mensaje `evento_actualizado`
+
+Se publica cuando cambia el estado del evento.
+
+| Campo | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id_evento` | string | Sí | Identificador del evento modificado. |
+| `id_usuario` | string | Sí | Identificador del usuario que realizó el cambio. |
+| `nuevo_estado` | string | Sí | Nuevo estado del evento: `BORRADOR`, `PUBLICADO`, `FINALIZADO` o `CANCELADO`. |
 
 ```json
 {
-  "tipo": "evento_actualizado",
   "id_evento": "evt-001",
   "id_usuario": "usr-001",
-  "nuevo_estado": "CANCELADO",
-  "fecha_cambio": "2026-09-13T20:00:00"
+  "nuevo_estado": "CANCELADO"
 }
 ```
 
-Panel mantiene como estados de gestión:
+### 2.4 Mensaje `evento_reprogramado`
 
-```text
-BORRADOR
-PUBLICADO
-FINALIZADO
-CANCELADO
-```
+Se publica cuando cambia la fecha u hora del evento.
 
-**Pendiente de confirmación:**
-
-- tópico `panel.evento.notificaciones.v1`;
-- necesidad del campo `tipo`;
-- incorporación de `id_usuario` del organizador (ver 3.3).
-
----
-
-### 3.2 Reprogramación
-
-Notificaciones propone `REPROGRAMADO`.
-
-**Panel propone:** tratar `REPROGRAMADO` como un **tipo de cambio del evento**, no como un nuevo valor de `estado_gestion`.
-
-El evento puede continuar, por ejemplo:
-
-```text
-estado_gestion = PUBLICADO
-```
-
-aunque haya sido reprogramado.
-
-Cuando ocurra una reprogramación, Panel propone enviar:
+| Campo | Tipo | Obligatorio | Descripción |
+|---|---|:---:|---|
+| `id_evento` | string | Sí | Identificador del evento modificado. |
+| `id_usuario` | string | Sí | Identificador del usuario que realizó el cambio. |
+| `nuevo_estado` | string | Sí | Estado actual del evento. |
+| `fecha_cambio` | timestamptz | Sí | Nueva fecha del evento. |
+| `hora_cambio` | timestamptz | Sí | Nueva hora del evento. |
 
 ```json
 {
-  "tipo": "evento_actualizado",
   "id_evento": "evt-001",
   "id_usuario": "usr-001",
-  "tipo_cambio": "REPROGRAMADO",
   "nuevo_estado": "PUBLICADO",
-  "fecha_evento": "2026-10-20",
-  "hora_evento": "21:00",
-  "fecha_cambio": "2026-09-13T20:00:00"
+  "fecha_cambio": "2026-09-13",
+  "hora_cambio": "00:00:00"
 }
 ```
 
-Donde:
+> **Nota:** en este mensaje, `fecha_cambio` y `hora_cambio` corresponden a la **nueva fecha y hora del evento**. Equivalen a `fecha_evento` y `hora_evento` en los demás contratos de Panel.
 
-| Campo | Uso |
-|---|---|
-| `tipo_cambio` | Indica que el evento fue reprogramado. |
-| `fecha_evento` | Nueva fecha del evento. |
-| `hora_evento` | Nueva hora del evento. |
+Los estados se envían en **mayúsculas**, igual que en el resto de los contratos de Panel.
 
-**Pendiente de confirmación por Notificaciones:** aceptar esta interpretación y los datos propuestos para una reprogramación.
+### 2.5 Resultado del envío
 
----
+Notificaciones informa el resultado **directamente al organizador**, mediante su propio sistema de notificaciones. No existe comunicación Notificaciones → Panel.
 
-### 3.3 Resultado del envío
-
-Notificaciones propone informar posteriormente el resultado del envío.
-
-**Panel propone:** que Notificaciones informe el resultado **directamente al organizador**, mediante su propio sistema de notificaciones, en lugar de enviarlo a Panel.
-
-```text
-Panel Organizador → Broker → Notificaciones → Asistentes con entradas activas
-                                            → Organizador del evento (resultado del envío)
-```
-
-Para ello, Panel incluye en el mensaje (3.1 y 3.2) el campo:
+Campos utilizados por Notificaciones para el resultado:
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `id_usuario` | string | Identificador del organizador dueño del evento, según Auth. |
+| `id_evento` | string | Evento afectado. |
+| `id_usuario` | string | Usuario que realizó el cambio. |
+| `nuevo_estado` | string | Resultado del envío: `exitoso` o `error`. |
+| `usuarios_notificados` | integer | Usuarios notificados correctamente. |
+| `usuarios_faltantes` | integer | Usuarios que no pudieron ser notificados. |
+| `fecha_envio` | timestamptz | Fecha y hora de finalización del envío. |
 
-Ejemplo de notificación al organizador (definida por Notificaciones):
+Ejemplo de notificación al organizador:
 
 ```text
-"Se notificó a 155 asistentes del cambio en tu evento Feria de Innovación TITEC."
+Evento actualizado
+El estado del evento ha sido actualizado correctamente.
+Usuarios notificados: 150
+Usuarios no notificados: 0
+Fecha de envío: 1 de octubre de 2026, 13:30
 ```
 
-De esta forma:
+### 2.6 Errores y reintentos
 
-- el resultado del envío permanece bajo responsabilidad de Notificaciones (2.1);
-- no se requiere una comunicación Notificaciones → Panel;
-- Panel no almacena ni muestra resultados de envío;
-- si Notificaciones requiere el correo del organizador, lo obtiene desde Auth a partir de `id_usuario`. Panel no comparte correos ni datos personales.
+Al ser comunicación asíncrona, no se utilizan códigos HTTP.
 
-**Pendiente de confirmación por Notificaciones:**
+Los errores de procesamiento o envío son registrados por Notificaciones, con **hasta 3 intentos** antes de registrar el error.
 
-- aceptar que el resultado se informe directamente al organizador;
-- confirmar el canal: notificación en la aplicación, correo o ambos.
+### 2.7 Tiempo de respuesta (SLA)
+
+| Responsable | Compromiso |
+|---|---|
+| Panel Organizador | Publica el mensaje en el broker en **≤ 5 segundos** después de guardar correctamente el cambio del evento. |
+| Notificaciones | El procesamiento del mensaje, el envío a los usuarios y el informe al organizador dependen de Notificaciones. |
+
+Panel no es responsable del tiempo de envío de las notificaciones.
 
 ---
 
-## 4. Pendientes de confirmación
+## 3. Reglas de uso (lado consumidor)
 
-Notificaciones debe confirmar:
+1. Notificaciones permanece suscrito a `panel.evento.notificaciones.v1`.
+2. Al recibir un mensaje, identifica el evento mediante `id_evento` y obtiene los usuarios con entradas activas.
+3. Genera y almacena una notificación para cada usuario afectado.
+4. Envía las notificaciones, con hasta 3 intentos en caso de error.
+5. Informa el resultado al organizador mediante su sistema de notificaciones.
 
-1. Tópico `panel.evento.notificaciones.v1`.
-2. Necesidad del campo `tipo`.
-3. Tratamiento de `REPROGRAMADO` como `tipo_cambio` y datos enviados en una reprogramación.
-4. Incorporación de `id_usuario` del organizador en el mensaje.
-5. Resultado del envío informado directamente al organizador y canal utilizado.
-6. Política de ACK y reintentos.
-7. Contactos responsables de ambos equipos.
+---
+
+## 4. Versionado y cambios
+
+- Cualquier cambio en la estructura de los mensajes debe ser versionado y comunicado con anticipación.
+- Un cambio incompatible genera un nuevo exchange (por ejemplo, `panel.evento.notificaciones.v2`).
+- Los cambios incompatibles requieren un período de transición acordado entre ambos equipos.
+
+### Historial
+
+| Versión | Cambio |
+|---|---|
+| 1.0 | Propuesta inicial de Notificaciones. |
+| 1.1 | Propuesta de Panel: mensaje con `tipo` y `tipo_cambio`, resultado Notificaciones → Panel pendiente. |
+| 1.2 | Propuesta de Panel: incluir `id_usuario` y que el resultado se informe directamente al organizador. |
+| 1.3 | Se aceptan los atributos de Notificaciones: mensajes `evento_actualizado` y `evento_reprogramado`, sin campo `tipo`; resultado informado al organizador; SLA separado por equipo. |
+
+---
+
+## 5. Dueños del contrato
+
+| Rol | Equipo | Contacto |
+|---|---|---|
+| Dueño del contrato | Panel Organizador | Mariajosé Baxmann |
+| Consumidor principal | Notificaciones | Gabriela Herrera |
+

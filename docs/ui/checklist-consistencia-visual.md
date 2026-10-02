@@ -21,7 +21,7 @@ Implementación: [`frontend/src/styles/tokens.css`](../../frontend/src/styles/to
 | 12 | Espaciado y estructura | Sistema de espaciado (múltiplos de 4px u 8px) | Base 8px — escala 4 / 8 / 16 / 24 / 32 / 48 |
 | 13 | Espaciado y estructura | Ancho máximo de contenido / grid y gutters | 1200px máx., grid de 12 columnas, gutters de 24px |
 | 14 | Espaciado y estructura | Breakpoints responsive (móvil, tablet, escritorio) | Móvil <640px · Tablet 641–1024px · Escritorio >1024px |
-| 15 | Componentes compartidos | Header: elementos, orden, alto exacto (px), sticky o no | Header TicketAzul: logo izq. + Inicio/Mis eventos/Promociones/Configuración/Mi cuenta; buscar + carrito + avatar der. Alto 64px, sticky. |
+| 15 | Componentes compartidos | Header: elementos, orden, alto exacto (px), sticky o no | Ver [§C](#c-header-y-footer-acuerdos-header-footer). TicketAzul, 64px, sticky. Logo ticket + "TICKET-U" izq.; Inicio/Mis eventos/Promociones/Configuración/Mi cuenta; BUSCAR + campana + avatar der. |
 | 16 | Componentes compartidos | Botones: radio de esquina, alto, estados, variantes | Fondo #2F4374, texto blanco, alto 40px, radio 8px; hover 10% más oscuro; disabled 40% opacidad |
 | 17 | Componentes compartidos | Inputs y formularios: alto, radio, estilo de foco y error | Alto 40px, radio 8px, borde #D8DFF0; foco: borde #2F4374 + halo 2px; error: borde #B3261E + texto de ayuda debajo |
 | 18 | Componentes compartidos | Badges/pills de estado: forma, tamaño, color por significado | Activa: texto #1A6640 / fondo #E2F4EA · Inactiva: texto #6B7A9A / fondo #F0F0F5. Forma: pill (radio 999px) |
@@ -46,3 +46,18 @@ Implementación: [`frontend/src/styles/tokens.css`](../../frontend/src/styles/to
 | 32 | Formularios | Mensajes de error/validación (texto exacto, color, ubicación) | Texto en #B3261E, 12px, debajo del campo, con ícono de alerta |
 | 33 | Textos de UI | Textos exactos de confirmación (ej. '¿Eliminar este evento?') | “¿Eliminar este evento? Esta acción no se puede deshacer.” / “¿Publicar este evento? Será visible en el catálogo público.” |
 | 34 | Estados de UI | Comportamiento de botones deshabilitados (ej. 'Editar' en eventos cancelados) | Opacidad 40%, cursor not-allowed, sin cambios al pasar el mouse |
+
+## C. Header y footer (Acuerdos-Header-Footer)
+
+Fuente: *Acuerdos-Header-Footer* (desarrolladores front-end de Ticket-U, enviado por Gabriel González). Reemplaza la fila 15 anterior: el carrito sale y entra la campana de notificaciones. Cambios futuros: líder front-end y Project Manager.
+
+| # | Elemento | Valor acordado |
+|---|---|---|
+| 35 | Header: posición y alto | Sticky, 64px en escritorio. Fondo #2F4374, texto e íconos #FFFFFF |
+| 36 | Header: logo | Ícono de ticket sin fondo, trazo blanco 2px, sin separador + "TICKET-U" Poppins 24px 700 con letter-spacing amplio |
+| 37 | Header: navegación | Inicio, Mis eventos, Promociones, Configuración, Mi cuenta. Poppins 14px 600, gap 16px. Activa: fondo blanco 18% redondeado |
+| 38 | Header: BUSCAR | Transparente, borde blanco 1.5px, radio 6px, lupa 20px trazo 2px + "BUSCAR" 10px negrita. Lleva al listado principal y enfoca su buscador |
+| 39 | Header: campana y avatar | Círculo blanco de 36px (campana #2F4374, 20px, trazo 2px) y de 32px (iniciales #2F4374, 12px, 600). Área táctil 44×44px |
+| 40 | Header: <1024px | La navegación pasa a una segunda fila con scroll horizontal (barra oculta) y el mismo fondo |
+| 41 | Footer | Al final del flujo, margin-top 3rem, padding 1.5rem 2rem, fondo #2F4374, Inter 14px blanco. Centrado, gap 24px: "TICKET-U © 2026" (600) · "Centro de Ayuda" · "Términos de Servicio", separados por borde izquierdo blanco de 1px |
+| 42 | Footer: <640px | Apilado vertical, centrado y sin separadores |

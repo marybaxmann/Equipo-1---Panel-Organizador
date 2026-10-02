@@ -15,51 +15,38 @@
 .header__marca {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   flex-shrink: 0;
-}
-
-.header__logo-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: var(--fw-bold);
-  font-size: 14px;
 }
 
 .header__logo {
   font-family: var(--font-display);
   font-weight: var(--fw-bold);
-  font-size: 18px;
-  letter-spacing: 0.01em;
+  font-size: 24px;
+  letter-spacing: 0.12em;
 }
 
 .header__nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-3);
   flex: 1;
-  padding-left: var(--space-5);
 }
 
 .header__nav-item {
+  font-family: var(--font-display);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--color-text-on-accent);
   text-decoration: none;
+  white-space: nowrap;
   padding: 8px 14px;
   border-radius: var(--radius-control);
   cursor: pointer;
 }
 
 .header__nav-item--activo {
-  color: var(--color-text-on-accent);
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .header__nav-item--disabled {
@@ -80,53 +67,108 @@
   gap: 6px;
   height: 36px;
   padding: 0 var(--space-3);
-  border-radius: var(--radius-control);
-  border: none;
-  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid var(--color-text-on-accent);
+  border-radius: 6px;
+  background: transparent;
   color: var(--color-text-on-accent);
-  font-size: 13px;
-  font-weight: var(--fw-semibold);
+  font-size: 10px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
   cursor: pointer;
 }
 .header__buscar:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.header__icono {
+/* Área táctil de 44x44 (checklist fila 25); el círculo visible va adentro */
+.header__circulo-tactil {
   width: var(--min-touch-target);
   height: var(--min-touch-target);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  padding: 0;
   border: none;
-  border-radius: var(--radius-control);
-  color: var(--color-text-on-accent);
-  font-size: 16px;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
 }
-.header__icono:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-}
-.header__icono:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
 
+.header__campana,
 .header__avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: var(--fw-bold);
+  border-radius: 50%;
+  background: var(--color-text-on-accent);
+  color: var(--color-accent);
 }
 
-@media (max-width: 780px) {
+.header__campana {
+  width: 36px;
+  height: 36px;
+}
+
+.header__avatar {
+  width: 32px;
+  height: 32px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+}
+
+/* < 1024px: la navegación baja a una segunda fila con scroll horizontal (barra oculta) */
+@media (max-width: 1023px) {
+  .header {
+    height: auto;
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .header__marca,
+  .header__acciones {
+    height: var(--header-height);
+  }
+
   .header__nav {
+    order: 3;
+    flex-basis: 100%;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    scrollbar-width: none;
+  }
+  .header__nav::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* < 640px: no caben logo de 24px + BUSCAR + 2 íconos en una fila; se achica el logo y BUSCAR queda sólo con la lupa */
+@media (max-width: 639px) {
+  .header {
+    gap: var(--space-2);
+    padding: 0 var(--space-3);
+  }
+
+  .header__logo {
+    font-size: 20px;
+  }
+
+  .header__acciones {
+    gap: var(--space-1);
+  }
+
+  .header__buscar {
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .header__buscar-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }

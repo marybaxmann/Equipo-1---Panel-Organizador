@@ -1,8 +1,11 @@
-import { NavLink } from "react-router-dom";
-import { Search, ShoppingBag } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Bell, Search, Ticket } from "lucide-react";
 import "./Header.css";
 
-export default function Header({ nombreUsuario, onBuscarClick }) {
+/** Header común de Ticket-U, según Acuerdos-Header-Footer (equipo front-end). */
+export default function Header({ nombreUsuario }) {
+  const navigate = useNavigate();
+
   const iniciales = nombreUsuario
     ? nombreUsuario
         .split(" ")
@@ -12,6 +15,11 @@ export default function Header({ nombreUsuario, onBuscarClick }) {
         .toUpperCase()
     : "OR";
 
+  // Atajo: lleva al listado principal y pone el cursor en su buscador
+  const handleBuscar = () => {
+    navigate("/mis-eventos", { state: { enfocarBuscador: Date.now() } });
+  };
+
   const handleLogout = () => {
     document.cookie = "jwt=; path=/; max-age=0";
     window.location.assign("/login");
@@ -20,8 +28,8 @@ export default function Header({ nombreUsuario, onBuscarClick }) {
   return (
     <header className="header">
       <div className="header__marca">
-        <div className="header__logo-mark">U</div>
-        <span className="header__logo">Ticket-U</span>
+        <Ticket size={28} strokeWidth={2} aria-hidden="true" />
+        <span className="header__logo">TICKET-U</span>
       </div>
 
       <nav className="header__nav" aria-label="Navegación principal">
@@ -33,14 +41,17 @@ export default function Header({ nombreUsuario, onBuscarClick }) {
       </nav>
 
       <div className="header__acciones">
-        <button className="header__buscar" type="button" onClick={onBuscarClick}>
-          <Search size={20} strokeWidth={2} /> Buscar
+        <button className="header__buscar" type="button" onClick={handleBuscar}>
+          <Search size={20} strokeWidth={2} aria-hidden="true" />
+          <span className="header__buscar-texto">BUSCAR</span>
         </button>
-        <button className="header__icono" aria-label="Carrito" title="No aplica a este módulo" type="button" disabled>
-          <ShoppingBag size={20} strokeWidth={2} />
+        <button className="header__circulo-tactil" type="button" aria-label="Notificaciones" title="Notificaciones (módulo de otro equipo)">
+          <span className="header__campana">
+            <Bell size={20} strokeWidth={2} aria-hidden="true" />
+          </span>
         </button>
-        <button className="header__avatar" title="Cerrar sesión" aria-label="Cerrar sesión" onClick={handleLogout} style={{ border: "none", cursor: "pointer" }}>
-          {iniciales}
+        <button className="header__circulo-tactil" type="button" aria-label="Cerrar sesión" title="Cerrar sesión" onClick={handleLogout}>
+          <span className="header__avatar">{iniciales}</span>
         </button>
       </div>
     </header>

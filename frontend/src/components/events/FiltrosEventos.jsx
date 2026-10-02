@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import "./FiltrosEventos.css";
 
 const OPCIONES = [
@@ -8,7 +9,14 @@ const OPCIONES = [
   { valor: "CANCELADO", etiqueta: "Cancelado" },
 ];
 
-export default function FiltrosEventos({ eventos, filtroActivo, onCambiarFiltro, busqueda, onCambiarBusqueda }) {
+export default function FiltrosEventos({ eventos, filtroActivo, onCambiarFiltro, busqueda, onCambiarBusqueda, enfocarBuscador }) {
+  const buscadorRef = useRef(null);
+
+  // Botón "Buscar" del header: pone el cursor en el buscador
+  useEffect(() => {
+    if (enfocarBuscador) buscadorRef.current?.focus();
+  }, [enfocarBuscador]);
+
   const contarPorEstado = (estado) =>
     estado === "TODOS" ? eventos.length : eventos.filter((e) => e.estado_gestion === estado).length;
 
@@ -31,6 +39,7 @@ export default function FiltrosEventos({ eventos, filtroActivo, onCambiarFiltro,
       <label className="buscador">
         <span className="visually-hidden">Buscar evento</span>
         <input
+          ref={buscadorRef}
           type="search"
           placeholder="Buscar evento..."
           value={busqueda}

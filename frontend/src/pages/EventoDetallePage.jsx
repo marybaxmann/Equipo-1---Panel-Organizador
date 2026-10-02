@@ -46,7 +46,7 @@ export default function EventoDetallePage() {
     return (
       <div style={{ padding: "40px", textAlign: "center" }}>
         <h2>Error {error.type === "403" ? "403" : error.type === "404" ? "404" : ""}</h2>
-        <div style={{ color: "var(--color-peligro-text)", marginBottom: "20px" }}>{error.msg}</div>
+        <div style={{ color: "var(--color-danger-text)", marginBottom: "20px" }}>{error.msg}</div>
         <Boton variante="primario" onClick={() => navigate("/mis-eventos")}>Volver a Mis eventos</Boton>
       </div>
     );
@@ -54,22 +54,22 @@ export default function EventoDetallePage() {
   if (!evento) return null;
 
   return (
-    <div style={{ padding: "32px", maxWidth: "900px", margin: "0 auto", fontFamily: "var(--fuente-principal)" }}>
+    <div style={{ padding: "32px", maxWidth: "900px", margin: "0 auto", fontFamily: "var(--font-body)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <Boton variante="secundario" onClick={() => navigate("/mis-eventos")}>← Volver</Boton>
-          <h2 style={{ margin: 0 }}>{evento.nombre_evento}</h2>
+          <h2 style={{ margin: 0, fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}>{evento.nombre_evento}</h2>
           <BadgeEstado estado={evento.estado_gestion} />
         </div>
         <div style={{ display: "flex", gap: "8px" }}>
           <Boton variante="secundario" disabled title="Disponible en Sprint 2/3">Editar</Boton>
-          <Boton variante="primario" disabled title="Disponible en Sprint 2/3" style={{ backgroundColor: "#28a745" }}>Publicar</Boton>
+          <Boton variante="primario" disabled title="Disponible en Sprint 2/3">Publicar</Boton>
           <Boton variante="peligro" disabled title="Disponible en Sprint 2/3">Eliminar</Boton>
         </div>
       </div>
 
-      <div style={{ background: "white", padding: "24px", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
-        <h3 style={{ marginTop: 0 }}>Detalles del evento</h3>
+      <div style={{ background: "var(--color-surface)", padding: "var(--space-4)", border: "var(--border-standard)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card)" }}>
+        <h3 style={{ marginTop: 0, fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}>Detalles del evento</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
           <div>
             <p><strong>Descripción:</strong> {evento.descripcion}</p>

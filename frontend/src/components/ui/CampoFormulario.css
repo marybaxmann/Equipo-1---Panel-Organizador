@@ -44,7 +44,7 @@
 }
 
 .campo-ayuda {
-  font-size: font-size: var(--fs-caption);
+  font-size: var(--fs-caption);
   color: var(--color-text-secondary);
 }
 

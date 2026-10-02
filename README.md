@@ -82,7 +82,7 @@ En local, Auth está simulado (`tools/mock-auth`). El login simulado del fronten
 | **UI1–UI3** | App funcional y estándares de UI | [`frontend/`](frontend/) · [`docs/ui/checklist-consistencia-visual.md`](docs/ui/checklist-consistencia-visual.md) (acordado entre squads) · [`docs/ui/estandares-ui.md`](docs/ui/estandares-ui.md) · se evalúa con la demo en vivo |
 | **GE1–GE3** | Planificación, historias y avance | [Issues](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues) · [Milestones](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/milestones) · tablero del proyecto (GitHub Projects) · [`docs/sprints.md`](docs/sprints.md) |
 | **GE4** | Trabajo de integración | [Issues con label `integracion`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues?q=label%3Aintegracion) · contratos en [`docs/`](docs/) |
-| **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (70 tests, cobertura 92 %) · CI en GitHub Actions |
+| **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (79 tests, cobertura 92 %) · CI en GitHub Actions |
 | **CA2** | Pruebas de integración | [`postman/`](postman/) · resultados en [`docs/evidencias/pruebas-integracion/`](docs/evidencias/pruebas-integracion/README.md) · pruebas de contrato OpenAPI en [`backend/tests/contrato-openapi.test.ts`](backend/tests/contrato-openapi.test.ts) |
 | — | Responsables por rol, HU, tarea y contrato | [`RESPONSABLES.md`](RESPONSABLES.md) |
 | — | Definition of Done | [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md) |

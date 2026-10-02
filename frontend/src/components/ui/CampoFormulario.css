@@ -49,6 +49,9 @@
 }
 
 .campo-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   font-size: var(--fs-caption);
   color: var(--color-danger-text);
 }

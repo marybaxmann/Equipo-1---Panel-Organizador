@@ -75,6 +75,7 @@ export default function MisEventosPage() {
         onCambiarFiltro={setFiltro}
         busqueda={busqueda}
         onCambiarBusqueda={setBusqueda}
+        enfocarBuscador={location.state?.enfocarBuscador}
       />
 
       {eventosFiltrados.length === 0 ? (

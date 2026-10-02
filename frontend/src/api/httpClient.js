@@ -26,6 +26,8 @@ export async function request(path, { method = "GET", body, signal } = {}) {
       signal,
     });
   } catch (networkError) {
+    // Una petición cancelada (cambio de página, StrictMode) no es un error de red
+    if (networkError.name === "AbortError") throw networkError;
     throw new ApiError(503, "No se pudo contactar al servidor. Intenta nuevamente en unos segundos.");
   }
 

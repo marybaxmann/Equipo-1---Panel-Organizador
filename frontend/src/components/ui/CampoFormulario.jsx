@@ -1,3 +1,4 @@
+import { AlertCircle } from "lucide-react";
 import "./CampoFormulario.css";
 
 /**

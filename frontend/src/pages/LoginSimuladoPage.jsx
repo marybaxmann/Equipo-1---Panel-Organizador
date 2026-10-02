@@ -8,9 +8,9 @@ export default function LoginSimuladoPage() {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", fontFamily: "var(--fuente-principal)" }}>
-      <h1 style={{ color: "var(--color-neutral-900)" }}>Iniciar sesión (simulado)</h1>
-      <p style={{ color: "var(--color-neutral-600)", marginBottom: "24px" }}>
+    <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px", fontFamily: "var(--font-body)" }}>
+      <h1 style={{ color: "var(--color-text-primary)", fontFamily: "var(--font-display)" }}>Iniciar sesión (simulado)</h1>
+      <p style={{ color: "var(--color-text-secondary)", marginBottom: "24px" }}>
         Sólo para desarrollo y demo. El login real lo provee el módulo Auth.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>

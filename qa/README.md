@@ -1,6 +1,6 @@
 # QA · Panel Organizador (Prueba de Sistemas, CIN 421)
 
-Grupo 1: **Lucas Rojas** (gestión de pruebas) · **Alonso Vera** · **Christopher Okinggton** · **Joaquín Martínez**.
+Grupo 7: **Lucas Rojas** (gestión de pruebas) · **Alonso Vera** · **Christopher Okinggton** · **Joaquín Martínez**.
 
 Pruebas del microservicio 7 de TicketU, el Panel Organizador. La casuística y la trazabilidad están cargadas en TestLink: proyecto «TichetU - Entrega 1», carpeta «7 · Panel Organizador».
 

@@ -45,6 +45,28 @@ npm run dev:web
 
 La aplicación estará disponible en [http://localhost:5173](http://localhost:5173). La API en [http://localhost:3000](http://localhost:3000) y Swagger UI en [http://localhost:3000/api-docs](http://localhost:3000/api-docs).
 
+## Integración con la plataforma TicketU (API Gateway + RabbitMQ)
+
+La plataforma del curso levanta una sola vez, para los 9 grupos, un **API Gateway** (puerto 8080) y un **RabbitMQ**, conectados a la red Docker `plataforma-eventos-net`. El Gateway reenvía a este servicio todo lo que empieza con `/api/organizador/`; por eso cada ruta de `/api/v1/...` también responde como `/api/organizador/v1/...`.
+
+Orden para levantar el ecosistema:
+
+```bash
+# 1. Red compartida (una sola vez por máquina)
+docker network create plataforma-eventos-net
+# 2. RabbitMQ y 3. API Gateway: desde el repo de la plataforma (event-broker/ y api-gateway/)
+# 4. Este microservicio, con su propia MongoDB (privada, fuera de la red compartida)
+docker compose -f docker-compose.integracion.yml up --build -d
+# 5. Comprobar desde la red compartida
+docker run --rm --network plataforma-eventos-net curlimages/curl -s http://organizador-service:3000/health
+```
+
+- En el `.env` del Gateway: `ORGANIZADOR_SERVICE_URL=http://organizador-service:3000`.
+- Al arrancar, el contenedor crea o actualiza las colecciones con sus validadores. Con `SEED_DEMO=true` carga además los eventos de demo (borra los existentes: sólo para ambientes de prueba).
+- Dentro de Docker nunca se usa `localhost` para otro servicio: `AUTH_SERVICE_URL`, `BROKER_URL` y `MONGO_URI` usan nombres de servicio. Se pueden cambiar con variables de entorno al ejecutar `docker compose`.
+
+> **Si ya tenías la base local de antes del 28/10 (MongoDB 8):** desde el ADR-0015 se usa MongoDB 7, que no abre ese volumen. Ejecuta una vez `docker compose down -v` y vuelve a correr los pasos 3 y 4.
+
 ## Usuarios de demo
 
 En local, Auth está simulado (`tools/mock-auth`). El login simulado del frontend fija la cookie `jwt`:
@@ -82,7 +104,7 @@ En local, Auth está simulado (`tools/mock-auth`). El login simulado del fronten
 | **UI1–UI3** | App funcional y estándares de UI | [`frontend/`](frontend/) · [`docs/ui/checklist-consistencia-visual.md`](docs/ui/checklist-consistencia-visual.md) (acordado entre squads) · [`docs/ui/estandares-ui.md`](docs/ui/estandares-ui.md) · se evalúa con la demo en vivo |
 | **GE1–GE3** | Planificación, historias y avance | [Issues](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues) · [Milestones](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/milestones) · tablero del proyecto (GitHub Projects) · [`docs/sprints.md`](docs/sprints.md) |
 | **GE4** | Trabajo de integración | [Issues con label `integracion`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues?q=label%3Aintegracion) · contratos en [`docs/`](docs/) |
-| **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (79 tests, cobertura 92 %) · CI en GitHub Actions |
+| **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (109 tests, cobertura 94 %) · CI en GitHub Actions |
 | **CA2** | Pruebas de integración | [`postman/`](postman/) · resultados en [`docs/evidencias/pruebas-integracion/`](docs/evidencias/pruebas-integracion/README.md) · pruebas de contrato OpenAPI en [`backend/tests/contrato-openapi.test.ts`](backend/tests/contrato-openapi.test.ts) |
 | — | Responsables por rol, HU, tarea y contrato | [`RESPONSABLES.md`](RESPONSABLES.md) |
 | — | Definition of Done | [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md) |

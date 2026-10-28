@@ -1,0 +1,57 @@
+# Panel Organizador dentro del ecosistema TicketU: API Gateway + RabbitMQ compartidos (repo de la plataforma).
+# Requisitos: la red externa creada una vez por máquina (docker network create plataforma-eventos-net)
+# y, para que funcione de punta a punta, el Gateway, RabbitMQ y Auth levantados en esa misma red.
+#   docker compose -f docker-compose.integracion.yml up --build -d
+# El docker-compose.yml de desarrollo (Mongo + mock de Auth) no cambia.
+name: panel-organizador-integracion
+
+services:
+  organizador-service:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://organizador-mongo:27017/panel_organizador
+      # Nombre del servicio de Auth en la red compartida (confirmar con el squad de Auth)
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-service:3000}
+      AUTH_TIMEOUT_MS: ${AUTH_TIMEOUT_MS:-1000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      # RabbitMQ de la plataforma: dentro de Docker se usa el nombre del contenedor, nunca localhost
+      BROKER_URL: ${BROKER_URL:-amqp://ticketu:ticketu_dev@ticketu-rabbitmq:5672/ticketu}
+      EVENT_EXCHANGE: ${EVENT_EXCHANGE:-ticketu.events}
+      SEED_DEMO: ${SEED_DEMO:-false}
+    depends_on:
+      organizador-mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - plataforma-eventos-net
+      - organizador-interna
+
+  # La BD es privada del Panel: sólo está en la red interna, no en la compartida
+  organizador-mongo:
+    image: mongo:7
+    volumes:
+      - organizador-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - organizador-interna
+
+volumes:
+  organizador-mongo-data:
+
+networks:
+  plataforma-eventos-net:
+    external: true
+  organizador-interna:

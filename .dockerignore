@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/coverage
+.env
+*.log
+.git
+docs/evidencias
+docs/bd
+frontend/*
+!frontend/package.json
+postman
+TITEC_*.docx
+acuerdos_backend.*

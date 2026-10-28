@@ -19,8 +19,9 @@ docs/
 ├── plan-proyecto.md                ← hoja de ruta completa: sprints, tareas, responsables, criterios de salida
 ├── guia-equipo.md                  ← EMPEZAR ACÁ: qué hay en el área de cada integrante y cómo seguir
 ├── sprints.md                      ← resumen de HU por sprint
+├── plan-sprint-2.md                ← plan del Sprint 2: tareas por persona, dónde se ve cada cosa, API, pruebas y Postman
 ├── DEFINITION_OF_DONE.md           ← DoD oficial del equipo
-├── api/                            ← OpenAPI propio (openapi.yaml) y consumido (auth-consumido.yaml)
+├── api/                            ← OpenAPI propio (openapi.yaml), consumido (auth-consumido.yaml) y guion de la API por sprint (README.md)
 ├── bd/                             ← diagrama ER y diccionario (GENERADOS con npm run db:docs; no editar a mano)
 ├── ui/                             ← checklist visual acordado entre squads + estándares y desviaciones
 ├── evidencias/                     ← resultados de pruebas (funcionalidad, integración)
@@ -141,7 +142,7 @@ Extraídas de los criterios de aceptación. Son transversales a todas las HU.
 - Un evento nace en **Borrador**.
 - Estados: `Borrador`, `Publicado`, `Finalizado`, `Cancelado`.
 - Sólo un evento en `Borrador` puede pasar a `Publicado`.
-- Antes de publicar hay que validar nombre, fecha y ubicación presentes.
+- Antes de publicar hay que validar nombre, fecha, hora de inicio y de término, ubicación, cantidad y tipo de entrada.
 - Un evento en `Borrador` **no** debe ser visible en el Catálogo público.
 
 **Autorización**

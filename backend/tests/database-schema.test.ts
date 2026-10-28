@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MongoClient, ObjectId, type Db } from 'mongodb';
+import { Int32, MongoClient, ObjectId, type Db } from 'mongodb';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createCollections } from '@panel/database/create-collections';
 
@@ -32,6 +32,17 @@ describe('database creation script', () => {
   ])('rejects evento with %s', async (_label, mutate) => {
     const doc = validEvento(); mutate(doc);
     await expect(db.collection('eventos').insertOne(doc)).rejects.toMatchObject({ code: 121 });
+  });
+  it('mensajes_salientes (outbox): acepta un mensaje PENDIENTE y rechaza un estado desconocido', async () => {
+    const mensaje = () => ({
+      _id: new ObjectId(), id_evento: new ObjectId(), topico: 'panel.evento.entradas.v1', tipo: 'evento_creado', version: new Int32(1),
+      fecha_cambio: new Date(), payload: { id_evento: 'x' }, estado: 'PENDIENTE', intentos: new Int32(0),
+      ultimo_error: null, fecha_creacion: new Date(), fecha_envio: null,
+    });
+    await expect(db.collection('mensajes_salientes').insertOne(mensaje())).resolves.toBeTruthy();
+    await expect(db.collection('mensajes_salientes').insertOne({ ...mensaje(), estado: 'PERDIDO' })).rejects.toMatchObject({ code: 121 });
+    const names = (await db.collection('mensajes_salientes').indexes()).map((i) => i.name);
+    expect(names).toContain('ix_mensajes_estado_fecha');
   });
   it('creates the expected indexes', async () => {
     const names = (await db.collection('eventos').indexes()).map((i) => i.name);

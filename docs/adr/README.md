@@ -34,7 +34,7 @@ evita: deja explícito qué sigue abierto, para que no se dé por resuelto por o
 |---|---|---|
 | [0001](0001-stack-del-panel-organizador.md) | Stack del Panel Organizador (Python + FastAPI) | Rechazado → ver 0004 |
 | [0002](0002-motor-de-base-de-datos.md) | Motor de base de datos: MongoDB con validadores `$jsonSchema` | Propuesta · implementado |
-| [0003](0003-aislamiento-publicacion-broker.md) | Aislamiento de la publicación al broker (outbox) | Propuesta · Sprint 3 |
+| [0003](0003-aislamiento-publicacion-broker.md) | Aislamiento de la publicación al broker (outbox) | Aceptada · outbox en Sprint 2 · publicador → 0013 |
 | [0004](0004-stack-node-typescript.md) | Stack: Node.js + TypeScript + Express + Zod | Propuesta · implementado |
 | [0005](0005-validacion-de-sesion-delegada-a-auth.md) | Validación de sesión delegada a Auth (fail-secure) | Propuesta · implementado |
 | [0006](0006-api-contract-first-openapi.md) | API contract-first con OpenAPI y pruebas de contrato | Propuesta · implementado |
@@ -44,6 +44,9 @@ evita: deja explícito qué sigue abierto, para que no se dé por resuelto por o
 | [0010](0010-monorepo-y-flujo-de-calidad.md) | Monorepo con workspaces y flujo de calidad | Propuesta · implementado |
 | [0011](0011-alineacion-contrato-checkin-v1-2.md) | Alineación con el contrato de Check-in v1.2 (reemplaza en parte a 0007) | Propuesta · implementado |
 | [0012](0012-repo-de-trabajo-y-repo-de-presentacion.md) | Repo de trabajo, repo de presentación y sincronización | Propuesta · **a acordar** |
+| [0013](0013-publicacion-outbox-rabbitmq-plataforma.md) | Publicación del outbox en el RabbitMQ de la plataforma TicketU | Propuesta · implementado |
+| [0014](0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | Política de consumo del broker y responsabilidades de la plataforma | Propuesta · Sprint 3 |
+| [0015](0015-mongodb-7-por-kernel-de-los-runners.md) | MongoDB 7 en Docker por incompatibilidad de MongoDB 8 con kernel 6.19+ | Propuesta · implementado |
 
 > "Propuesta · implementado" = ya está en el código, pero **el equipo todavía no lo revisó**. Cada responsable de área
 > revisa los suyos (ver `docs/guia-equipo.md`) y lo pasa a `Aceptado`, o propone cambios en un PR.

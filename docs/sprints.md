@@ -20,15 +20,15 @@ Permitir que un organizador autenticado pueda crear y visualizar sus propios eve
 
 ## Sprint 2 — Edición y publicación de eventos
 
-**Fechas:** 02/10/2026 – 22/10/2026  
-**Milestone:** Avance 2 — 22/10/2026
+**Fechas:** 02/10/2026 – 28/10/2026  
+**Milestone:** Avance 2 — 28/10/2026 *(los profesores lo movieron desde el 22/10)*
 
 ### Objetivo
 Permitir que el organizador modifique y publique sus eventos.
 
 ### Historias de Usuario
 - HU-02 — Editar un evento
-- HU-04 — Publicar un evento *(sólo queda dejar su notificación lista para el outbox, ADR-0003)*
+- HU-04 — Publicar un evento *(su notificación ya queda en el outbox, ADR-0003; el envío al broker llega con HU-07)*
 
 ---
 

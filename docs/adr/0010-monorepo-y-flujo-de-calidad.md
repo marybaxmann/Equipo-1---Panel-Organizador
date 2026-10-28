@@ -27,7 +27,7 @@ docs/           contratos, ADR, Swagger, BD generada, evidencias, plan
 
 | Práctica | Cómo |
 |---|---|
-| Entorno reproducible | `docker compose` (MongoDB 8 + mock de Auth) · README con 6 comandos |
+| Entorno reproducible | `docker compose` (MongoDB 7 desde el ADR-0015 + mock de Auth) · README con 6 comandos |
 | Datos de demo y de prueba | `npm run db:seed`: **7 eventos con IDs fijos** (`66f1a…01..05` de la Organizadora A en los 4 estados; `66f1b…01..02` del Organizador B). Tests y Postman dependen de esos IDs: **no cambiarlos** |
 | Documentos generados | `docs/bd/*` sale de `npm run db:docs`; la colección Postman, de `postman/generate-collection.mjs`. **No se editan a mano** |
 | Tests | `npm test` (Vitest: unitarios, funcionales por HU, BD, integración y contrato) · evidencia en `docs/evidencias/` |

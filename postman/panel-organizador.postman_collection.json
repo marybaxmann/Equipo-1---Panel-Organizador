@@ -554,6 +554,314 @@
           ]
         }
       ]
+    },
+    {
+      "name": "08 Sprint 2",
+      "item": [
+        {
+          "name": "Caso: Crear un borrador y guardar {{nuevoEventoId}} / Resultado esperado: 201",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos",
+            "description": "Caso: Crear un borrador y guardar {{nuevoEventoId}} / Resultado esperado: 201",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre_evento\":\"Evento Sprint 2 Original\",\"descripcion\":\"Descripción inicial del evento Sprint 2\",\"fecha_evento\":\"2030-08-15\",\"hora_evento\":\"10:00\",\"hora_fin_evento\":\"12:00\",\"direccion_evento\":\"Auditorio Principal\",\"cantidad_entradas\":150,\"tipo_entrada\":\"GRATUITA\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Guarda id_evento\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.id_evento).to.be.a(\"string\");",
+                  "    pm.expect(data.estado_gestion).to.eql(\"BORRADOR\");",
+                  "    pm.environment.set(\"nuevoEventoId\", data.id_evento);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Editarlo como Org A / Resultado esperado: 200 con el campo cambiado",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}",
+            "description": "Caso: Editarlo como Org A / Resultado esperado: 200 con el campo cambiado",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre_evento\":\"Evento Sprint 2 Editado\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Campo nombre_evento cambiado\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.nombre_evento).to.eql(\"Evento Sprint 2 Editado\");",
+                  "    pm.expect(data.estado_gestion).to.eql(\"BORRADOR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Como Org B · sin cookie · cuerpo vacío / Resultado esperado: 403 · 401 · 400",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}",
+            "description": "Caso: Como Org B · sin cookie · cuerpo vacío / Resultado esperado: 403 · 401 · 400",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-b"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre_evento\":\"Intento Org B\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 403 (Org B)\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Error es EVENT_NOT_OWNED\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"EVENT_NOT_OWNED\");",
+                  "});",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get(\"baseUrl\") + \"/panel/eventos/mios/\" + pm.environment.get(\"nuevoEventoId\"),",
+                  "    method: \"PATCH\",",
+                  "    header: { \"Content-Type\": \"application/json\" },",
+                  "    body: { mode: \"raw\", raw: JSON.stringify({ nombre_evento: \"Intento sin sesion\" }) }",
+                  "}, (err, res) => {",
+                  "    pm.test(\"Sin cookie da 401 SESSION_INVALID\", () => {",
+                  "        pm.expect(res).to.have.status(401);",
+                  "        pm.expect(res.json().error.codigo).to.eql(\"SESSION_INVALID\");",
+                  "    });",
+                  "});",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get(\"baseUrl\") + \"/panel/eventos/mios/\" + pm.environment.get(\"nuevoEventoId\"),",
+                  "    method: \"PATCH\",",
+                  "    header: { \"Content-Type\": \"application/json\", \"Cookie\": \"jwt=token-org-a\" },",
+                  "    body: { mode: \"raw\", raw: JSON.stringify({}) }",
+                  "}, (err, res) => {",
+                  "    pm.test(\"Cuerpo vacío da 400 VALIDATION_ERROR\", () => {",
+                  "        pm.expect(res).to.have.status(400);",
+                  "        pm.expect(res.json().error.codigo).to.eql(\"VALIDATION_ERROR\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Publicarlo y pedirlo a Catálogo / Resultado esperado: 200 y 200",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}/publicar",
+            "description": "Caso: Publicarlo y pedirlo a Catálogo / Resultado esperado: 200 y 200",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Estado pasa a PUBLICADO\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.estado_gestion).to.eql(\"PUBLICADO\");",
+                  "});",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get(\"baseUrl\") + \"/organizador/eventos/\" + pm.environment.get(\"nuevoEventoId\"),",
+                  "    method: \"GET\"",
+                  "}, (err, res) => {",
+                  "    pm.test(\"Catálogo devuelve 200 para el publicado\", () => {",
+                  "        pm.expect(res).to.have.status(200);",
+                  "        pm.expect(res.json().id_evento).to.eql(pm.environment.get(\"nuevoEventoId\"));",
+                  "        pm.expect(res.json().estado_gestion).to.eql(\"PUBLICADO\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}/publicar",
+            "description": "Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Error es INVALID_STATE_TRANSITION\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"INVALID_STATE_TRANSITION\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}",
+            "description": "Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"hora_evento\":\"16:00\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Hora actualizada a 16:00\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.hora_evento).to.eql(\"16:00\");",
+                  "    pm.expect(data.estado_gestion).to.eql(\"PUBLICADO\");",
+                  "});",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get(\"baseUrl\") + \"/organizador/eventos/\" + pm.environment.get(\"nuevoEventoId\"),",
+                  "    method: \"GET\"",
+                  "}, (err, res) => {",
+                  "    pm.test(\"Catálogo devuelve la hora nueva\", () => {",
+                  "        pm.expect(res).to.have.status(200);",
+                  "        pm.expect(res.json().hora_evento).to.eql(\"16:00\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/{{nuevoEventoId}}/cambios-estado",
+            "description": "Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Historial tiene 2 transiciones\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"array\");",
+                  "    pm.expect(data.length).to.eql(2);",
+                  "    pm.expect(data[0].nuevo_estado).to.eql(\"PUBLICADO\");",
+                  "    pm.expect(data[1].nuevo_estado).to.eql(\"BORRADOR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

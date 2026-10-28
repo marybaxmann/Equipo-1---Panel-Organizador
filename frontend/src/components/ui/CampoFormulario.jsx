@@ -36,7 +36,7 @@ export default function CampoFormulario({
       {error && (
         <p className="campo-error" id={`${nombre}-error`}>
           <AlertCircle size={14} strokeWidth={2} aria-hidden="true" />
-          {error}
+          <span>{error}</span>
         </p>
       )}
     </div>

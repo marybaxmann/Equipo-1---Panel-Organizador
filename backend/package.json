@@ -11,6 +11,7 @@
     "test:report": "vitest run --reporter=verbose --reporter=junit --outputFile.junit=../docs/evidencias/pruebas-funcionalidad/vitest-junit.xml --coverage"
   },
   "dependencies": {
+    "amqplib": "^2.2.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "mongoose": "^9.10.3",

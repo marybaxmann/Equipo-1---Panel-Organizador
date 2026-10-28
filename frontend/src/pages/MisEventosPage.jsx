@@ -89,7 +89,7 @@ export default function MisEventosPage() {
               key={evento.id_evento}
               evento={evento}
               onPublicar={(e) => setModal({ tipo: "publicar", evento: e })}
-              onEditar={() => setModal({ tipo: "sprint", mensaje: "La edición de eventos (HU-02) está contemplada en el Sprint 2. En este Sprint 1 puedes crear, ver y publicar tus eventos." })}
+              onEditar={(e) => navigate(`/mis-eventos/${e.id_evento}/editar`)}
               onEliminar={() => setModal({ tipo: "sprint", mensaje: "La eliminación de eventos (HU-03) está contemplada en el Sprint 3." })}
             />
           ))}

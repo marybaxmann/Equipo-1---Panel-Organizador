@@ -18,13 +18,17 @@ export function crearEvento(datosEvento) {
   return request("/eventos", { method: "POST", body: datosEvento });
 }
 
-// Sprint 2/3: rutas definidas en el Swagger, aún no implementadas en el backend.
+/** HU-02: editar evento propio en BORRADOR o PUBLICADO (Sprint 2). */
 export function editarEvento(idEvento, cambios) {
   return request(`/eventos/mios/${idEvento}`, { method: "PATCH", body: cambios });
 }
+
+/** HU-04: publicar evento propio en BORRADOR (Sprint 1). */
 export function publicarEvento(idEvento) {
   return request(`/eventos/mios/${idEvento}/publicar`, { method: "POST" });
 }
+
+/** HU-03: eliminar evento (Sprint 3). */
 export function eliminarEvento(idEvento) {
   return request(`/eventos/mios/${idEvento}`, { method: "DELETE" });
 }

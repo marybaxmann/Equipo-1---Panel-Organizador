@@ -45,12 +45,44 @@ describe('HU-04 Publicar un evento', () => {
     expect(res.body.error.codigo).toBe('EVENT_NOT_OWNED');
   });
 
+  const crearBorrador = (extra: Record<string, unknown>) => request(ctx.app).post('/api/v1/panel/eventos').set('Cookie', 'jwt=token-org-a')
+    .send({ nombre_evento: 'Borrador incompleto', descripcion: 'd', fecha_evento: '2030-01-10', hora_evento: '10:00', direccion_evento: 'Sala 1', ...extra });
+  const camposFaltantes = (res: request.Response) => res.body.error.detalles.map((d: { campo: string }) => d.campo);
+
   it('exige hora_fin_evento para publicar (contrato Check-in v1.2)', async () => {
-    const creado = await request(ctx.app).post('/api/v1/panel/eventos').set('Cookie', 'jwt=token-org-a')
-      .send({ nombre_evento: 'Sin hora de término', descripcion: 'd', fecha_evento: '2030-01-10', hora_evento: '10:00', direccion_evento: 'Sala 1' });
+    const creado = await crearBorrador({ cantidad_entradas: 50, tipo_entrada: 'GRATUITA' });
     const res = await publicar(creado.body.id_evento);
     expect(res.status).toBe(400);
-    expect(res.body.error.detalles.map((d: { campo: string }) => d.campo)).toEqual(['hora_fin_evento']);
+    expect(camposFaltantes(res)).toEqual(['hora_fin_evento']);
+  });
+
+  it('CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR', async () => {
+    const creado = await crearBorrador({ hora_fin_evento: '12:00' });
+    const res = await publicar(creado.body.id_evento);
+    expect(res.status).toBe(400);
+    expect(camposFaltantes(res)).toEqual(['cantidad_entradas', 'tipo_entrada']);
+    const guardado = await request(ctx.app).get(`/api/v1/panel/eventos/mios/${creado.body.id_evento}`).set('Cookie', 'jwt=token-org-a');
+    expect(guardado.body.estado_gestion).toBe('BORRADOR');
+  });
+
+  it('HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones', async () => {
+    await publicar(A_BORRADOR);
+    const mensajes = await mongoose.connection.db!.collection('mensajes_salientes')
+      .find({ id_evento: new mongoose.Types.ObjectId(A_BORRADOR) }).toArray();
+    expect(mensajes.map((m) => m.topico).sort()).toEqual([
+      'panel.evento.catalogo.v1', 'panel.evento.checkin.v1', 'panel.evento.entradas.v1',
+      'panel.evento.notificaciones.v1', 'panel.evento.promociones.v1',
+    ]);
+    expect(mensajes.every((m) => m.estado === 'PENDIENTE' && m.intentos === 0 && m.version === 1)).toBe(true);
+    const checkin = mensajes.find((m) => m.topico === 'panel.evento.checkin.v1')!;
+    expect(checkin.payload).toMatchObject({ tipo_cambio: 'PUBLICADO', id_evento: A_BORRADOR, estado_gestion: 'PUBLICADO', hora_fin_evento: '20:00' });
+    const notificacion = mensajes.find((m) => m.topico === 'panel.evento.notificaciones.v1')!;
+    expect(notificacion).toMatchObject({ tipo: 'evento_actualizado', payload: { id_evento: A_BORRADOR, nuevo_estado: 'PUBLICADO' } });
+  });
+
+  it('un intento fallido no deja mensajes', async () => {
+    await publicar(A_PUBLICADO);
+    expect(await mongoose.connection.db!.collection('mensajes_salientes').countDocuments()).toBe(0);
   });
 
   it('HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404', async () => {

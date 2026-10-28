@@ -28,6 +28,8 @@ const cases: Array<[string, () => request.Test, ReturnType<typeof schemaOf>]> = 
   ['GET /panel/eventos/mios → ListaMisEventos', () => request(ctx.app).get('/api/v1/panel/eventos/mios').set('Cookie', 'jwt=token-org-a'), schemaOf('ListaMisEventos')],
   ['GET /panel/eventos/mios/{id} → Evento', () => request(ctx.app).get('/api/v1/panel/eventos/mios/66f1a0000000000000000001').set('Cookie', 'jwt=token-org-a'), schemaOf('Evento')],
   ['POST /panel/eventos/mios/{id}/publicar → Evento', () => request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000001/publicar').set('Cookie', 'jwt=token-org-a'), schemaOf('Evento')],
+  ['PATCH /panel/eventos/mios/{id} → Evento', () => request(ctx.app).patch('/api/v1/panel/eventos/mios/66f1a0000000000000000002').set('Cookie', 'jwt=token-org-a')
+    .send({ hora_fin_evento: '19:00', cantidad_entradas: 350 }), schemaOf('Evento')],
   ['409 → Error', () => request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000002/publicar').set('Cookie', 'jwt=token-org-a'), schemaOf('Error')],
   ['GET /organizador/eventos/proximos → EventoCatalogo[]', () => request(ctx.app).get('/api/v1/organizador/eventos/proximos'), arrayOf('EventoCatalogo')],
   ['POST /organizador/eventos/buscar → EventoCatalogo[]', () => request(ctx.app).post('/api/v1/organizador/eventos/buscar').send({ texto: 'feria' }), arrayOf('EventoCatalogo')],
@@ -38,7 +40,9 @@ const cases: Array<[string, () => request.Test, ReturnType<typeof schemaOf>]> = 
   ['400 → Error', () => request(ctx.app).post('/api/v1/panel/eventos').set('Cookie', 'jwt=token-org-a').send({}), schemaOf('Error')],
   ['401 → Error', () => request(ctx.app).get('/api/v1/panel/eventos/mios'), schemaOf('Error')],
   ['403 → Error', () => request(ctx.app).get('/api/v1/panel/eventos/mios/66f1b0000000000000000001').set('Cookie', 'jwt=token-org-a'), schemaOf('Error')],
-  ['404 → Error', () => request(ctx.app).get('/api/v1/panel/eventos/no-es-id'), schemaOf('Error')],
+  ['404 → Error', () => request(ctx.app).get('/api/v1/panel/eventos/mios/66f000000000000000000000').set('Cookie', 'jwt=token-org-a'), schemaOf('Error')],
+  ['400 id inválido → Error', () => request(ctx.app).get('/api/v1/organizador/eventos/no-es-id'), schemaOf('Error')],
+  ['404 ruta inexistente → Error', () => request(ctx.app).get('/api/v1/no-existe'), schemaOf('Error')],
 ];
 
 describe('Contrato OpenAPI (docs/api/openapi.yaml)', () => {

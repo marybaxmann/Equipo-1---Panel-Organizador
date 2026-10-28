@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       
@@ -40,3 +40,62 @@ jobs:
 
       - name: Build frontend
         run: npm run build -w frontend
+
+  integration:
+    runs-on: ubuntu-24.04
+    needs: test
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26.1.0
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy env
+        run: cp .env.example .env
+
+      - name: Initialize and seed database
+        run: |
+          npm run db:init
+          npm run db:seed
+
+      - name: Start Mock Auth service
+        run: |
+          node tools/mock-auth/server.mjs &
+          for i in {1..10}; do
+            curl -s http://localhost:4001/internal/validar-sesion && break
+            sleep 1
+          done
+
+      - name: Start Backend API
+        run: |
+          npm run dev:api &
+          for i in {1..30}; do
+            curl -s http://localhost:3000/health && break
+            sleep 1
+          done
+
+      - name: Run Newman integration tests
+        run: npm run test:integration
+
+      - name: Upload Newman test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-junit
+          path: docs/evidencias/pruebas-integracion/newman-junit.xml

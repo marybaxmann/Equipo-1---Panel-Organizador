@@ -7,7 +7,7 @@ const MESES = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "O
 
 function formatearFecha(fechaISO) {
   if (!fechaISO) return { mes: "—", dia: "—" };
-  const [anio, mes, dia] = fechaISO.split("-").map(Number);
+  const [, mes, dia] = fechaISO.split("-").map(Number);
   return { mes: MESES[(mes || 1) - 1], dia: String(dia || "—").padStart(2, "0") };
 }
 
@@ -25,6 +25,11 @@ export default function TarjetaEvento({ evento, onPublicar, onEditar, onEliminar
 
   const manejarTeclaTarjeta = (e) => {
     if (e.key === "Enter") manejarClickTarjeta();
+  };
+
+  const manejarEditar = onEditar ? accion(onEditar) : (e) => {
+    e.stopPropagation();
+    navigate(`/mis-eventos/${evento.id_evento}/editar`);
   };
 
   return (
@@ -57,9 +62,9 @@ export default function TarjetaEvento({ evento, onPublicar, onEditar, onEliminar
         <div className="tarjeta-evento__acciones">
           <button
             className="accion"
-            title="Editar (Sprint 2 — HU-02)"
+            title="Editar evento"
             aria-label="Editar"
-            onClick={accion(onEditar)}
+            onClick={manejarEditar}
           >
             <Pencil size={20} strokeWidth={2} />
           </button>

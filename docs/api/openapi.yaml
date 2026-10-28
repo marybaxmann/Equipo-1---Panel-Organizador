@@ -1,11 +1,14 @@
 openapi: 3.1.0
 info:
   title: TicketU — Panel Organizador API
-  version: 1.0.0-sprint1
+  version: 1.1.0-sprint2
   description: |-
     API REST del microservicio Panel Organizador (TicketU). Expone los servicios propios del organizador
-    (HU-01, HU-05, HU-06; HU-02/03/04 planificadas) y los servicios que consumen otros squads: Catálogo, Entradas, Check-in,
+    (HU-01, HU-02, HU-04, HU-05, HU-06; HU-03 planificada) y los servicios que consumen otros squads: Catálogo, Entradas, Check-in,
     Notificaciones y Promociones.
+
+    **Cómo leer este Swagger:** los grupos van en el orden de los sprints. Cada grupo dice qué historia cubre y qué mostrar en la demo;
+    el guion completo por sprint está en `docs/api/README.md`.
 
     **Política de autorización**
     - Toda operación del organizador valida la sesión contra Auth (`GET /internal/validar-sesion`, ver `auth-consumido.yaml`)
@@ -16,6 +19,11 @@ info:
     - Si Auth no responde en 1 s (con 1 reintento) → 503 `AUTH_UNAVAILABLE` (fail-secure).
     - Endpoints de integración: sin cookie de usuario; acceso restringido a red interna vía API Gateway (mecanismo pendiente de acuerdo).
 
+    **Acceso por el API Gateway de TicketU**
+    El Gateway compartido (puerto 8080) reenvía a este servicio todo lo que empieza con `/api/organizador/`, sin recortar el path.
+    Por eso cada ruta de este documento también responde, idéntica, con el prefijo `/api/organizador/v1` en vez de `/api/v1`.
+    Ejemplo: `GET /api/v1/organizador/eventos/proximos` → `GET http://localhost:8080/api/organizador/v1/organizador/eventos/proximos`.
+
     **Contratos:** [Auth](../CONTRATO_PANEL_AUTH.md) · [Catálogo](../CONTRATO_PANEL_CATALOGO.md) · [Entradas](../CONTRATO_PANEL_ENTRADAS.md) ·
     [Check-in](../CONTRATO_PANEL_CHECKIN.md) · [Notificaciones](../CONTRATO_PANEL_NOTIFICACIONES.md) · [Promociones](../CONTRATO_PANEL_PROMOCIONES.md)
   license:
@@ -23,31 +31,42 @@ info:
 servers:
   - url: http://localhost:3000
 tags:
-  - name: Organizador — Eventos (HU-01, HU-04, HU-05, HU-06)
-    description: Servicios propios del organizador autenticado. Implementados en Sprint 1 (HU-04 adelantada).
-  - name: Organizador — Planificado S2/S3
-    description: Servicios definidos para HU-02 y HU-03. No implementados en Sprint 1.
-  - name: Integración — Catálogo
+  - name: "Sprint 1 · HU-01, HU-05, HU-06 — Crear y ver mis eventos"
+    description: |-
+      Lo que el organizador hace desde el front, con la sesión validada en Auth en cada petición (HU-06).
+      **Demo:** iniciar sesión como Org A en `localhost:5173/login`, crear un evento (queda BORRADOR), verlo en Mis eventos y abrir su detalle.
+      En Swagger: `GET /mios` con la cookie puesta; sin cookie → 401, con `token-asistente` → 403, con `token-lento` → 503.
+  - name: "Sprint 1 · HU-04 — Publicar un evento"
+    description: |-
+      Adelantada desde el Sprint 2 (ADR-0009). Sólo BORRADOR → PUBLICADO; desde ese momento el evento aparece en Catálogo.
+      **Demo:** publicar el evento recién creado y pedirlo en `GET /organizador/eventos/{id}`: antes 404, después 200.
+  - name: "Sprint 1 · Integración — Catálogo"
     description: Consumidos por Catálogo de Eventos. Sólo eventos PUBLICADO (contrato Catálogo v1.1).
-  - name: Integración — Entradas
-    description: Consumido por Entradas/Inventario (contrato v1.2 §2.3). Mismo endpoint que Check-in.
-  - name: Integración — Check-in
-    description: "Consumido por Check-in (contrato v1.2): usa el GET compartido con Entradas, con sesión de staff u organizador."
-  - name: Integración — Notificaciones
-    description: Consumido por Notificaciones (id evento, nuevo estado, fecha de cambio).
-  - name: Integración — Promociones
-    description: Consumido por Promociones (id evento).
+  - name: "Sprint 1 · Integración — Entradas y Check-in"
+    description: "GET compartido por Entradas (contrato v1.2 §2.3) y Check-in (contrato v1.2 §3.4), con sesión de staff u organizador."
+  - name: "Sprint 1 · Integración — Notificaciones"
+    description: Historial de cambios de estado (id evento, nuevo estado, fecha de cambio).
+  - name: "Sprint 1 · Integración — Promociones"
+    description: Eventos publicados para que Promociones les asocie descuentos (id evento).
+  - name: "Sprint 2 · HU-02 — Editar un evento"
+    description: |-
+      Lo nuevo del Sprint 2 en la API. Junto con él llegaron cambios que no son endpoints nuevos:
+      - **INT-02 (mensajes salientes):** crear, publicar y editar dejan un mensaje por squad en la colección `mensajes_salientes` (outbox, ADR-0003). Se ven en Compass; el envío al broker llega con HU-07 en el Sprint 3.
+      - **Publicar** ahora exige también `cantidad_entradas` y `tipo_entrada` (criterio de HU-04).
+      - Un id con formato inválido responde 400 `INVALID_EVENT_ID` y una ruta inexistente responde un 404 en JSON.
+
+      **Demo:** editar la hora de un BORRADOR (200, no escribe historial); publicarlo; editar su fecha (200) y mostrar en `mensajes_salientes` el `evento_reprogramado` para Notificaciones. Con Org B → 403; con un evento FINALIZADO → 409.
+  - name: "Sprint 3 · HU-03 — Eliminar (planificado)"
+    description: Definido en el contrato, no implementado todavía. Depende del stock de Entradas (INT-05).
   - name: Sistema
     description: Operación del servicio.
 paths:
   /api/v1/panel/eventos:
     post:
-      summary: Crear un evento
+      summary: HU-01 · Crear un evento
       description: Crea un nuevo evento en estado BORRADOR. (HU-01)
       tags:
-        - Organizador — Eventos (HU-01
-        - HU-05
-        - HU-06)
+        - "Sprint 1 · HU-01, HU-05, HU-06 — Crear y ver mis eventos"
       operationId: createEvento
       security:
         - cookieJwt: []
@@ -86,12 +105,10 @@ paths:
           $ref: "#/components/responses/AuthUnavailable"
   /api/v1/panel/eventos/mios:
     get:
-      summary: Listar mis eventos
+      summary: HU-05 · Listar mis eventos
       description: Lista los eventos creados por el organizador autenticado. (HU-05)
       tags:
-        - Organizador — Eventos (HU-01
-        - HU-05
-        - HU-06)
+        - "Sprint 1 · HU-01, HU-05, HU-06 — Crear y ver mis eventos"
       operationId: listMisEventos
       security:
         - cookieJwt: []
@@ -119,12 +136,10 @@ paths:
           $ref: "#/components/responses/AuthUnavailable"
   /api/v1/panel/eventos/mios/{id_evento}:
     get:
-      summary: Ver detalle de mi evento
+      summary: HU-05 · Ver detalle de mi evento
       description: Retorna los datos completos de un evento propio. (HU-05)
       tags:
-        - Organizador — Eventos (HU-01
-        - HU-05
-        - HU-06)
+        - "Sprint 1 · HU-01, HU-05, HU-06 — Crear y ver mis eventos"
       operationId: getMiEvento
       security:
         - cookieJwt: []
@@ -141,6 +156,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Evento"
+        "400":
+          $ref: "#/components/responses/InvalidId"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -152,15 +169,17 @@ paths:
         "503":
           $ref: "#/components/responses/AuthUnavailable"
     patch:
-      summary: Editar un evento propio (HU-02 · Sprint 2)
+      summary: HU-02 · Editar un evento propio
       description: |
-        **Planificado — no implementado en Sprint 1.**
-        Reglas: valida sesión y rol (HU-06) y propiedad del evento; sólo eventos en BORRADOR o PUBLICADO (otro estado → 409);
-        mismas validaciones de campos que la creación. Si el evento está PUBLICADO, notifica el cambio a Catálogo por broker
-        (tópico `panel.evento.catalogo.v1`, pendiente de acuerdo).
-      x-sprint: 2
+        Implementado en Sprint 2. Modifica sólo los campos enviados (al menos uno); el estado no cambia.
+        Reglas: valida sesión y rol (HU-06) y propiedad del evento; sólo eventos en BORRADOR o PUBLICADO (otro estado → 409 `EVENT_NOT_EDITABLE`);
+        mismas validaciones de campos que la creación, y las reglas cruzadas (precio ↔ `tipo_entrada`) se evalúan sobre el evento como quedaría.
+        Un evento PUBLICADO no puede quedar sin los datos que se exigen para publicar (→ 400).
+        Después de guardar deja los mensajes para los otros squads en el outbox (INT-02, ADR-0003): Entradas siempre; si está PUBLICADO,
+        también Catálogo, Check-in (`tipo_cambio: ACTUALIZADO` si cambian nombre, dirección, fecha u horario) y Notificaciones
+        (`evento_reprogramado` si cambian fecha u horario).
       tags:
-        - Organizador — Planificado S2/S3
+        - "Sprint 2 · HU-02 — Editar un evento"
       operationId: updateEvento
       security:
         - cookieJwt: []
@@ -197,13 +216,13 @@ paths:
         "503":
           $ref: "#/components/responses/AuthUnavailable"
     delete:
-      summary: Eliminar un evento propio (HU-03 · Sprint 3)
+      summary: HU-03 · Eliminar un evento propio (Sprint 3)
       description: |-
-        **Planificado — no implementado en Sprint 1.**
+        **Planificado para Sprint 3.**
         Reglas: valida sesión, rol y propiedad; permite eliminar eventos en BORRADOR; un evento PUBLICADO sólo si Entradas confirma que no hay entradas vendidas (a acordar con Entradas), si no → 409. Notifica a Catálogo y Notificaciones.
       x-sprint: 3
       tags:
-        - Organizador — Planificado S2/S3
+        - "Sprint 3 · HU-03 — Eliminar (planificado)"
       operationId: deleteEvento
       security:
         - cookieJwt: []
@@ -212,6 +231,8 @@ paths:
       responses:
         "204":
           description: Evento eliminado.
+        "400":
+          $ref: "#/components/responses/InvalidId"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -226,12 +247,12 @@ paths:
           $ref: "#/components/responses/AuthUnavailable"
   /api/v1/panel/eventos/mios/{id_evento}/publicar:
     post:
-      summary: Publicar un evento propio (HU-04)
+      summary: HU-04 · Publicar un evento propio
       description: |-
         Implementado en Sprint 1 (adelantado desde Sprint 2).
-        Reglas: valida sesión, rol y propiedad; sólo la transición BORRADOR → PUBLICADO (otro estado → 409 `INVALID_STATE_TRANSITION`); exige nombre, fecha, ubicación y `hora_fin_evento` (este último lo pide el contrato Check-in v1.2; faltantes → 400); registra el cambio en cambios_estado_evento. Desde ese momento el evento es visible en los endpoints de Catálogo. La notificación por broker (`panel.evento.catalogo.v1`, `panel.evento.notificaciones.v1`) llega con HU-07 en Sprint 3.
+        Reglas: valida sesión, rol y propiedad; sólo la transición BORRADOR → PUBLICADO (otro estado → 409 `INVALID_STATE_TRANSITION`); exige nombre, fecha, hora de inicio y de término, ubicación, cantidad y tipo de entrada (HU-04; `hora_fin_evento` también lo pide el contrato Check-in v1.2; faltantes → 400 con un detalle por campo); registra el cambio en cambios_estado_evento. Desde ese momento el evento es visible en los endpoints de Catálogo. Deja en el outbox (INT-02) los mensajes para Catálogo, Entradas, Check-in, Notificaciones y Promociones; el envío al broker llega con HU-07 en Sprint 3.
       tags:
-        - Organizador — Eventos (HU-01, HU-04, HU-05, HU-06)
+        - "Sprint 1 · HU-04 — Publicar un evento"
       operationId: publicarEvento
       security:
         - cookieJwt: []
@@ -260,10 +281,10 @@ paths:
           $ref: "#/components/responses/AuthUnavailable"
   /api/v1/organizador/eventos/proximos:
     get:
-      summary: Próximos eventos
+      summary: Catálogo · Próximos eventos
       description: Retorna los eventos en estado PUBLICADO con fecha mayor o igual a hoy. Usado por Catálogo.
       tags:
-        - Integración — Catálogo
+        - "Sprint 1 · Integración — Catálogo"
       operationId: proximosEventos
       security: []
       responses:
@@ -291,10 +312,10 @@ paths:
                   estado_disponibilidad: DISPONIBLE
   /api/v1/organizador/eventos/buscar:
     post:
-      summary: Buscar eventos públicos
+      summary: Catálogo · Buscar eventos públicos
       description: Busca eventos en estado PUBLICADO por texto (en nombre o descripción, sin distinguir mayúsculas; los caracteres especiales se tratan como texto literal), categoría y rango de fechas. Usado por Catálogo.
       tags:
-        - Integración — Catálogo
+        - "Sprint 1 · Integración — Catálogo"
       operationId: buscarEventos
       security: []
       requestBody:
@@ -318,10 +339,10 @@ paths:
           $ref: "#/components/responses/BadRequest"
   /api/v1/organizador/eventos/{id_evento}:
     get:
-      summary: Obtener evento para Catálogo
+      summary: Catálogo · Obtener un evento
       description: Retorna los detalles de un evento en estado PUBLICADO para la vista de detalle del Catálogo.
       tags:
-        - Integración — Catálogo
+        - "Sprint 1 · Integración — Catálogo"
       operationId: getEventoCatalogo
       security: []
       parameters:
@@ -337,14 +358,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EventoCatalogo"
+        "400":
+          $ref: "#/components/responses/InvalidId"
         "404":
           $ref: "#/components/responses/NotFound"
   /api/v1/panel/eventos-disponibles:
     get:
-      summary: Eventos disponibles
+      summary: Promociones · Eventos disponibles
       description: Retorna los eventos PUBLICADOS para que Promociones pueda aplicarles descuentos.
       tags:
-        - Integración — Promociones
+        - "Sprint 1 · Integración — Promociones"
       operationId: getEventosDisponibles
       security: []
       responses:
@@ -362,11 +385,10 @@ paths:
                   fecha_evento: 2026-11-20
   /api/v1/panel/eventos/{id_evento}:
     get:
-      summary: Datos del evento para Entradas y Check-in
+      summary: Entradas y Check-in · Datos del evento
       description: "Endpoint compartido por Entradas (contrato v1.2 §2.3) y Check-in (contrato v1.2 §3.4, consulta de respaldo). Requiere la cookie de sesión: Panel la valida con Auth y admite los roles `staff` y `organizador` (Check-in §2.4, confirmado por Auth). Sólo expone eventos PUBLICADO, FINALIZADO o CANCELADO; un BORRADOR responde 404. **Pendiente con Entradas:** su contrato no define autenticación; debe enviar una sesión con rol `staff` u `organizador` (issue INT-04)."
       tags:
-        - Integración — Entradas
-        - Integración — Check-in
+        - "Sprint 1 · Integración — Entradas y Check-in"
       operationId: getEventoIntegracion
       security:
         - cookieJwt: []
@@ -394,6 +416,8 @@ paths:
                 cantidad_entradas: 80
                 tipo_entrada: GRATUITA
                 estado_gestion: FINALIZADO
+        "400":
+          $ref: "#/components/responses/InvalidId"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -406,10 +430,10 @@ paths:
           $ref: "#/components/responses/AuthUnavailable"
   /api/v1/panel/eventos/{id_evento}/cambios-estado:
     get:
-      summary: Historial de cambios
+      summary: Notificaciones · Historial de cambios
       description: Retorna la traza de cambios de estado del evento, usado por Notificaciones.
       tags:
-        - Integración — Notificaciones
+        - "Sprint 1 · Integración — Notificaciones"
       operationId: getCambiosEstado
       security: []
       parameters:
@@ -436,6 +460,8 @@ paths:
                   id_evento: 66f1a0000000000000000002
                   nuevo_estado: BORRADOR
                   fecha_cambio: 2026-07-01T12:00:00.000Z
+        "400":
+          $ref: "#/components/responses/InvalidId"
         "404":
           $ref: "#/components/responses/NotFound"
   /health:
@@ -924,6 +950,19 @@ components:
                 error:
                   codigo: INVALID_JSON
                   mensaje: El cuerpo de la solicitud no es JSON válido.
+    InvalidId:
+      description: "`id_evento` con formato inválido (contratos Entradas v1.2 §2.3 y Check-in v1.2 §3.4)."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error:
+              codigo: INVALID_EVENT_ID
+              mensaje: El id_evento no tiene un formato válido.
+              detalles:
+                - campo: id_evento
+                  mensaje: Debe ser un identificador de 24 caracteres hexadecimales
     Unauthorized:
       description: Sin sesión, token ausente o inválido.
       content:
@@ -969,15 +1008,22 @@ components:
                   codigo: FORBIDDEN_ROLE
                   mensaje: Rol no autorizado para consultar eventos.
     NotFound:
-      description: Recurso no encontrado.
+      description: Recurso no encontrado. Una ruta que no existe responde `ROUTE_NOT_FOUND` con el mismo formato.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            error:
-              codigo: EVENT_NOT_FOUND
-              mensaje: El evento no existe.
+          examples:
+            EVENT_NOT_FOUND:
+              value:
+                error:
+                  codigo: EVENT_NOT_FOUND
+                  mensaje: El evento no existe.
+            ROUTE_NOT_FOUND:
+              value:
+                error:
+                  codigo: ROUTE_NOT_FOUND
+                  mensaje: No existe la ruta GET /api/v1/no-existe.
     AuthError:
       description: Auth respondió 500 o un cuerpo inesperado.
       content:
@@ -1014,6 +1060,11 @@ components:
                 error:
                   codigo: INVALID_STATE_TRANSITION
                   mensaje: El evento no puede cambiar desde su estado actual.
+            EVENT_NOT_EDITABLE:
+              value:
+                error:
+                  codigo: EVENT_NOT_EDITABLE
+                  mensaje: Sólo un evento en Borrador o Publicado puede editarse.
   parameters:
     IdEvento:
       in: path

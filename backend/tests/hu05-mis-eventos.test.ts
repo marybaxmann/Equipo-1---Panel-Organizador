@@ -55,10 +55,11 @@ describe('HU-05 Ver mis eventos', () => {
     expect(res.body.error.codigo).toBe('EVENT_NOT_OWNED');
   });
 
-  it('404 con id inexistente o mal formado', async () => {
-    for (const id of ['66f000000000000000000000', 'no-es-id']) {
-      const res = await request(ctx.app).get(`/api/v1/panel/eventos/mios/${id}`).set('Cookie', 'jwt=token-org-a');
-      expect(res.status).toBe(404);
-    }
+  it('404 con id inexistente · 400 con id mal formado', async () => {
+    const detalle = (id: string) => request(ctx.app).get(`/api/v1/panel/eventos/mios/${id}`).set('Cookie', 'jwt=token-org-a');
+    expect((await detalle('66f000000000000000000000')).status).toBe(404);
+    const invalido = await detalle('no-es-id');
+    expect(invalido.status).toBe(400);
+    expect(invalido.body.error.codigo).toBe('INVALID_EVENT_ID');
   });
 });

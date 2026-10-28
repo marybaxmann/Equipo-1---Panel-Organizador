@@ -1,0 +1,23 @@
+.editar-evento-page {
+  max-width: 640px;
+}
+
+.editar-evento-page__encabezado {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.editar-evento-page__encabezado h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  color: var(--color-text-primary);
+}
+
+.editar-evento-page .descripcion {
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body);
+  margin-bottom: var(--space-4);
+}

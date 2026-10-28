@@ -92,10 +92,11 @@ describe('Integración — Entradas y Check-in (GET compartido)', () => {
     expect((await getConSesion(`/panel/eventos/${A_PUB_FERIA}`, 'token-staff')).status).toBe(503);
   });
 
-  it('id inválido o inexistente → 404', async () => {
-    for (const id of ['no-es-id', '66f000000000000000000000']) {
-      expect((await getConSesion(`/panel/eventos/${id}`, 'token-staff')).status).toBe(404);
-    }
+  it('id inexistente → 404 · id con formato inválido → 400 (Entradas §2.3, Check-in §3.4)', async () => {
+    expect((await getConSesion('/panel/eventos/66f000000000000000000000', 'token-staff')).status).toBe(404);
+    const invalido = await getConSesion('/panel/eventos/no-es-id', 'token-staff');
+    expect(invalido.status).toBe(400);
+    expect(invalido.body.error.codigo).toBe('INVALID_EVENT_ID');
   });
 });
 
@@ -118,12 +119,26 @@ describe('Integración — Promociones', () => {
 
 describe('Integración — robustez', () => {
   it.each([
-    '/organizador/eventos/no-es-id',
-    '/panel/eventos/no-es-id/cambios-estado', '/panel/eventos/66f000000000000000000000/cambios-estado',
-  ])('id inválido o inexistente → 404: %s', async (path) => {
+    '/organizador/eventos/66f000000000000000000000', '/panel/eventos/66f000000000000000000000/cambios-estado',
+  ])('id inexistente → 404: %s', async (path) => {
     const res = await get(path);
     expect(res.status).toBe(404);
     expect(res.body.error.codigo).toBe('EVENT_NOT_FOUND');
+  });
+
+  it.each([
+    '/organizador/eventos/no-es-id', '/panel/eventos/no-es-id/cambios-estado', '/organizador/eventos/abcdefabcdef',
+  ])('id con formato inválido → 400: %s', async (path) => {
+    const res = await get(path);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatchObject({ codigo: 'INVALID_EVENT_ID', detalles: [{ campo: 'id_evento' }] });
+  });
+
+  it('ruta inexistente → 404 en JSON con el formato de error de la API', async () => {
+    const res = await get('/no-existe');
+    expect(res.status).toBe(404);
+    expect(res.headers['content-type']).toMatch(/json/);
+    expect(res.body.error.codigo).toBe('ROUTE_NOT_FOUND');
   });
 
   it('regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401', async () => {

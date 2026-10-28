@@ -1,6 +1,6 @@
 # ADR-0003 — Aislamiento de la publicación al broker (patrón outbox)
 
-- **Estado:** Propuesta (**no implementado**; objetivo Sprint 3 con HU-07)
+- **Estado:** Aceptada. **Outbox implementado en el Sprint 2** (INT-02, 20/10). El broker (RabbitMQ de la plataforma) y el publicador se deciden e implementan en el **ADR-0013** (Sprint 3)
 - **Fecha:** 2026-09-30
 - **Responsables:** Backend (Joaquín) · Integración (Etienne) para el acuerdo con los otros squads
 - **Afecta a:** HU-02, HU-03, HU-04, HU-07 · contratos Catálogo, Notificaciones, Entradas, Check-in
@@ -50,7 +50,30 @@ registrada en `cambios_estado_evento`.
 - La nueva colección exige ampliar ADR-0002: schema JSON, diccionario regenerado y tests.
 - Los consumidores pueden seguir usando REST como respaldo o para reconciliar datos.
 
-## 6. Cómo se revierte
+## 6. Implementación (Sprint 2, INT-02)
+
+- `backend/src/modules/mensajeria/`: interfaz `EventPublisher` (`publish(topic, message)`), `OutboxEventPublisher` (escribe en
+  `mensajes_salientes` con `estado: PENDIENTE`) e `InMemoryEventPublisher` (tests y desarrollo).
+- Los tópicos salen de `TOPIC_CATALOGO`, `TOPIC_ENTRADAS`, `TOPIC_NOTIFICACIONES`, `TOPIC_CHECKIN` y `TOPIC_PROMOCIONES` (`.env.example`).
+  Por defecto son las propuestas `panel.evento.*.v1`.
+- **Sobre:** `{ version, tipo, fecha_cambio, id_evento }` se guarda aparte del cuerpo y viajará como cabecera del mensaje. Así el
+  cuerpo es exactamente el de cada contrato (en `evento_reprogramado`, `fecha_cambio` es la nueva fecha del evento, Notificaciones §2.4).
+- **Quién recibe qué** (`evento.notifier.ts`):
+
+| Cambio | Entradas | Catálogo | Check-in | Notificaciones | Promociones |
+|---|---|---|---|---|---|
+| Crear (BORRADOR) | `evento_creado` | — | — | — | — |
+| Publicar | `evento_publicado` | `evento_publicado` | `PUBLICADO` | `evento_actualizado` | `evento_publicado` |
+| Editar un BORRADOR | `evento_actualizado` | — | — | — | — |
+| Editar un PUBLICADO | `evento_actualizado` | `evento_actualizado` | `ACTUALIZADO` si cambian nombre, dirección, fecha u horario | `evento_reprogramado` si cambian fecha u horario | — |
+
+- Una edición que no cambia ningún valor no genera mensajes.
+- Mongo standalone no tiene transacciones: el mensaje se escribe **después** de guardar el evento. Si la escritura falla, se reintenta
+  una vez y, si vuelve a fallar, el mensaje completo queda en el log (`[mensajeria] FALLO …`) para reenviarlo; la operación del
+  organizador no se revierte (HU-07).
+- Falta (Sprint 3): el proceso que toma los `PENDIENTE`, publica, marca `ENVIADO` y reintenta con backoff.
+
+## 7. Cómo se revierte
 
 Si el curso define que no habrá broker, se elimina el publicador. Los consumidores quedan con REST
 (`/cambios-estado` para Notificaciones, ya implementado) y `mensajes_salientes` queda como bitácora de auditoría.

@@ -116,13 +116,28 @@ El porqué está en [ADR-0006](adr/0006-api-contract-first-openapi.md) y [ADR-00
 |---|---|
 | Evidencia de pruebas funcionales | `docs/evidencias/pruebas-funcionalidad/README.md` (criterio → test) |
 | Colección Postman (se edita el **generador**, no el JSON) | `postman/generate-collection.mjs` → `postman/panel-organizador.postman_collection.json` |
+| Entorno local directo (`:3000/api/v1`) | `postman/local.postman_environment.json` |
+| Entorno API Gateway (`:8080/api/organizador/v1`) | `postman/gateway.postman_environment.json` |
 | Evidencia de integración | `docs/evidencias/pruebas-integracion/` |
+| Plan de pruebas de contrato (TASK-02) | `docs/plan-pruebas-contrato-sprint-3.md` |
 | Contrato OpenAPI | `backend/tests/contrato-openapi.test.ts` |
-| Qué exponemos a cada squad | [ADR-0007](adr/0007-integracion-rest-y-datos-de-otros-squads.md) |
+| Mensajes de alineación con squads | `docs/mensajes-sprint-3.md` |
+| Qué exponemos a cada squad | [ADR-0007](adr/0007-integracion-rest-y-datos-de-otros-squads.md) · [ADR-0013](adr/0013-publicacion-outbox-rabbitmq-plataforma.md) · [ADR-0014](adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md) |
+
+**Cómo correr la colección Postman (TASK-02):**
+1. **Ejecución local directa (puerto 3000):**
+   ```bash
+   npx newman run postman/panel-organizador.postman_collection.json -e postman/local.postman_environment.json
+   ```
+2. **Ejecución a través del API Gateway de TicketU (puerto 8080, Sprint 3):**
+   Con el API Gateway corriendo en `http://localhost:8080` y el backend en la red compartida:
+   ```bash
+   npx newman run postman/panel-organizador.postman_collection.json -e postman/gateway.postman_environment.json
+   ```
 
 **Revisa tus issues INT** con la tabla del plan §10: INT-01 ya está implementado e INT-04 pide devolver `capacidad_*`, que choca con BD2.
 
-**Lo más urgente para ti:** cerrar con los otros squads la **tecnología de broker y los tópicos** antes del 15/10 (bloquea el Sprint 3) y conseguir la **URL real de Auth** (INT-01).
+**Lo más urgente para ti en Sprint 3:** validar los mensajes de `docs/mensajes-sprint-3.md` con los otros squads, confirmar credenciales del broker con la cátedra, y ejecutar las pruebas de contrato (TASK-02).
 
 ---
 
@@ -132,9 +147,9 @@ Para que cada squad lo revise en su propio contrato:
 
 | Squad | Qué hizo Panel por ellos | Qué necesitamos de ellos |
 |---|---|---|
-| Auth | Cliente según el contrato v1.1 y un mock con el mismo formato de respuesta | Confirmar SLA/timeout/reintento y la URL del ambiente de integración; aclarar la fila "usuario (id, rol) → Auth" |
-| Catálogo | `proximos`, `buscar` y detalle, con las rutas del contrato; los borradores nunca son visibles | Confirmar los nombres de campo y `estado_disponibilidad`; tópico `panel.evento.catalogo.v1` |
-| Entradas | `GET /api/v1/panel/eventos/{id}` con los campos del contrato; **ahora pide sesión `staff`/`organizador`** (ADR-0011) | **Cómo se autentican en ese GET** · cómo informan el stock para calcular `AGOTADO`; la regla para eliminar eventos con entradas vendidas |
-| Check-in | Contrato **v1.2**: `GET /api/v1/panel/eventos/{id}` con sesión `staff`/`organizador`, `hora_fin_evento`, eventos que cruzan medianoche ([ADR-0011](adr/0011-alineacion-contrato-checkin-v1-2.md)) | Confirmar los pendientes §7 del contrato (broker, tópico, formato de error, aforo) |
-| Notificaciones | `/cambios-estado` con el formato del contrato | Tópico `panel.evento.notificaciones.v1` y política de ACK |
-| Promociones | `/eventos-disponibles` | Confirmar el mecanismo (REST o broker) y el momento en que necesitan el `id_evento` |
+| Auth (v1.1, propuesta v1.2) | Cliente según el contrato v1.1 y un mock con el mismo formato de respuesta | Confirmar SLA/timeout/reintento, autenticación M2M (servicio staff) y el hostname/puerto del ambiente de integración (10000) |
+| Catálogo (v1.1, propuesta v1.2) | `proximos`, `buscar` y detalle (`/organizador/eventos/*`), rutas Gateway `/api/organizador/v1/organizador/eventos/*`; outbox hacia `panel.evento.catalogo.v1` con `hora_fin_evento` | Confirmar `hora_fin_evento`, formato `AAAA-MM-DD`/`HH:mm`, eventos ante `CANCELADO`/`FINALIZADO` y filtros de `/buscar` |
+| Entradas (v1.2, propuesta v1.3) | `GET /api/organizador/v1/panel/eventos/{id}` con campos de integración (exige sesión staff/organizador); outbox hacia `panel.evento.entradas.v1` | **Cómo se autentican en ese GET** · tópico `entradas.evento.stock.v1` para stock 0 y reactivación · regla de eliminación física ante edición de capacidad |
+| Check-in (v1.2, propuesta v1.3) | Contrato vigente v1.2 (propuesta **v1.3**): GET de respaldo vía Gateway (`/api/organizador/v1/panel/eventos/{id}`) con sesión staff/organizador; `hora_fin_evento`; outbox hacia `panel.evento.checkin.v1` | Confirmar formato de error (Auth vs Panel), confirmación de routing key y propuesta de política de 3 reintentos |
+| Notificaciones (v1.3, propuesta v1.4) | Outbox hacia `ticketu.events` con routing key `panel.evento.notificaciones.v1` (`evento_actualizado` y `evento_reprogramado`); consulta de respaldo `/api/organizador/v1/panel/eventos/{id}/cambios-estado` | Confirmar inclusión de `nombre_evento` y `hora_fin_evento`, aclaración de `fecha_cambio` y prevención de carrera ante `CANCELADO` |
+| Promociones (v1.1, propuesta v1.2) | Outbox hacia `panel.evento.promociones.v1` al publicar; consulta de respaldo `/api/organizador/v1/panel/eventos-disponibles` | Confirmar mecanismo broker, momento de recepción de `id_evento` y necesidad de `precio`/`tipo_entrada` |

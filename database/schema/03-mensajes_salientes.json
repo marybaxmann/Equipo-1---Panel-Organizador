@@ -1,0 +1,100 @@
+{
+  "collection": "mensajes_salientes",
+  "jsonSchema": {
+    "bsonType": "object",
+    "title": "mensajes_salientes",
+    "description": "Outbox (ADR-0003): mensajes que Panel debe publicar en el broker para los otros squads. Se escribe después de guardar el cambio del evento; un publicador los envía y marca ENVIADO.",
+    "required": [
+      "_id",
+      "id_evento",
+      "topico",
+      "tipo",
+      "version",
+      "fecha_cambio",
+      "payload",
+      "estado",
+      "intentos",
+      "ultimo_error",
+      "fecha_creacion",
+      "fecha_envio"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "_id": {
+        "bsonType": "objectId",
+        "description": "[PK] Identificador único del mensaje."
+      },
+      "id_evento": {
+        "bsonType": "objectId",
+        "description": "[FK eventos._id] Evento al que se refiere el mensaje."
+      },
+      "topico": {
+        "bsonType": "string",
+        "minLength": 1,
+        "description": "Tópico del broker (configurable por variable de entorno, por ejemplo panel.evento.catalogo.v1)."
+      },
+      "tipo": {
+        "bsonType": "string",
+        "minLength": 1,
+        "description": "Tipo de mensaje del sobre: evento_creado, evento_publicado, evento_actualizado o evento_reprogramado."
+      },
+      "version": {
+        "bsonType": "int",
+        "minimum": 1,
+        "description": "Versión del formato del mensaje."
+      },
+      "fecha_cambio": {
+        "bsonType": "date",
+        "description": "Fecha y hora del cambio del evento que originó el mensaje."
+      },
+      "payload": {
+        "bsonType": "object",
+        "description": "Cuerpo del mensaje, con los campos que define el contrato del squad consumidor."
+      },
+      "estado": {
+        "bsonType": "string",
+        "enum": [
+          "PENDIENTE",
+          "ENVIANDO",
+          "ENVIADO",
+          "FALLIDO"
+        ],
+        "description": "Estado de envío al broker. ENVIANDO: reservado por el publicador mientras espera la confirmación del broker."
+      },
+      "intentos": {
+        "bsonType": "int",
+        "minimum": 0,
+        "description": "Intentos de envío realizados."
+      },
+      "ultimo_error": {
+        "bsonType": [
+          "string",
+          "null"
+        ],
+        "description": "Último error de envío. Nulo si no hubo errores."
+      },
+      "fecha_creacion": {
+        "bsonType": "date",
+        "description": "Fecha y hora en que se registró el mensaje."
+      },
+      "fecha_envio": {
+        "bsonType": [
+          "date",
+          "null"
+        ],
+        "description": "Fecha y hora en que el broker aceptó el mensaje. Nulo mientras está pendiente."
+      }
+    }
+  },
+  "indexes": [
+    {
+      "key": {
+        "estado": 1,
+        "fecha_creacion": 1
+      },
+      "options": {
+        "name": "ix_mensajes_estado_fecha"
+      }
+    }
+  ]
+}

@@ -16,10 +16,10 @@ El estándar visual **no es propio del Panel**: lo acordaron los equipos front-e
 | 41–42 Footer TicketAzul | `components/layout/Footer.*` |
 | 16–17 Botones e inputs de 40 px, radio 8 px, foco y error | `components/ui/Boton.*`, `components/ui/CampoFormulario.*` |
 | 18, 30 Badges pill con colores por estado | `components/ui/BadgeEstado.*` |
-| 19, 33 Modales de 480 px, overlay 40 %, textos de confirmación | `components/ui/Modal.*` · `pages/MisEventosPage.jsx` (publicar) |
-| 20 Íconos outline 2 px, 20 px | `lucide-react` en `TarjetaEvento.jsx` y `Header.jsx` |
+| 19, 33 Modales de 480 px, overlay 40 %, textos de confirmación | `components/ui/Modal.*` · `pages/MisEventosPage.jsx` · `pages/EventoDetallePage.jsx` (publicar) |
+| 20 Íconos outline 2 px, 20 px | `lucide-react` en `TarjetaEvento.jsx`, `Header.jsx` y `CampoFormulario.jsx` |
 | 31 Tarjeta con franja lateral por estado | `components/events/TarjetaEvento.*` |
-| 32 Error en rojo, 12 px, bajo el campo | `CampoFormulario.jsx` (mensajes que vienen del backend) |
+| 32 Error en rojo, 12 px, bajo el campo con ícono de alerta | `CampoFormulario.jsx` (mensajes que vienen del backend) |
 | 34 Deshabilitados: opacidad 40 %, `not-allowed` | `TarjetaEvento.css`, `Boton.css` |
 
 ## Desviaciones conocidas

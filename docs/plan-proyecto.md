@@ -13,7 +13,7 @@ quién lo lleva, qué tiene que existir en el repositorio al cerrarlo y contra q
 | | |
 |---|---|
 | **Qué es** | Microservicio de gestión de eventos para organizadores dentro de la arquitectura de microservicios de TicketU |
-| **Stack** | Node.js 26 · TypeScript · Express 5 · Zod 4 · MongoDB 8 (Mongoose 9) · React 19 + Vite · Vitest · Postman/Newman · GitHub Actions |
+| **Stack** | Node.js 26 · TypeScript · Express 5 · Zod 4 · MongoDB 7 (Mongoose 9; ADR-0015) · React 19 + Vite · Vitest · Postman/Newman · GitHub Actions |
 | **Depende de** | **Auth** (validación de sesión): el único servicio que Panel consume |
 | **Lo consumen** | Catálogo, Entradas, Check-in, Notificaciones, Promociones |
 | **Repositorio** | `marybaxmann/Equipo-1---Panel-Organizador` |

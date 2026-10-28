@@ -4,6 +4,7 @@ import Layout from "./components/layout/Layout.jsx";
 import PantallaEstado from "./components/layout/PantallaEstado.jsx";
 import MisEventosPage from "./pages/MisEventosPage.jsx";
 import NuevoEventoPage from "./pages/NuevoEventoPage.jsx";
+import EditarEventoPage from "./pages/EditarEventoPage.jsx";
 import EventoDetallePage from "./pages/EventoDetallePage.jsx";
 import LoginSimuladoPage from "./pages/LoginSimuladoPage.jsx";
 import { AUTH_LOGIN_URL } from "./api/httpClient.js";
@@ -25,6 +26,7 @@ function ContenidoProtegido() {
         <Route path="/" element={<Navigate to="/mis-eventos" replace />} />
         <Route path="/mis-eventos" element={<MisEventosPage />} />
         <Route path="/mis-eventos/nuevo" element={<NuevoEventoPage />} />
+        <Route path="/mis-eventos/:idEvento/editar" element={<EditarEventoPage />} />
         <Route path="/mis-eventos/:idEvento" element={<EventoDetallePage />} />
         <Route path="*" element={<Navigate to="/mis-eventos" replace />} />
       </Routes>

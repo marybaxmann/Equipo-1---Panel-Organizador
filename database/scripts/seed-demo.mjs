@@ -45,6 +45,7 @@ function toChanges(e) {
 
 export async function seedDemo(db) {
   await createCollections(db); // garantiza validadores aunque la BD sea nueva
+  await db.collection('mensajes_salientes').deleteMany({}); // mensajes de eventos que el seed va a reemplazar
   await db.collection('cambios_estado_evento').deleteMany({});
   await db.collection('eventos').deleteMany({});
   await db.collection('eventos').insertMany(EVENTS.map(toDocument));

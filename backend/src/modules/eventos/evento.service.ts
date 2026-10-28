@@ -1,11 +1,11 @@
-import { isValidObjectId } from 'mongoose';
-import { AppError } from '../../core/errors/app-error.js';
+import { AppError, type FieldIssue } from '../../core/errors/app-error.js';
 import { toDateOnly } from '../../core/time.js';
+import type { EventoNotifier } from '../mensajeria/evento.notifier.js';
 import { CambioEstadoModel } from './cambio-estado.model.js';
 import { EventoModel, type EventoDoc, type EventState } from './evento.model.js';
-import type { CreateEventoInput } from './evento.schemas.js';
+import { priceIssues, type CreateEventoInput, type UpdateEventoInput } from './evento.schemas.js';
 
-export async function createEvento(input: CreateEventoInput, organizerId: string): Promise<EventoDoc> {
+export async function createEvento(input: CreateEventoInput, organizerId: string, notify: EventoNotifier): Promise<EventoDoc> {
   const eventoDoc = await EventoModel.create({
     ...input,
     hora_fin_evento: input.hora_fin_evento ?? null,
@@ -28,6 +28,7 @@ export async function createEvento(input: CreateEventoInput, organizerId: string
     await EventoModel.findByIdAndDelete(evento._id); // compensación: Mongo standalone no tiene transacciones
     throw error;
   }
+  await notify({ kind: 'CREADO', evento, idUsuario: organizerId });
   return evento;
 }
 
@@ -36,8 +37,14 @@ export function listEventosByOrganizer(organizerId: string, estado?: EventState)
   return EventoModel.find(filter).sort({ fecha_evento: 1, hora_evento: 1 }).lean<EventoDoc[]>();
 }
 
+// Contratos Entradas v1.2 §2.3 y Check-in v1.2 §3.4: un id con formato inválido es 400, no 404
+const OBJECT_ID = /^[0-9a-f]{24}$/i;
+
 export async function findEventoById(idEvento: string): Promise<EventoDoc | null> {
-  if (!isValidObjectId(idEvento)) return null;
+  if (!OBJECT_ID.test(idEvento)) {
+    throw new AppError(400, 'INVALID_EVENT_ID', 'El id_evento no tiene un formato válido.',
+      [{ campo: 'id_evento', mensaje: 'Debe ser un identificador de 24 caracteres hexadecimales' }]);
+  }
   return EventoModel.findById(idEvento).lean<EventoDoc>();
 }
 
@@ -49,19 +56,23 @@ export async function getOwnedEvento(idEvento: string, organizerId: string): Pro
   return evento;
 }
 
-// HU-04 exige nombre, fecha y ubicación; hora_fin_evento lo exige el contrato con Check-in (v1.2 §3.2)
-const CAMPOS_PARA_PUBLICAR = ['nombre_evento', 'fecha_evento', 'direccion_evento', 'hora_fin_evento'] as const;
+// HU-04: nombre, fecha, hora de inicio y de término, ubicación, cantidad y tipo de entrada.
+// hora_fin_evento también lo exige el contrato con Check-in (v1.2 §3.2)
+const CAMPOS_PARA_PUBLICAR = [
+  'nombre_evento', 'fecha_evento', 'hora_evento', 'hora_fin_evento', 'direccion_evento', 'cantidad_entradas', 'tipo_entrada',
+] as const;
 
-export async function publicarEvento(idEvento: string, organizerId: string): Promise<EventoDoc> {
+const camposFaltantes = (evento: { [K in (typeof CAMPOS_PARA_PUBLICAR)[number]]?: unknown }, mensaje: string): FieldIssue[] =>
+  CAMPOS_PARA_PUBLICAR.filter((campo) => evento[campo] === null || evento[campo] === undefined || evento[campo] === '')
+    .map((campo) => ({ campo, mensaje }));
+
+export async function publicarEvento(idEvento: string, organizerId: string, notify: EventoNotifier): Promise<EventoDoc> {
   const evento = await getOwnedEvento(idEvento, organizerId);
   if (evento.estado_gestion !== 'BORRADOR') {
     throw new AppError(409, 'INVALID_STATE_TRANSITION', 'Sólo un evento en Borrador puede publicarse.');
   }
-  const faltantes = CAMPOS_PARA_PUBLICAR.filter((campo) => !evento[campo]);
-  if (faltantes.length > 0) {
-    const detalles = faltantes.map((campo) => ({ campo, mensaje: 'Este campo es obligatorio para publicar' }));
-    throw new AppError(400, 'VALIDATION_ERROR', 'Faltan datos para publicar el evento.', detalles);
-  }
+  const faltantes = camposFaltantes(evento, 'Este campo es obligatorio para publicar');
+  if (faltantes.length > 0) throw new AppError(400, 'VALIDATION_ERROR', 'Faltan datos para publicar el evento.', faltantes);
   // La condición sobre estado_gestion hace la transición atómica: dos clics simultáneos no publican dos veces
   const publicado = await EventoModel.findOneAndUpdate(
     { _id: evento._id, estado_gestion: 'BORRADOR' },
@@ -73,5 +84,34 @@ export async function publicarEvento(idEvento: string, organizerId: string): Pro
     id_evento: publicado._id, estado_anterior: 'BORRADOR', nuevo_estado: 'PUBLICADO',
     fecha_cambio: publicado.fecha_actualizacion, id_usuario_responsable: organizerId,
   });
+  await notify({ kind: 'PUBLICADO', evento: publicado, idUsuario: organizerId });
   return publicado;
+}
+
+// HU-02: FINALIZADO y CANCELADO ya no se editan
+const ESTADOS_EDITABLES: readonly EventState[] = ['BORRADOR', 'PUBLICADO'];
+
+export async function updateEvento(idEvento: string, input: UpdateEventoInput, organizerId: string, notify: EventoNotifier): Promise<EventoDoc> {
+  const antes = await getOwnedEvento(idEvento, organizerId);
+  if (!ESTADOS_EDITABLES.includes(antes.estado_gestion)) {
+    throw new AppError(409, 'EVENT_NOT_EDITABLE', 'Sólo un evento en Borrador o Publicado puede editarse.');
+  }
+  const cambios = { ...input, ...(input.fecha_evento !== undefined && { fecha_evento: toDateOnly(input.fecha_evento) }) };
+  // Las reglas cruzadas se validan sobre el evento como quedaría, no sólo sobre los campos enviados
+  const resultado = { ...antes, ...cambios };
+  const problemas = [
+    ...priceIssues(resultado),
+    // Un evento publicado ya lo ven otros squads: no puede quedar sin los datos que se exigieron para publicarlo
+    ...(antes.estado_gestion === 'PUBLICADO' ? camposFaltantes(resultado, 'Un evento publicado no puede quedar sin este campo') : []),
+  ];
+  if (problemas.length > 0) throw new AppError(400, 'VALIDATION_ERROR', 'Hay campos inválidos.', problemas);
+  // Condición sobre el estado leído: si alguien lo publicó entre medio, no se aplican reglas viejas
+  const despues = await EventoModel.findOneAndUpdate(
+    { _id: antes._id, estado_gestion: antes.estado_gestion },
+    { $set: cambios },
+    { returnDocument: 'after' },
+  ).lean<EventoDoc>();
+  if (!despues) throw new AppError(409, 'EVENT_NOT_EDITABLE', 'El evento cambió de estado mientras se editaba. Vuelve a cargarlo.');
+  await notify({ kind: 'ACTUALIZADO', antes, evento: despues, idUsuario: organizerId });
+  return despues;
 }

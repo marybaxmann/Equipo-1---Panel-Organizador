@@ -71,6 +71,18 @@ describe('HU-01 Crear un evento', () => {
     expect(res.status).toBe(400);
   });
 
+  it('HU-07: un BORRADOR nuevo sólo se avisa a Entradas (Catálogo y Check-in no deben verlo)', async () => {
+    const res = await post({ ...valid, cantidad_entradas: 80, tipo_entrada: 'GRATUITA' });
+    const mensajes = await mongoose.connection.db!.collection('mensajes_salientes').find().toArray();
+    expect(mensajes).toHaveLength(1);
+    expect(mensajes[0]).toMatchObject({ topico: 'panel.evento.entradas.v1', tipo: 'evento_creado', estado: 'PENDIENTE' });
+    // Contrato Entradas v1.2 §3.1: los 8 campos del GET compartido
+    expect(mensajes[0]!.payload).toEqual({
+      id_evento: res.body.id_evento, id_usuario: ORG_A.id_usuario, nombre_evento: valid.nombre_evento,
+      fecha_evento: valid.fecha_evento, hora_evento: valid.hora_evento, cantidad_entradas: 80, tipo_entrada: 'GRATUITA', estado_gestion: 'BORRADOR',
+    });
+  });
+
   it('HU-06: 401 sin sesión y 403 si no es organizador', async () => {
     expect((await request(ctx.app).post(URL).send(valid)).status).toBe(401);
     expect((await post(valid, 'token-asistente')).status).toBe(403);

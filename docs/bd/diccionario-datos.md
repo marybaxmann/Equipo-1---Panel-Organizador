@@ -55,6 +55,34 @@ Historial de cambios de estado de gestión de cada evento. Origen de los datos '
 
 ---
 
+## Colección: `mensajes_salientes`
+
+Outbox (ADR-0003): mensajes que Panel debe publicar en el broker para los otros squads. Se escribe después de guardar el cambio del evento; un publicador los envía y marca ENVIADO.
+
+| Campo | Tipo | Nulo | Clave | Restricciones | Descripción |
+|---|---|---|---|---|---|
+| _id | objectId | NO | PK |  | [PK] Identificador único del mensaje. |
+| id_evento | objectId | NO | FK |  | [FK eventos._id] Evento al que se refiere el mensaje. |
+| topico | string | NO |  | minLength: 1 | Tópico del broker (configurable por variable de entorno, por ejemplo panel.evento.catalogo.v1). |
+| tipo | string | NO |  | minLength: 1 | Tipo de mensaje del sobre: evento_creado, evento_publicado, evento_actualizado o evento_reprogramado. |
+| version | int | NO |  | min: 1 | Versión del formato del mensaje. |
+| fecha_cambio | date | NO |  |  | Fecha y hora del cambio del evento que originó el mensaje. |
+| payload | object | NO |  |  | Cuerpo del mensaje, con los campos que define el contrato del squad consumidor. |
+| estado | string (enum) | NO |  | enum: PENDIENTE, ENVIANDO, ENVIADO, FALLIDO | Estado de envío al broker. ENVIANDO: reservado por el publicador mientras espera la confirmación del broker. |
+| intentos | int | NO |  | min: 0 | Intentos de envío realizados. |
+| ultimo_error | string | SI |  |  | Último error de envío. Nulo si no hubo errores. |
+| fecha_creacion | date | NO |  |  | Fecha y hora en que se registró el mensaje. |
+| fecha_envio | date | SI |  |  | Fecha y hora en que el broker aceptó el mensaje. Nulo mientras está pendiente. |
+
+### Índices
+
+| Nombre | Campos | Propósito |
+|---|---|---|
+| _id_ | _id | PK (índice automático de MongoDB) |
+| ix_mensajes_estado_fecha | estado, fecha_creacion | Outbox (INT-02): el publicador toma los mensajes PENDIENTE en orden de llegada |
+
+---
+
 ## Convenciones de nomenclatura
 - Colecciones en snake_case plural y en español.
 - Campos snake_case en español, iguales a los contratos.

@@ -1,6 +1,6 @@
 # ADR-0009 — HU-04 (publicar evento) adelantada al Sprint 1
 
-- **Estado:** Propuesta (implementado en Sprint 1; pendiente de revisión del equipo y de la Scrum Master para el tablero)
+- **Estado:** Aceptado (29/10/2026: HU-04 se cerró con el outbox; el aviso a otros squads queda en HU-07)
 - **Fecha:** 2026-09-30
 - **Responsables:** Backend (Joaquín) · Gestión (Mariajosé) para reflejarlo en GitHub
 - **Afecta a:** HU-04 (#4) · planificación de sprints · rúbrica GE1/GE3

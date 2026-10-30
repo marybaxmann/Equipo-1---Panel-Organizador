@@ -51,17 +51,17 @@ El PATCH del backend ya está en `main`, así que el front y Postman pueden avan
 
 ### Alonso — Frontend (HU-02)
 
-- [ ] Pantalla Editar en `/mis-eventos/:idEvento/editar`, reutilizando el formulario de `NuevoEventoPage.jsx` precargado con `obtenerEvento()`.
-- [ ] El lápiz de la tarjeta y el botón Editar del Detalle llevan a esa pantalla (se quita el modal "Sprint 2").
-- [ ] Botón Publicar en el Detalle, con el mismo modal de confirmación que en Mis eventos.
-- [ ] Mostrar los errores 400 bajo cada campo (`detalles[].campo`) y el 409 como aviso.
+- [x] Pantalla Editar en `/mis-eventos/:idEvento/editar`, reutilizando el formulario de `NuevoEventoPage.jsx` precargado con `obtenerEvento()`.
+- [x] El lápiz de la tarjeta y el botón Editar del Detalle llevan a esa pantalla (se quita el modal "Sprint 2").
+- [x] Botón Publicar en el Detalle, con el mismo modal de confirmación que en Mis eventos.
+- [x] Mostrar los errores 400 bajo cada campo (`detalles[].campo`) y el 409 como aviso.
 - [ ] Corregir las desviaciones del estándar visual que lista [`ui/estandares-ui.md`](ui/estandares-ui.md) (UI3).
 
 ### Etienne — Integración (INT-03, INT-04)
 
 - [ ] Cerrar con Catálogo, Entradas, Check-in y Notificaciones el broker y los nombres de tópico. Dejarlo escrito en los contratos y en ADR-0003.
 - [ ] Confirmar con Entradas el endpoint de stock y qué hace al recibir CANCELADO.
-- [ ] Carpeta "08 Sprint 2" en Postman junto con Christopher (ver [Cómo funciona Postman](#cómo-funciona-postman)).
+- [x] Carpeta "08 Sprint 2" en Postman junto con Christopher (ver [Cómo funciona Postman](#cómo-funciona-postman)).
 
 ### Christopher — QA / Base de Datos
 
@@ -71,9 +71,9 @@ El PATCH del backend ya está en `main`, así que el front y Postman pueden avan
 
 ### Mariajosé — Scrum Master
 
-- [ ] Tablero al día: HU-02 e INT-02 en *In progress* y luego *Done*. INT-03 e INT-04 con comentario de qué quedó hecho y qué espera a los otros squads.
-- [ ] Cerrar HU-04 cuando el mensaje al broker quede escrito (su comentario lo condiciona a HU-07; conviene decidir si se cierra con el outbox).
-- [ ] Minuta de acuerdos con los otros squads y guion de la demo del Avance 2.
+- [x] Tablero al día: HU-02 e INT-02 en *In progress* y luego *Done*. INT-03 e INT-04 con comentario de qué quedó hecho y qué espera a los otros squads.
+- [x] Cerrar HU-04 cuando el mensaje al broker quede escrito (su comentario lo condiciona a HU-07; conviene decidir si se cierra con el outbox).
+- [x] Minuta de acuerdos con los otros squads y guion de la demo del Avance 2.
 
 ## Levantar todo en local
 

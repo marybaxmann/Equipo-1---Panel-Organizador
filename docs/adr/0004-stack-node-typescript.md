@@ -1,6 +1,6 @@
 # ADR-0004 — Stack: Node.js + TypeScript + Express + Zod
 
-- **Estado:** Propuesta (implementado en Sprint 1; pendiente de revisión del equipo). Reemplaza a la propuesta de [ADR-0001](0001-stack-del-panel-organizador.md), que fue rechazada
+- **Estado:** Aceptado (29/10/2026: HU-04 se cerró con el outbox; el aviso a otros squads queda en HU-07).
 - **Fecha:** 2026-09-29
 - **Responsable del área:** Backend (Joaquín Martínez)
 - **Afecta a:** todo el backend

@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Panel Organizador - Integración (CA2)" tests="25" time="0.260">
-  <testsuite name="01 Auth (servicio consumido) / Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true" id="daab4757-c573-44aa-9ae2-a98065ae1324" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.020">
-    <testcase name="Status is 200" time="0.020" classname="01AuthServicioConsumidoCasoAuthDirectoTokenOrganizadorResultadoEsperado200ValidoTrue"/>
-    <testcase name="Es válido y organizador" time="0.020" classname="01AuthServicioConsumidoCasoAuthDirectoTokenOrganizadorResultadoEsperado200ValidoTrue"/>
+<testsuites name="Panel Organizador - Integración (CA2)" tests="25" time="0.458">
+  <testsuite name="01 Auth (servicio consumido) / Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true" id="0419f1ec-37ac-4be6-9d58-ab2ec10ce468" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.052">
+    <testcase name="Status is 200" time="0.052" classname="01AuthServicioConsumidoCasoAuthDirectoTokenOrganizadorResultadoEsperado200ValidoTrue"/>
+    <testcase name="Es válido y organizador" time="0.052" classname="01AuthServicioConsumidoCasoAuthDirectoTokenOrganizadorResultadoEsperado200ValidoTrue"/>
   </testsuite>
-  <testsuite name="01 Auth (servicio consumido) / Caso: Auth directo: token expirado / Resultado esperado: 401" id="e52d7f07-ef42-4047-a9f1-d018cc9173aa" timestamp="2026-10-28T00:01:29.486Z" tests="1" failures="0" errors="0" time="0.005">
-    <testcase name="Status is 401" time="0.005" classname="01AuthServicioConsumidoCasoAuthDirectoTokenExpiradoResultadoEsperado401"/>
+  <testsuite name="01 Auth (servicio consumido) / Caso: Auth directo: token expirado / Resultado esperado: 401" id="90fc12d7-3c9e-4ff4-ab69-8ab323751fd9" timestamp="2026-10-30T02:02:58.119Z" tests="1" failures="0" errors="0" time="0.006">
+    <testcase name="Status is 401" time="0.006" classname="01AuthServicioConsumidoCasoAuthDirectoTokenExpiradoResultadoEsperado401"/>
   </testsuite>
-  <testsuite name="01 Auth (servicio consumido) / Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID" id="cc418830-5946-4ece-8211-51b10cd42154" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.004">
-    <testcase name="Status is 401" time="0.004" classname="01AuthServicioConsumidoCasoPanelSinCookieResultadoEsperado401SessionInvalid"/>
-    <testcase name="Error es SESSION_INVALID" time="0.004" classname="01AuthServicioConsumidoCasoPanelSinCookieResultadoEsperado401SessionInvalid"/>
+  <testsuite name="01 Auth (servicio consumido) / Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID" id="bd04f494-572d-402b-b412-45be817afb39" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.009">
+    <testcase name="Status is 401" time="0.009" classname="01AuthServicioConsumidoCasoPanelSinCookieResultadoEsperado401SessionInvalid"/>
+    <testcase name="Error es SESSION_INVALID" time="0.009" classname="01AuthServicioConsumidoCasoPanelSinCookieResultadoEsperado401SessionInvalid"/>
   </testsuite>
-  <testsuite name="01 Auth (servicio consumido) / Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE" id="f4792363-9f45-4cbb-a2ea-3647b17301c2" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.004">
-    <testcase name="Status is 403" time="0.004" classname="01AuthServicioConsumidoCasoPanelConAsistenteResultadoEsperado403ForbiddenRole"/>
-    <testcase name="Error es FORBIDDEN_ROLE" time="0.004" classname="01AuthServicioConsumidoCasoPanelConAsistenteResultadoEsperado403ForbiddenRole"/>
+  <testsuite name="01 Auth (servicio consumido) / Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE" id="65365cc0-ea9b-4ebf-b823-87916ddcd296" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.058">
+    <testcase name="Status is 403" time="0.058" classname="01AuthServicioConsumidoCasoPanelConAsistenteResultadoEsperado403ForbiddenRole"/>
+    <testcase name="Error es FORBIDDEN_ROLE" time="0.058" classname="01AuthServicioConsumidoCasoPanelConAsistenteResultadoEsperado403ForbiddenRole"/>
   </testsuite>
-  <testsuite name="01 Auth (servicio consumido) / Caso: Panel con organizador (mis eventos) / Resultado esperado: 200" id="c5f5cd80-6fe8-49cd-a1b6-f00c9f1a020d" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.018">
-    <testcase name="Status is 200" time="0.018" classname="01AuthServicioConsumidoCasoPanelConOrganizadorMisEventosResultadoEsperado200"/>
-    <testcase name="Eventos con estados válidos y los 4 estados presentes (Org A)" time="0.018" classname="01AuthServicioConsumidoCasoPanelConOrganizadorMisEventosResultadoEsperado200"/>
+  <testsuite name="01 Auth (servicio consumido) / Caso: Panel con organizador (mis eventos) / Resultado esperado: 200" id="4eaa9c4f-9117-4d8e-af22-7fff06aea35a" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.035">
+    <testcase name="Status is 200" time="0.035" classname="01AuthServicioConsumidoCasoPanelConOrganizadorMisEventosResultadoEsperado200"/>
+    <testcase name="Eventos con estados válidos y los 4 estados presentes (Org A)" time="0.035" classname="01AuthServicioConsumidoCasoPanelConOrganizadorMisEventosResultadoEsperado200"/>
   </testsuite>
-  <testsuite name="02 Catálogo / Caso: Próximos / Resultado esperado: 200, no BORRADOR" id="50793ac3-9593-43c3-a2a8-ddb7d84dadf7" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.006">
-    <testcase name="Status is 200" time="0.006" classname="02CatalogoCasoProximosResultadoEsperado200NoBorrador"/>
-    <testcase name="Ningún evento en BORRADOR y trae estado_disponibilidad" time="0.006" classname="02CatalogoCasoProximosResultadoEsperado200NoBorrador"/>
+  <testsuite name="02 Catálogo / Caso: Próximos / Resultado esperado: 200, no BORRADOR" id="1d790125-9bc0-41d6-a812-8fdd61594bc8" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.040">
+    <testcase name="Status is 200" time="0.040" classname="02CatalogoCasoProximosResultadoEsperado200NoBorrador"/>
+    <testcase name="Ningún evento en BORRADOR y trae estado_disponibilidad" time="0.040" classname="02CatalogoCasoProximosResultadoEsperado200NoBorrador"/>
   </testsuite>
-  <testsuite name="02 Catálogo / Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO" id="258469be-5544-4890-8814-5b12edc3d829" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.005">
-    <testcase name="Status is 200" time="0.005" classname="02CatalogoCasoBuscarFeriaResultadoEsperado200TodosPublicado"/>
-    <testcase name="Todos PUBLICADO" time="0.005" classname="02CatalogoCasoBuscarFeriaResultadoEsperado200TodosPublicado"/>
+  <testsuite name="02 Catálogo / Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO" id="da054d4d-7d1a-4b7d-9c8c-a81a12ecc583" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.039">
+    <testcase name="Status is 200" time="0.039" classname="02CatalogoCasoBuscarFeriaResultadoEsperado200TodosPublicado"/>
+    <testcase name="Todos PUBLICADO" time="0.039" classname="02CatalogoCasoBuscarFeriaResultadoEsperado200TodosPublicado"/>
   </testsuite>
-  <testsuite name="02 Catálogo / Caso: Detalle de un BORRADOR / Resultado esperado: 404" id="653c2d7a-af9d-4664-9efd-0b4bddf7365d" timestamp="2026-10-28T00:01:29.486Z" tests="1" failures="0" errors="0" time="0.004">
-    <testcase name="Status is 404" time="0.004" classname="02CatalogoCasoDetalleDeUnBorradorResultadoEsperado404"/>
+  <testsuite name="02 Catálogo / Caso: Detalle de un BORRADOR / Resultado esperado: 404" id="bd56985a-3e36-4cc5-b207-7f2a536c252b" timestamp="2026-10-30T02:02:58.119Z" tests="1" failures="0" errors="0" time="0.011">
+    <testcase name="Status is 404" time="0.011" classname="02CatalogoCasoDetalleDeUnBorradorResultadoEsperado404"/>
   </testsuite>
-  <testsuite name="02 Catálogo / Caso: Detalle de un PUBLICADO / Resultado esperado: 200" id="9c615f89-0bab-456b-8a87-ec411b1ce94b" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.006">
-    <testcase name="Status is 200" time="0.006" classname="02CatalogoCasoDetalleDeUnPublicadoResultadoEsperado200"/>
-    <testcase name="Tiene schema del contrato" time="0.006" classname="02CatalogoCasoDetalleDeUnPublicadoResultadoEsperado200"/>
+  <testsuite name="02 Catálogo / Caso: Detalle de un PUBLICADO / Resultado esperado: 200" id="ff16018a-53ee-44c3-bff5-6724b0ca9f30" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.009">
+    <testcase name="Status is 200" time="0.009" classname="02CatalogoCasoDetalleDeUnPublicadoResultadoEsperado200"/>
+    <testcase name="Tiene schema del contrato" time="0.009" classname="02CatalogoCasoDetalleDeUnPublicadoResultadoEsperado200"/>
   </testsuite>
-  <testsuite name="03 Entradas / Caso: Evento por id (sesión staff) / Resultado esperado: 200" id="cd8a7e3d-e187-4053-a74f-9c36f47b83b0" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.019">
-    <testcase name="Status is 200" time="0.019" classname="03EntradasCasoEventoPorIdSesionStaffResultadoEsperado200"/>
-    <testcase name="Tiene los campos de los contratos de Entradas y Check-in" time="0.019" classname="03EntradasCasoEventoPorIdSesionStaffResultadoEsperado200"/>
+  <testsuite name="03 Entradas / Caso: Evento por id (sesión staff) / Resultado esperado: 200" id="7fdc5390-742a-4031-9ad5-d55eba37c3c8" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Status is 200" time="0.011" classname="03EntradasCasoEventoPorIdSesionStaffResultadoEsperado200"/>
+    <testcase name="Tiene los campos de los contratos de Entradas y Check-in" time="0.011" classname="03EntradasCasoEventoPorIdSesionStaffResultadoEsperado200"/>
   </testsuite>
-  <testsuite name="04 Check-in / Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento" id="4f334111-99e7-4f11-ba6f-e25d41e536c6" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.019">
-    <testcase name="Status is 200" time="0.019" classname="04CheckInCasoConsultaDeRespaldoConSesionStaffResultadoEsperado200ConHoraFinEvento"/>
-    <testcase name="Tiene hora_fin_evento y estado_gestion" time="0.019" classname="04CheckInCasoConsultaDeRespaldoConSesionStaffResultadoEsperado200ConHoraFinEvento"/>
+  <testsuite name="04 Check-in / Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento" id="fcedcae9-4ef7-4d2e-9e1a-ee3a936408ec" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.012">
+    <testcase name="Status is 200" time="0.012" classname="04CheckInCasoConsultaDeRespaldoConSesionStaffResultadoEsperado200ConHoraFinEvento"/>
+    <testcase name="Tiene hora_fin_evento y estado_gestion" time="0.012" classname="04CheckInCasoConsultaDeRespaldoConSesionStaffResultadoEsperado200ConHoraFinEvento"/>
   </testsuite>
-  <testsuite name="04 Check-in / Caso: Consulta sin sesión / Resultado esperado: 401" id="c598382b-e88c-420f-9e4c-869f0cd22fa2" timestamp="2026-10-28T00:01:29.486Z" tests="1" failures="0" errors="0" time="0.002">
-    <testcase name="Status is 401" time="0.002" classname="04CheckInCasoConsultaSinSesionResultadoEsperado401"/>
+  <testsuite name="04 Check-in / Caso: Consulta sin sesión / Resultado esperado: 401" id="a0eb5baa-b851-4c7a-ac14-5a7bf1e16ce3" timestamp="2026-10-30T02:02:58.119Z" tests="1" failures="0" errors="0" time="0.003">
+    <testcase name="Status is 401" time="0.003" classname="04CheckInCasoConsultaSinSesionResultadoEsperado401"/>
   </testsuite>
-  <testsuite name="04 Check-in / Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE" id="43243a54-f81e-4e65-948f-0ef438556f39" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.017">
-    <testcase name="Status is 403" time="0.017" classname="04CheckInCasoConsultaConRolAsistenteResultadoEsperado403ForbiddenRole"/>
-    <testcase name="Error es FORBIDDEN_ROLE" time="0.017" classname="04CheckInCasoConsultaConRolAsistenteResultadoEsperado403ForbiddenRole"/>
+  <testsuite name="04 Check-in / Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE" id="48d903b0-fdbb-486a-910a-d38a3afae398" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.006">
+    <testcase name="Status is 403" time="0.006" classname="04CheckInCasoConsultaConRolAsistenteResultadoEsperado403ForbiddenRole"/>
+    <testcase name="Error es FORBIDDEN_ROLE" time="0.006" classname="04CheckInCasoConsultaConRolAsistenteResultadoEsperado403ForbiddenRole"/>
   </testsuite>
-  <testsuite name="05 Notificaciones / Caso: Cambios de estado / Resultado esperado: 200" id="04088358-692b-417f-8e36-9335be804630" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.004">
-    <testcase name="Status is 200" time="0.004" classname="05NotificacionesCasoCambiosDeEstadoResultadoEsperado200"/>
-    <testcase name="tipo es evento_actualizado y está ordenado" time="0.004" classname="05NotificacionesCasoCambiosDeEstadoResultadoEsperado200"/>
+  <testsuite name="05 Notificaciones / Caso: Cambios de estado / Resultado esperado: 200" id="08acc61c-39af-4f02-ba67-3f7f3cda8ed8" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.013">
+    <testcase name="Status is 200" time="0.013" classname="05NotificacionesCasoCambiosDeEstadoResultadoEsperado200"/>
+    <testcase name="tipo es evento_actualizado y está ordenado" time="0.013" classname="05NotificacionesCasoCambiosDeEstadoResultadoEsperado200"/>
   </testsuite>
-  <testsuite name="06 Promociones / Caso: Eventos disponibles / Resultado esperado: 200" id="ada2c0d6-92c7-4767-a7c1-ab93d7825059" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.003">
-    <testcase name="Status is 200" time="0.003" classname="06PromocionesCasoEventosDisponiblesResultadoEsperado200"/>
-    <testcase name="Sólo IDs de PUBLICADO" time="0.003" classname="06PromocionesCasoEventosDisponiblesResultadoEsperado200"/>
+  <testsuite name="06 Promociones / Caso: Eventos disponibles / Resultado esperado: 200" id="72cfaf47-a177-4170-9d0f-00493ba89c2f" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.008">
+    <testcase name="Status is 200" time="0.008" classname="06PromocionesCasoEventosDisponiblesResultadoEsperado200"/>
+    <testcase name="Sólo IDs de PUBLICADO" time="0.008" classname="06PromocionesCasoEventosDisponiblesResultadoEsperado200"/>
   </testsuite>
-  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Crear evento / Resultado esperado: 201" id="519edd74-dbb7-41e1-9c5f-82dbedd08452" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.019">
-    <testcase name="Status is 201" time="0.019" classname="07FlujoHu01Hu05CasoCrearEventoResultadoEsperado201"/>
-    <testcase name="Guarda id_evento" time="0.019" classname="07FlujoHu01Hu05CasoCrearEventoResultadoEsperado201"/>
+  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Crear evento / Resultado esperado: 201" id="21100db7-bc7a-4f1f-a503-4c3b07c346b0" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.033">
+    <testcase name="Status is 201" time="0.033" classname="07FlujoHu01Hu05CasoCrearEventoResultadoEsperado201"/>
+    <testcase name="Guarda id_evento" time="0.033" classname="07FlujoHu01Hu05CasoCrearEventoResultadoEsperado201"/>
   </testsuite>
-  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado" id="959b9115-9152-472f-baa9-c7f0e359821d" timestamp="2026-10-28T00:01:29.486Z" tests="1" failures="0" errors="0" time="0.003">
-    <testcase name="El BORRADOR recién creado no aparece en Catálogo" time="0.003" classname="07FlujoHu01Hu05CasoEventoRecienCreadoNoVisibleEnCatalogoResultadoEsperado200SinElIdCreado"/>
+  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado" id="5f1e6158-9c40-4f1c-9cf0-4e197aeb650f" timestamp="2026-10-30T02:02:58.119Z" tests="1" failures="0" errors="0" time="0.007">
+    <testcase name="El BORRADOR recién creado no aparece en Catálogo" time="0.007" classname="07FlujoHu01Hu05CasoEventoRecienCreadoNoVisibleEnCatalogoResultadoEsperado200SinElIdCreado"/>
   </testsuite>
-  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Org B pide el evento de A / Resultado esperado: 403" id="cfdcbd32-553e-4aa5-8861-b6e69269c4f6" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.018">
-    <testcase name="Status is 403" time="0.018" classname="07FlujoHu01Hu05CasoOrgBPideElEventoDeAResultadoEsperado403"/>
-    <testcase name="Error es EVENT_NOT_OWNED" time="0.018" classname="07FlujoHu01Hu05CasoOrgBPideElEventoDeAResultadoEsperado403"/>
+  <testsuite name="07 Flujo HU-01->HU-05 / Caso: Org B pide el evento de A / Resultado esperado: 403" id="9670ad6f-1a95-45c9-b8c7-53bd2734d83e" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Status is 403" time="0.011" classname="07FlujoHu01Hu05CasoOrgBPideElEventoDeAResultadoEsperado403"/>
+    <testcase name="Error es EVENT_NOT_OWNED" time="0.011" classname="07FlujoHu01Hu05CasoOrgBPideElEventoDeAResultadoEsperado403"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Crear un borrador y guardar {{nuevoEventoId}} / Resultado esperado: 201" id="c44fc00e-02da-44b7-a165-3258f0f9afdf" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.023">
-    <testcase name="Status is 201" time="0.023" classname="08Sprint2CasoCrearUnBorradorYGuardarNuevoEventoIdResultadoEsperado201"/>
-    <testcase name="Guarda id_evento" time="0.023" classname="08Sprint2CasoCrearUnBorradorYGuardarNuevoEventoIdResultadoEsperado201"/>
+  <testsuite name="08 Sprint 2 / Caso: Crear un borrador y guardar {{nuevoEventoId}} / Resultado esperado: 201" id="e477425e-9184-4753-82a2-29c0446f13d9" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.022">
+    <testcase name="Status is 201" time="0.022" classname="08Sprint2CasoCrearUnBorradorYGuardarNuevoEventoIdResultadoEsperado201"/>
+    <testcase name="Guarda id_evento" time="0.022" classname="08Sprint2CasoCrearUnBorradorYGuardarNuevoEventoIdResultadoEsperado201"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Editarlo como Org A / Resultado esperado: 200 con el campo cambiado" id="0dde2c21-03c1-4751-a7b4-7efe589aef64" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.021">
-    <testcase name="Status is 200" time="0.021" classname="08Sprint2CasoEditarloComoOrgAResultadoEsperado200ConElCampoCambiado"/>
-    <testcase name="Campo nombre_evento cambiado" time="0.021" classname="08Sprint2CasoEditarloComoOrgAResultadoEsperado200ConElCampoCambiado"/>
+  <testsuite name="08 Sprint 2 / Caso: Editarlo como Org A / Resultado esperado: 200 con el campo cambiado" id="eb4ee9c7-1259-46ed-8e7b-16625ee90389" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.026">
+    <testcase name="Status is 200" time="0.026" classname="08Sprint2CasoEditarloComoOrgAResultadoEsperado200ConElCampoCambiado"/>
+    <testcase name="Campo nombre_evento cambiado" time="0.026" classname="08Sprint2CasoEditarloComoOrgAResultadoEsperado200ConElCampoCambiado"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Como Org B · sin cookie · cuerpo vacío / Resultado esperado: 403 · 401 · 400" id="995c7f0d-e8bf-41a1-9844-2bbb4fbbd28a" timestamp="2026-10-28T00:01:29.486Z" tests="4" failures="0" errors="0" time="0.013">
-    <testcase name="Status is 403 (Org B)" time="0.013" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
-    <testcase name="Error es EVENT_NOT_OWNED" time="0.013" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
-    <testcase name="Sin cookie da 401 SESSION_INVALID" time="0.013" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
-    <testcase name="Cuerpo vacío da 400 VALIDATION_ERROR" time="0.013" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
+  <testsuite name="08 Sprint 2 / Caso: Como Org B · sin cookie · cuerpo vacío / Resultado esperado: 403 · 401 · 400" id="1f41d15e-1089-485f-8f9e-4cc1fdd74e69" timestamp="2026-10-30T02:02:58.119Z" tests="4" failures="0" errors="0" time="0.016">
+    <testcase name="Status is 403 (Org B)" time="0.016" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
+    <testcase name="Error es EVENT_NOT_OWNED" time="0.016" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
+    <testcase name="Sin cookie da 401 SESSION_INVALID" time="0.016" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
+    <testcase name="Cuerpo vacío da 400 VALIDATION_ERROR" time="0.016" classname="08Sprint2CasoComoOrgBSinCookieCuerpoVacioResultadoEsperado403401400"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Publicarlo y pedirlo a Catálogo / Resultado esperado: 200 y 200" id="d7387694-6ed2-4236-98d4-2947ff33d058" timestamp="2026-10-28T00:01:29.486Z" tests="3" failures="0" errors="0" time="0.003">
-    <testcase name="Status is 200" time="0.003" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
-    <testcase name="Estado pasa a PUBLICADO" time="0.003" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
-    <testcase name="Catálogo devuelve 200 para el publicado" time="0.003" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
+  <testsuite name="08 Sprint 2 / Caso: Publicarlo y pedirlo a Catálogo / Resultado esperado: 200 y 200" id="d03e8a6e-cb9e-428a-8b03-edae2c606868" timestamp="2026-10-30T02:02:58.119Z" tests="3" failures="0" errors="0" time="0.005">
+    <testcase name="Status is 200" time="0.005" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
+    <testcase name="Estado pasa a PUBLICADO" time="0.005" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
+    <testcase name="Catálogo devuelve 200 para el publicado" time="0.005" classname="08Sprint2CasoPublicarloYPedirloACatalogoResultadoEsperado200Y200"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION" id="6bd51d0e-1508-4035-90d8-c6b11be02d6a" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.018">
-    <testcase name="Status is 409" time="0.018" classname="08Sprint2CasoPublicarloOtraVezResultadoEsperado409InvalidStateTransition"/>
-    <testcase name="Error es INVALID_STATE_TRANSITION" time="0.018" classname="08Sprint2CasoPublicarloOtraVezResultadoEsperado409InvalidStateTransition"/>
+  <testsuite name="08 Sprint 2 / Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION" id="aca2f227-fd22-408a-890f-8100617af08b" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.010">
+    <testcase name="Status is 409" time="0.010" classname="08Sprint2CasoPublicarloOtraVezResultadoEsperado409InvalidStateTransition"/>
+    <testcase name="Error es INVALID_STATE_TRANSITION" time="0.010" classname="08Sprint2CasoPublicarloOtraVezResultadoEsperado409InvalidStateTransition"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva" id="d57a1ffb-2e20-4969-9aa3-a227162866c7" timestamp="2026-10-28T00:01:29.486Z" tests="3" failures="0" errors="0" time="0.003">
-    <testcase name="Status is 200" time="0.003" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
-    <testcase name="Hora actualizada a 16:00" time="0.003" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
-    <testcase name="Catálogo devuelve la hora nueva" time="0.003" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
+  <testsuite name="08 Sprint 2 / Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva" id="62391a06-85bd-45eb-957a-98250a61eed4" timestamp="2026-10-30T02:02:58.119Z" tests="3" failures="0" errors="0" time="0.006">
+    <testcase name="Status is 200" time="0.006" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
+    <testcase name="Hora actualizada a 16:00" time="0.006" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
+    <testcase name="Catálogo devuelve la hora nueva" time="0.006" classname="08Sprint2CasoEditarElPublicadoHoraEventoResultadoEsperado200YCatalogoDevuelveLaHoraNueva"/>
   </testsuite>
-  <testsuite name="08 Sprint 2 / Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones" id="7cd5660f-4eca-4177-b002-a32c0eb07bfb" timestamp="2026-10-28T00:01:29.486Z" tests="2" failures="0" errors="0" time="0.003">
-    <testcase name="Status is 200" time="0.003" classname="08Sprint2CasoHistorialCambiosEstadoResultadoEsperado200Con2Transiciones"/>
-    <testcase name="Historial tiene 2 transiciones" time="0.003" classname="08Sprint2CasoHistorialCambiosEstadoResultadoEsperado200Con2Transiciones"/>
+  <testsuite name="08 Sprint 2 / Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones" id="ab75104a-ce3e-44c9-a145-3b9c1125e678" timestamp="2026-10-30T02:02:58.119Z" tests="2" failures="0" errors="0" time="0.010">
+    <testcase name="Status is 200" time="0.010" classname="08Sprint2CasoHistorialCambiosEstadoResultadoEsperado200Con2Transiciones"/>
+    <testcase name="Historial tiene 2 transiciones" time="0.010" classname="08Sprint2CasoHistorialCambiosEstadoResultadoEsperado200Con2Transiciones"/>
   </testsuite>
 </testsuites>

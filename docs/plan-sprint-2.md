@@ -261,8 +261,8 @@ Al probar todo el 20/10 aparecieron 5 diferencias entre lo acordado y lo que hac
 
 **Preguntas para cerrar esta semana:**
 
-- [ ] ¿Qué broker usa el curso (RabbitMQ, Kafka u otro) y quién lo levanta? Sin esto, HU-07 y HU-03 del Sprint 3 no pueden empezar. (Etienne, con la cátedra)
-- [ ] ¿Los otros squads confirman los tópicos `panel.evento.*.v1`? (Etienne)
-- [ ] ¿HU-04 queda cerrada con el outbox o se reabre hasta HU-07? Hoy está cerrada, pero su comentario dice que se cierra con HU-07. (Mariajosé)
-- [ ] ¿Editar un PUBLICADO puede cambiar `cantidad_entradas`? Entradas ya emitió stock con la cantidad anterior. (Etienne con Entradas)
-- [ ] ¿Notificaciones sigue usando `GET /cambios-estado` o pasa sólo a mensajes por broker (ver su contrato)? (Etienne)
+- [x] ¿Qué broker usa el curso y quién lo levanta? **Respondida 27/10:** el RabbitMQ compartido de la plataforma TicketU, que levanta la plataforma (ADR-0013).
+- [ ] ¿Los otros squads confirman los tópicos `panel.evento.*.v1`? **Parcial:** Entradas ya recibe los mensajes; la plataforma propone `evento.creado` / `evento.cancelado`. Pendiente de decisión (minuta, compromiso 2b).
+- [x] ¿HU-04 queda cerrada con el outbox o se reabre hasta HU-07? **Decidido 29/10:** queda cerrada; el aviso a otros squads es parte de HU-07 (comentario en #4).
+- [ ] ¿Editar un PUBLICADO puede cambiar `cantidad_entradas`? Sigue pendiente con Entradas.
+- [ ] ¿Notificaciones sigue usando `GET /cambios-estado`? **Parcial:** acordado que solo necesitan cancelación y reprogramación (minuta §1); falta confirmar el GET.

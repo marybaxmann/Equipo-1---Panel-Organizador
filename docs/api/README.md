@@ -68,7 +68,7 @@ Los endpoints del organizador piden la cookie `jwt`. Al iniciar sesión en el fr
    - Publicar sin `cantidad_entradas` o sin `tipo_entrada` → 400
 
 **Si preguntan:**
-- **¿Por qué no hay broker?** Los mensajes quedan en el outbox (ADR-0003). Hasta que el curso defina el broker, nada se pierde ni bloquea al organizador. El envío al broker es HU-07, en el Sprint 3.
+- - **¿Ya envían al broker?** Sí. El broker es el RabbitMQ compartido de la plataforma TicketU (exchange `ticketu.events`, ADR-0013) y el publicador ya está implementado. Cada cambio queda primero en el outbox (`mensajes_salientes`, ADR-0003) y un proceso lo envía a RabbitMQ; si el broker no está disponible, el mensaje queda `PENDIENTE` y se reintenta, así que nada se pierde ni bloquea al organizador. Falta la prueba contra el RabbitMQ real de la plataforma (HU-07, Sprint 3).
 - **¿Se puede cambiar el nombre de un tópico?** Sí. Los tópicos se leen de `.env` (`TOPIC_*`), así que cambiarlos no requiere tocar código.
 
 ## Sprint 3 — Eliminar y notificar (planificado)

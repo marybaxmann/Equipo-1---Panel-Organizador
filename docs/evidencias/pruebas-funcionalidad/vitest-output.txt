@@ -3,7 +3,7 @@
 > vitest run --reporter=verbose --reporter=junit --outputFile.junit=../docs/evidencias/pruebas-funcionalidad/vitest-junit.xml --coverage
 
 
- RUN  v3.2.7 /home/joaquinm/Universidad/Panel-Organizador/backend
+ RUN  v3.2.7 C:/Users/usuario/AppData/Local/Temp/claude/C--Users-usuario--claude-spares-spare-aYAjfq/51af301a-a13e-43fb-ae52-571dfe00952c/scratchpad/repo/backend
       Coverage enabled with v8
 
 stdout | tests/hu02-editar-evento.test.ts
@@ -39,6 +39,8 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: permite
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: permite modificar fecha, hora de inicio y hora de término
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: el dueño edita un BORRADOR, el cambio queda guardado y se informa con 200 163ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: permite modificar fecha, hora de inicio y hora de término 81ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > editar no cambia el estado ni agrega filas al historial de estados
 [db:init] eventos ok
 
@@ -63,9 +65,7 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR editado sólo se avisa a Entradas
 [db:seed] 7 eventos cargados
 
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: el dueño edita un BORRADOR, el cambio queda guardado y se informa con 200 50ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: permite modificar fecha, hora de inicio y hora de término 26ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > editar no cambia el estado ni agrega filas al historial de estados 15ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > editar no cambia el estado ni agrega filas al historial de estados 57ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: un PUBLICADO editado se comunica a Catálogo y Entradas; Check-in sólo si cambian nombre, dirección o fecha/hora
 [db:init] eventos ok
 
@@ -87,6 +87,8 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: una rep
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado)
 [db:init] mensajes_salientes ok
 
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR editado sólo se avisa a Entradas 60ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: un PUBLICADO editado se comunica a Catálogo y Entradas; Check-in sólo si cambian nombre, dirección o fecha/hora 76ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado)
 [db:seed] 7 eventos cargados
 
@@ -114,6 +116,8 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > Catálogo v
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > Catálogo ve el cambio de un evento publicado en sus consultas REST
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado) 54ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > enviar los mismos valores no genera mensajes 53ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: sólo BORRADOR o PUBLICADO son editables (FINALIZADO y CANCELADO → 409)
 [db:init] eventos ok
 
@@ -138,6 +142,9 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: valida 
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: valida la información (cuerpo vacío, campo desconocido, formato inválido, null en un obligatorio)
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > Catálogo ve el cambio de un evento publicado en sus consultas REST 48ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: sólo BORRADOR o PUBLICADO son editables (FINALIZADO y CANCELADO → 409) 41ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: valida la información (cuerpo vacío, campo desconocido, formato inválido, null en un obligatorio) 51ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada)
 [db:init] eventos ok
 
@@ -150,14 +157,6 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: reglas 
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada)
 [db:seed] 7 eventos cargados
 
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR editado sólo se avisa a Entradas 16ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: un PUBLICADO editado se comunica a Catálogo y Entradas; Check-in sólo si cambian nombre, dirección o fecha/hora 18ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado) 13ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > enviar los mismos valores no genera mensajes 12ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > Catálogo ve el cambio de un evento publicado en sus consultas REST 13ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: sólo BORRADOR o PUBLICADO son editables (FINALIZADO y CANCELADO → 409) 12ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: valida la información (cuerpo vacío, campo desconocido, formato inválido, null en un obligatorio) 12ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada) 18ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un PUBLICADO no puede quedar sin un dato obligatorio para publicar
 [db:init] eventos ok
 
@@ -170,6 +169,8 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un PUBLICAD
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un PUBLICADO no puede quedar sin un dato obligatorio para publicar
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada) 58ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un PUBLICADO no puede quedar sin un dato obligatorio para publicar 41ms
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR sí puede quedar sin datos opcionales
 [db:init] eventos ok
 
@@ -206,10 +207,40 @@ stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sin 
 stdout | tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sin sesión 401 · rol asistente 403 · Auth caído 503, y no se modifica nada
 [db:seed] 7 eventos cargados
 
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un PUBLICADO no puede quedar sin un dato obligatorio para publicar 12ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR sí puede quedar sin datos opcionales 11ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sólo el dueño (403), evento inexistente (404), id mal formado (400) 13ms
- ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sin sesión 401 · rol asistente 403 · Auth caído 503, y no se modifica nada 11ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > un BORRADOR sí puede quedar sin datos opcionales 43ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sólo el dueño (403), evento inexistente (404), id mal formado (400) 44ms
+ ✓ tests/hu02-editar-evento.test.ts > HU-02 Editar un evento > HU-06: sin sesión 401 · rol asistente 403 · Auth caído 503, y no se modifica nada 43ms
+stdout | tests/outbox-relay.test.ts
+[db:init] eventos ok
+
+stdout | tests/outbox-relay.test.ts
+[db:init] cambios_estado_evento ok
+
+stdout | tests/outbox-relay.test.ts
+[db:init] mensajes_salientes ok
+
+stdout | tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > publicar un evento por la API termina con todos sus mensajes ENVIADO
+[db:init] eventos ok
+
+stdout | tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > publicar un evento por la API termina con todos sus mensajes ENVIADO
+[db:init] cambios_estado_evento ok
+
+stdout | tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > publicar un evento por la API termina con todos sus mensajes ENVIADO
+[db:init] mensajes_salientes ok
+
+stdout | tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > publicar un evento por la API termina con todos sus mensajes ENVIADO
+[db:seed] 7 eventos cargados
+
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > un PENDIENTE se publica en el exchange con el tópico como routing key y queda ENVIADO 39ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > publicar un evento por la API termina con todos sus mensajes ENVIADO 144ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > respeta el orden de creación de los mensajes 30ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > si el broker rechaza un mensaje: suma un intento, guarda el error, lo deja PENDIENTE y corta la vuelta 34ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > al llegar al máximo de intentos el mensaje queda FALLIDO y no bloquea a los siguientes 26ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > con el broker caído no toca los mensajes ni gasta intentos 14ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > dos publicadores en paralelo nunca publican el mismo mensaje dos veces 85ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > al arrancar devuelve a PENDIENTE los mensajes que quedaron ENVIANDO por una caída 17ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > la espera entre vueltas crece con los errores seguidos y tiene un tope 4ms
+ ✓ tests/outbox-relay.test.ts > Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) > start y stop: publica en segundo plano y se detiene limpio 72ms
 stdout | tests/integraciones.test.ts
 [db:init] eventos ok
 
@@ -255,6 +286,8 @@ stdout | tests/integraciones.test.ts > Integración — Catálogo > buscar: cate
 stdout | tests/integraciones.test.ts > Integración — Catálogo > buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría
 [db:seed] 7 eventos cargados
 
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > próximos: sólo PUBLICADO con fecha futura, ordenados por fecha, con estado_disponibilidad 125ms
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: texto en nombre o descripción, case-insensitive, sólo PUBLICADO 67ms
 stdout | tests/integraciones.test.ts > Integración — Catálogo > buscar: caracteres de regex se tratan como texto literal
 [db:init] eventos ok
 
@@ -279,10 +312,6 @@ stdout | tests/integraciones.test.ts > Integración — Catálogo > buscar: body
 stdout | tests/integraciones.test.ts > Integración — Catálogo > buscar: body inválido → 400
 [db:seed] 7 eventos cargados
 
- ✓ tests/integraciones.test.ts > Integración — Catálogo > próximos: sólo PUBLICADO con fecha futura, ordenados por fecha, con estado_disponibilidad 49ms
- ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: texto en nombre o descripción, case-insensitive, sólo PUBLICADO 22ms
- ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría 11ms
- ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: caracteres de regex se tratan como texto literal 10ms
 stdout | tests/integraciones.test.ts > Integración — Catálogo > detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato
 [db:init] eventos ok
 
@@ -295,6 +324,9 @@ stdout | tests/integraciones.test.ts > Integración — Catálogo > detalle: BOR
 stdout | tests/integraciones.test.ts > Integración — Catálogo > detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato
 [db:seed] 7 eventos cargados
 
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría 36ms
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: caracteres de regex se tratan como texto literal 34ms
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: body inválido → 400 33ms
 stdout | tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > staff obtiene los campos de ambos contratos, con hora_fin_evento
 [db:init] eventos ok
 
@@ -331,6 +363,9 @@ stdout | tests/integraciones.test.ts > Integración — Entradas y Check-in (GET
 stdout | tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > un BORRADOR no se expone (404)
 [db:seed] 7 eventos cargados
 
+ ✓ tests/integraciones.test.ts > Integración — Catálogo > detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato 45ms
+ ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > staff obtiene los campos de ambos contratos, con hora_fin_evento 35ms
+ ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > organizador también puede consultar 33ms
 stdout | tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > sin sesión 401 · rol no autorizado 403 · Auth caído 503
 [db:init] eventos ok
 
@@ -364,6 +399,9 @@ stdout | tests/integraciones.test.ts > Integración — Notificaciones > histori
 stdout | tests/integraciones.test.ts > Integración — Notificaciones > historial de cambios de estado, más reciente primero
 [db:init] mensajes_salientes ok
 
+ ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > un BORRADOR no se expone (404) 32ms
+ ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > sin sesión 401 · rol no autorizado 403 · Auth caído 503 40ms
+ ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > id inexistente → 404 · id con formato inválido → 400 (Entradas §2.3, Check-in §3.4) 38ms
 stdout | tests/integraciones.test.ts > Integración — Notificaciones > historial de cambios de estado, más reciente primero
 [db:seed] 7 eventos cargados
 
@@ -391,16 +429,6 @@ stdout | tests/integraciones.test.ts > Integración — robustez > id inexistent
 stdout | tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /organizador/eventos/66f000000000000000000000
 [db:seed] 7 eventos cargados
 
- ✓ tests/integraciones.test.ts > Integración — Catálogo > buscar: body inválido → 400 10ms
- ✓ tests/integraciones.test.ts > Integración — Catálogo > detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato 13ms
- ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > staff obtiene los campos de ambos contratos, con hora_fin_evento 10ms
- ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > organizador también puede consultar 9ms
- ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > un BORRADOR no se expone (404) 10ms
- ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > sin sesión 401 · rol no autorizado 403 · Auth caído 503 12ms
- ✓ tests/integraciones.test.ts > Integración — Entradas y Check-in (GET compartido) > id inexistente → 404 · id con formato inválido → 400 (Entradas §2.3, Check-in §3.4) 12ms
- ✓ tests/integraciones.test.ts > Integración — Notificaciones > historial de cambios de estado, más reciente primero 12ms
- ✓ tests/integraciones.test.ts > Integración — Promociones > eventos disponibles: sólo PUBLICADO con id, nombre y fecha 11ms
- ✓ tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /organizador/eventos/66f000000000000000000000 10ms
 stdout | tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado
 [db:init] eventos ok
 
@@ -410,6 +438,9 @@ stdout | tests/integraciones.test.ts > Integración — robustez > id inexistent
 stdout | tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado
 [db:init] mensajes_salientes ok
 
+ ✓ tests/integraciones.test.ts > Integración — Notificaciones > historial de cambios de estado, más reciente primero 37ms
+ ✓ tests/integraciones.test.ts > Integración — Promociones > eventos disponibles: sólo PUBLICADO con id, nombre y fecha 34ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /organizador/eventos/66f000000000000000000000 33ms
 stdout | tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado
 [db:seed] 7 eventos cargados
 
@@ -449,6 +480,10 @@ stdout | tests/integraciones.test.ts > Integración — robustez > id con format
 stdout | tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /organizador/eventos/abcdefabcdef
 [db:seed] 7 eventos cargados
 
+ ✓ tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado 31ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /organizador/eventos/no-es-id 30ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /panel/eventos/no-es-id/cambios-estado 29ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /organizador/eventos/abcdefabcdef 29ms
 stdout | tests/integraciones.test.ts > Integración — robustez > ruta inexistente → 404 en JSON con el formato de error de la API
 [db:init] eventos ok
 
@@ -485,256 +520,9 @@ stdout | tests/integraciones.test.ts > Integración — robustez > swagger servi
 stdout | tests/integraciones.test.ts > Integración — robustez > swagger servido desde docs/api
 [db:seed] 7 eventos cargados
 
- ✓ tests/integraciones.test.ts > Integración — robustez > id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado 10ms
- ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /organizador/eventos/no-es-id 9ms
- ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /panel/eventos/no-es-id/cambios-estado 8ms
- ✓ tests/integraciones.test.ts > Integración — robustez > id con formato inválido → 400: /organizador/eventos/abcdefabcdef 8ms
- ✓ tests/integraciones.test.ts > Integración — robustez > ruta inexistente → 404 en JSON con el formato de error de la API 8ms
- ✓ tests/integraciones.test.ts > Integración — robustez > regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401 9ms
- ✓ tests/integraciones.test.ts > Integración — robustez > swagger servido desde docs/api 15ms
-stdout | tests/contrato-openapi.test.ts
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
-[db:seed] 7 eventos cargados
-
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento 61ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos 18ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento 13ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento 18ms
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
-[db:seed] 7 eventos cargados
-
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento 17ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error 11ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[] 11ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[] 15ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo 12ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion 12ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[] 11ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[] 10ms
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
-[db:seed] 7 eventos cargados
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
-[db:init] eventos ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
-[db:init] cambios_estado_evento ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
-[db:init] mensajes_salientes ok
-
-stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
-[db:seed] 7 eventos cargados
-
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error 10ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error 9ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error 9ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error 10ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error 8ms
- ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error 8ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > ruta inexistente → 404 en JSON con el formato de error de la API 29ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401 34ms
+ ✓ tests/integraciones.test.ts > Integración — robustez > swagger servido desde docs/api 29ms
 stdout | tests/hu04-publicar-evento.test.ts
 [db:init] eventos ok
 
@@ -768,6 +556,8 @@ stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: al 
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: al publicarse aparece en Catálogo (antes no era visible)
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: un BORRADOR propio pasa a PUBLICADO y queda registrado el cambio de estado 175ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: al publicarse aparece en Catálogo (antes no era visible) 67ms
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409)
 [db:init] eventos ok
 
@@ -792,9 +582,6 @@ stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: só
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo eventos propios (evento de B siendo A → 403)
 [db:seed] 7 eventos cargados
 
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: un BORRADOR propio pasa a PUBLICADO y queda registrado el cambio de estado 64ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: al publicarse aparece en Catálogo (antes no era visible) 20ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409) 10ms
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > exige hora_fin_evento para publicar (contrato Check-in v1.2)
 [db:init] eventos ok
 
@@ -807,6 +594,9 @@ stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > exige h
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > exige hora_fin_evento para publicar (contrato Check-in v1.2)
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409) 35ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo eventos propios (evento de B siendo A → 403) 35ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > exige hora_fin_evento para publicar (contrato Check-in v1.2) 66ms
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR
 [db:init] eventos ok
 
@@ -831,6 +621,8 @@ stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-07: 
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones
 [db:seed] 7 eventos cargados
 
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR 53ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones 48ms
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > un intento fallido no deja mensajes
 [db:init] eventos ok
 
@@ -855,28 +647,8 @@ stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-06: 
 stdout | tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404
 [db:seed] 7 eventos cargados
 
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: sólo eventos propios (evento de B siendo A → 403) 10ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > exige hora_fin_evento para publicar (contrato Check-in v1.2) 24ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR 15ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones 14ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > un intento fallido no deja mensajes 11ms
- ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404 11ms
-stdout | tests/hu05-mis-eventos.test.ts
-[db:init] eventos ok
-
-stdout | tests/hu05-mis-eventos.test.ts
-[db:init] cambios_estado_evento ok
-
-stdout | tests/hu05-mis-eventos.test.ts
-[db:init] mensajes_salientes ok
-
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: muestra únicamente los eventos del organizador, ordenados por fecha 63ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: cada evento trae nombre, fecha, ubicación y estado 7ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > filtra por estado_gestion y valida el filtro 11ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > devuelve lista vacía si no tiene eventos 3ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: permite seleccionar un evento propio (detalle) 7ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > HU-06: validación de propiedad — 403 al pedir el evento de otro organizador 6ms
- ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > 404 con id inexistente · 400 con id mal formado 4ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > un intento fallido no deja mensajes 35ms
+ ✓ tests/hu04-publicar-evento.test.ts > HU-04 Publicar un evento > HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404 41ms
 stdout | tests/hu01-crear-evento.test.ts
 [db:init] eventos ok
 
@@ -886,92 +658,503 @@ stdout | tests/hu01-crear-evento.test.ts
 stdout | tests/hu01-crear-evento.test.ts
 [db:init] mensajes_salientes ok
 
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > CA: crea el evento en BORRADOR asociado al organizador autenticado 50ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > registra el cambio de estado inicial (null → BORRADOR) 8ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > CA: valida campos obligatorios y devuelve el detalle por campo 4ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza un precio fuera de rango con 400 (no 500) 4ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza una fecha pasada 5ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza evento PAGADA sin precio 3ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > acepta campos opcionales y guarda precio entero 5ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > acepta un evento que termina después de medianoche (contrato Check-in v1.2 §3.2) 4ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: no permite imponer dueño ni estado desde el body 3ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-07: un BORRADOR nuevo sólo se avisa a Entradas (Catálogo y Check-in no deben verlo) 5ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: 401 sin sesión y 403 si no es organizador 3ms
- ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: 503 si Auth no está disponible y no crea nada 3ms
-stdout | tests/database-schema.test.ts
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > CA: crea el evento en BORRADOR asociado al organizador autenticado 114ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > registra el cambio de estado inicial (null → BORRADOR) 30ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > CA: valida campos obligatorios y devuelve el detalle por campo 20ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza un precio fuera de rango con 400 (no 500) 12ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza una fecha pasada 10ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > rechaza evento PAGADA sin precio 10ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > acepta campos opcionales y guarda precio entero 21ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > acepta un evento que termina después de medianoche (contrato Check-in v1.2 §3.2) 17ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: no permite imponer dueño ni estado desde el body 13ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-07: un BORRADOR nuevo sólo se avisa a Entradas (Catálogo y Check-in no deben verlo) 19ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: 401 sin sesión y 403 si no es organizador 17ms
+ ✓ tests/hu01-crear-evento.test.ts > HU-01 Crear un evento > HU-06: 503 si Auth no está disponible y no crea nada 14ms
+stdout | tests/contrato-openapi.test.ts
 [db:init] eventos ok
 
-stdout | tests/database-schema.test.ts
+stdout | tests/contrato-openapi.test.ts
 [db:init] cambios_estado_evento ok
 
-stdout | tests/database-schema.test.ts
+stdout | tests/contrato-openapi.test.ts
 [db:init] mensajes_salientes ok
 
-stdout | tests/database-schema.test.ts
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
 [db:init] eventos ok
 
-stdout | tests/database-schema.test.ts
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
 [db:init] cambios_estado_evento ok
 
-stdout | tests/database-schema.test.ts
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
 [db:init] mensajes_salientes ok
 
-stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
-[db:init] eventos ok
-
-stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
-[db:init] cambios_estado_evento ok
-
-stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
-[db:init] mensajes_salientes ok
-
-stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento
 [db:seed] 7 eventos cargados
 
- ✓ tests/database-schema.test.ts > database creation script > accepts a valid evento 3ms
- ✓ tests/database-schema.test.ts > database creation script > rejects evento with missing nombre_evento 2ms
- ✓ tests/database-schema.test.ts > database creation script > rejects evento with invalid estado_gestion 1ms
- ✓ tests/database-schema.test.ts > database creation script > rejects evento with invalid hora_evento 1ms
- ✓ tests/database-schema.test.ts > database creation script > rejects evento with extra field (other squad data) 1ms
- ✓ tests/database-schema.test.ts > database creation script > mensajes_salientes (outbox): acepta un mensaje PENDIENTE y rechaza un estado desconocido 3ms
- ✓ tests/database-schema.test.ts > database creation script > creates the expected indexes 1ms
- ✓ tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history 31ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > forwards the jwt cookie untouched and returns id_usuario and rol 27ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > maps 401 to SESSION_INVALID without retrying 9ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > maps valido:false to SESSION_INVALID 4ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > maps 403 to ACCESS_DENIED without retrying 4ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > maps 500 to AUTH_ERROR (502) without retrying 3ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > retries once on 503 and succeeds if the retry succeeds 4ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > fails secure with 503 after timeout + one retry 203ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > fails secure with 503 when Auth answers 503 twice 6ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos
+[db:seed] 7 eventos cargados
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos → Evento 186ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios → ListaMisEventos 85ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
+[db:init] mensajes_salientes ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/mios/{id} → Evento 62ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento
+[db:seed] 7 eventos cargados
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /panel/eventos/mios/{id}/publicar → Evento 90ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
+[db:init] mensajes_salientes ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > PATCH /panel/eventos/mios/{id} → Evento 78ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 409 → Error 70ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[]
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[]
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
+[db:init] mensajes_salientes ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/proximos → EventoCatalogo[] 59ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > POST /organizador/eventos/buscar → EventoCatalogo[] 58ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
+[db:init] mensajes_salientes ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /organizador/eventos/{id} → EventoCatalogo 52ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id} → EventoIntegracion 57ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[]
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[]
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
+[db:init] eventos ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos/{id}/cambios-estado → CambioEstado[] 65ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > GET /panel/eventos-disponibles → EventoPromocion[] 55ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
+[db:init] mensajes_salientes ok
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 → Error 66ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 401 → Error 53ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error
+[db:seed] 7 eventos cargados
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 403 → Error 58ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 → Error 64ms
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error
+[db:seed] 7 eventos cargados
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
+[db:init] eventos ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
+[db:init] cambios_estado_evento ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
+[db:init] mensajes_salientes ok
+
+stdout | tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error
+[db:seed] 7 eventos cargados
+
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 400 id inválido → Error 51ms
+ ✓ tests/contrato-openapi.test.ts > Contrato OpenAPI (docs/api/openapi.yaml) > 404 ruta inexistente → Error 39ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > forwards the jwt cookie untouched and returns id_usuario and rol 51ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > maps 401 to SESSION_INVALID without retrying 34ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > maps valido:false to SESSION_INVALID 11ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > maps 403 to ACCESS_DENIED without retrying 18ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > maps 500 to AUTH_ERROR (502) without retrying 19ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > retries once on 503 and succeeds if the retry succeeds 32ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > fails secure with 503 after timeout + one retry 214ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > fails secure with 503 when Auth answers 503 twice 17ms
  ✓ tests/auth.client.test.ts > HttpAuthClient > fails secure with 503 when Auth is unreachable 1ms
- ✓ tests/auth.client.test.ts > HttpAuthClient > maps an unexpected body to AUTH_ERROR 3ms
- ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 401 without jwt cookie and never calls Auth 21ms
- ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 401 when Auth rejects the token (expired/invalid) 3ms
- ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 403 FORBIDDEN_ROLE when the user is not an organizer 2ms
- ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 503 when Auth is unavailable (fail-secure) 2ms
- ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > passes the Auth identity to the handler 2ms
- ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > CA: cambiar un tópico no requiere tocar código (se lee del entorno) 17ms
- ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > cada mensaje lleva el sobre versionado (version, tipo, fecha_cambio, id_evento) 1ms
- ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > un fallo de publicación se reintenta una vez y, si persiste, se registra sin interrumpir la operación 1ms
- ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > si el reintento funciona, no se registra error 0ms
+ ✓ tests/auth.client.test.ts > HttpAuthClient > maps an unexpected body to AUTH_ERROR 15ms
+stdout | tests/database-schema.test.ts
+[db:init] eventos ok
 
- Test Files  10 passed (10)
-      Tests  109 passed (109)
-   Start at  15:34:55
-   Duration  8.85s (transform 139ms, setup 0ms, collect 3.29s, tests 3.50s, environment 2ms, prepare 528ms)
+stdout | tests/database-schema.test.ts
+[db:init] cambios_estado_evento ok
 
-JUNIT report written to /home/joaquinm/Universidad/Panel-Organizador/docs/evidencias/pruebas-funcionalidad/vitest-junit.xml
+stdout | tests/database-schema.test.ts
+[db:init] mensajes_salientes ok
+
+stdout | tests/database-schema.test.ts
+[db:init] eventos ok
+
+stdout | tests/database-schema.test.ts
+[db:init] cambios_estado_evento ok
+
+stdout | tests/database-schema.test.ts
+[db:init] mensajes_salientes ok
+
+stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
+[db:init] eventos ok
+
+stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
+[db:init] cambios_estado_evento ok
+
+ ✓ tests/database-schema.test.ts > database creation script > accepts a valid evento 5ms
+ ✓ tests/database-schema.test.ts > database creation script > rejects evento with missing nombre_evento 6ms
+ ✓ tests/database-schema.test.ts > database creation script > rejects evento with invalid estado_gestion 2ms
+ ✓ tests/database-schema.test.ts > database creation script > rejects evento with invalid hora_evento 2ms
+ ✓ tests/database-schema.test.ts > database creation script > rejects evento with extra field (other squad data) 2ms
+ ✓ tests/database-schema.test.ts > database creation script > mensajes_salientes (outbox): acepta un mensaje PENDIENTE y rechaza un estado desconocido 7ms
+ ✓ tests/database-schema.test.ts > database creation script > creates the expected indexes 3ms
+stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
+[db:init] mensajes_salientes ok
+
+stdout | tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history
+[db:seed] 7 eventos cargados
+
+ ✓ tests/database-schema.test.ts > demo seed > loads 7 valid events (validator on) with 4 states for Org A and a coherent history 109ms
+stdout | tests/hu05-mis-eventos.test.ts
+[db:init] eventos ok
+
+stdout | tests/hu05-mis-eventos.test.ts
+[db:init] cambios_estado_evento ok
+
+stdout | tests/hu05-mis-eventos.test.ts
+[db:init] mensajes_salientes ok
+
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: muestra únicamente los eventos del organizador, ordenados por fecha 175ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: cada evento trae nombre, fecha, ubicación y estado 28ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > filtra por estado_gestion y valida el filtro 55ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > devuelve lista vacía si no tiene eventos 13ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > CA: permite seleccionar un evento propio (detalle) 27ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > HU-06: validación de propiedad — 403 al pedir el evento de otro organizador 30ms
+ ✓ tests/hu05-mis-eventos.test.ts > HU-05 Ver mis eventos > 404 con id inexistente · 400 con id mal formado 21ms
+stdout | tests/gateway-prefix.test.ts
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1 148ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1 71ms
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1 51ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1 46ms
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1 45ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1 48ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1 42ms
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1
+[db:seed] 7 eventos cargados
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > las escrituras del organizador también funcionan por el prefijo del Gateway
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > las escrituras del organizador también funcionan por el prefijo del Gateway
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > las escrituras del organizador también funcionan por el prefijo del Gateway
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > las escrituras del organizador también funcionan por el prefijo del Gateway
+[db:seed] 7 eventos cargados
+
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1 42ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1 35ms
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404
+[db:init] eventos ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404
+[db:init] cambios_estado_evento ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404
+[db:init] mensajes_salientes ok
+
+stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404
+[db:seed] 7 eventos cargados
+
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > las escrituras del organizador también funcionan por el prefijo del Gateway 59ms
+ ✓ tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizador/v1) > una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404 32ms
+ ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > CA: cambiar un tópico no requiere tocar código (se lee del entorno) 33ms
+ ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > cada mensaje lleva el sobre versionado (version, tipo, fecha_cambio, id_evento) 2ms
+ ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > un fallo de publicación se reintenta una vez y, si persiste, se registra sin interrumpir la operación 3ms
+ ✓ tests/int02-mensajeria.test.ts > INT-02 Abstracción de publicación al broker > si el reintento funciona, no se registra error 1ms
+ ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 401 without jwt cookie and never calls Auth 37ms
+ ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 401 when Auth rejects the token (expired/invalid) 7ms
+ ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 403 FORBIDDEN_ROLE when the user is not an organizer 6ms
+ ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > 503 when Auth is unavailable (fail-secure) 6ms
+ ✓ tests/require-organizer.test.ts > HU-06 requireOrganizer > passes the Auth identity to the handler 7ms
+
+ Test Files  12 passed (12)
+      Tests  130 passed (130)
+   Start at  23:01:31
+   Duration  48.68s (transform 1.04s, setup 0ms, collect 19.26s, tests 22.38s, environment 4ms, prepare 2.29s)
+
+JUNIT report written to C:/Users/usuario/AppData/Local/Temp/claude/C--Users-usuario--claude-spares-spare-aYAjfq/51af301a-a13e-43fb-ae52-571dfe00952c/scratchpad/repo/docs/evidencias/pruebas-funcionalidad/vitest-junit.xml
  % Coverage report from v8
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------|---------|----------|---------|---------|-------------------
-All files          |   93.99 |    92.37 |   96.82 |   93.99 |                   
- src               |   57.14 |    66.66 |      50 |   57.14 |                   
+All files          |   86.53 |    91.57 |   96.05 |   86.53 |                   
+ src               |   40.35 |       75 |      50 |   40.35 |                   
   app.ts           |     100 |      100 |     100 |     100 |                   
-  server.ts        |       0 |        0 |       0 |       0 | 1-16              
+  server.ts        |       0 |        0 |       0 |       0 | 1-38              
  src/config        |       0 |        0 |       0 |       0 |                   
-  env.ts           |       0 |        0 |       0 |       0 | 1-13              
+  env.ts           |       0 |        0 |       0 |       0 | 1-18              
  src/core          |     100 |      100 |     100 |     100 |                   
   time.ts          |     100 |      100 |     100 |     100 |                   
  src/core/errors   |     100 |      100 |     100 |     100 |                   
@@ -997,9 +1180,10 @@ All files          |   93.99 |    92.37 |   96.82 |   93.99 |
  .../integraciones |     100 |      100 |     100 |     100 |                   
   ...ion.routes.ts |     100 |      100 |     100 |     100 |                   
   ...on.service.ts |     100 |      100 |     100 |     100 |                   
- ...les/mensajeria |     100 |    94.87 |     100 |     100 |                   
+ ...les/mensajeria |   82.93 |    90.78 |   96.15 |   82.93 |                   
   ...-publisher.ts |     100 |      100 |     100 |     100 |                   
   ...o.notifier.ts |     100 |    93.93 |     100 |     100 | 44,102            
   ....publisher.ts |     100 |      100 |     100 |     100 |                   
+  outbox.relay.ts  |    69.5 |    86.48 |    92.3 |    69.5 | 134-137,161-203   
   topics.ts        |     100 |      100 |     100 |     100 |                   
 -------------------|---------|----------|---------|---------|-------------------

@@ -1,261 +1,233 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="109" failures="0" errors="0" time="3.501055518">
-    <testsuite name="tests/auth.client.test.ts" timestamp="2026-10-20T18:35:04.731Z" hostname="JotaM" tests="10" failures="0" errors="0" skipped="0" time="0.265414363">
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; forwards the jwt cookie untouched and returns id_usuario and rol" time="0.027452481">
+<testsuites name="vitest tests" tests="130" failures="0" errors="0" time="22.3780165">
+    <testsuite name="tests/auth.client.test.ts" timestamp="2026-10-30T02:02:20.239Z" hostname="DESKTOP-TT50K53" tests="10" failures="0" errors="0" skipped="0" time="0.4167242">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; forwards the jwt cookie untouched and returns id_usuario and rol" time="0.0512187">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 401 to SESSION_INVALID without retrying" time="0.00910234">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 401 to SESSION_INVALID without retrying" time="0.034187">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps valido:false to SESSION_INVALID" time="0.003595996">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps valido:false to SESSION_INVALID" time="0.0109394">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 403 to ACCESS_DENIED without retrying" time="0.004246411">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 403 to ACCESS_DENIED without retrying" time="0.0183807">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 500 to AUTH_ERROR (502) without retrying" time="0.002933168">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps 500 to AUTH_ERROR (502) without retrying" time="0.0188338">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; retries once on 503 and succeeds if the retry succeeds" time="0.004126106">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; retries once on 503 and succeeds if the retry succeeds" time="0.0324737">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 after timeout + one retry" time="0.203125801">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 after timeout + one retry" time="0.2141712">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth answers 503 twice" time="0.00591676">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth answers 503 twice" time="0.017261">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth is unreachable" time="0.000531212">
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; fails secure with 503 when Auth is unreachable" time="0.0012273">
         </testcase>
-        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps an unexpected body to AUTH_ERROR" time="0.003028867">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/contrato-openapi.test.ts" timestamp="2026-10-20T18:35:04.733Z" hostname="JotaM" tests="18" failures="0" errors="0" skipped="0" time="0.54409115">
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos → Evento" time="0.060595565">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios → ListaMisEventos" time="0.017549875">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios/{id} → Evento" time="0.01303839">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos/mios/{id}/publicar → Evento" time="0.018496273">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; PATCH /panel/eventos/mios/{id} → Evento" time="0.016701671">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 409 → Error" time="0.010509407">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/proximos → EventoCatalogo[]" time="0.011320942">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /organizador/eventos/buscar → EventoCatalogo[]" time="0.01462328">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/{id} → EventoCatalogo" time="0.012318886">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id} → EventoIntegracion" time="0.012339785">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id}/cambios-estado → CambioEstado[]" time="0.010846546">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos-disponibles → EventoPromocion[]" time="0.010454064">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 400 → Error" time="0.010062802">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 401 → Error" time="0.009299267">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 403 → Error" time="0.009463724">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 404 → Error" time="0.009979186">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 400 id inválido → Error" time="0.008259354">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 404 ruta inexistente → Error" time="0.008299189">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
+        <testcase classname="tests/auth.client.test.ts" name="HttpAuthClient &gt; maps an unexpected body to AUTH_ERROR" time="0.0151816">
         </testcase>
     </testsuite>
-    <testsuite name="tests/database-schema.test.ts" timestamp="2026-10-20T18:35:04.738Z" hostname="JotaM" tests="8" failures="0" errors="0" skipped="0" time="0.294904068">
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; accepts a valid evento" time="0.003407204">
+    <testsuite name="tests/contrato-openapi.test.ts" timestamp="2026-10-30T02:02:20.245Z" hostname="DESKTOP-TT50K53" tests="18" failures="0" errors="0" skipped="0" time="2.8697287">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos → Evento" time="0.1862079">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with missing nombre_evento" time="0.002154093">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios → ListaMisEventos" time="0.0854017">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid estado_gestion" time="0.000719263">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/mios/{id} → Evento" time="0.0622654">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid hora_evento" time="0.000691361">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /panel/eventos/mios/{id}/publicar → Evento" time="0.0896195">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with extra field (other squad data)" time="0.000617023">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; PATCH /panel/eventos/mios/{id} → Evento" time="0.078487">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; mensajes_salientes (outbox): acepta un mensaje PENDIENTE y rechaza un estado desconocido" time="0.002904605">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 409 → Error" time="0.0696525">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; creates the expected indexes" time="0.000940507">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/proximos → EventoCatalogo[]" time="0.0594494">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
         </testcase>
-        <testcase classname="tests/database-schema.test.ts" name="demo seed &gt; loads 7 valid events (validator on) with 4 states for Org A and a coherent history" time="0.030585872">
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; POST /organizador/eventos/buscar → EventoCatalogo[]" time="0.0581237">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /organizador/eventos/{id} → EventoCatalogo" time="0.0523697">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id} → EventoIntegracion" time="0.0570199">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos/{id}/cambios-estado → CambioEstado[]" time="0.0645952">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; GET /panel/eventos-disponibles → EventoPromocion[]" time="0.0551409">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 400 → Error" time="0.0661558">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 401 → Error" time="0.0525684">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 403 → Error" time="0.0575642">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 404 → Error" time="0.0643036">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 400 id inválido → Error" time="0.0507865">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/contrato-openapi.test.ts" name="Contrato OpenAPI (docs/api/openapi.yaml) &gt; 404 ruta inexistente → Error" time="0.0391116">
             <system-out>
 [db:init] eventos ok
 
@@ -268,202 +240,22 @@
             </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="tests/hu01-crear-evento.test.ts" timestamp="2026-10-20T18:35:04.739Z" hostname="JotaM" tests="12" failures="0" errors="0" skipped="0" time="0.386600885">
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: crea el evento en BORRADOR asociado al organizador autenticado" time="0.050094045">
+    <testsuite name="tests/database-schema.test.ts" timestamp="2026-10-30T02:02:20.260Z" hostname="DESKTOP-TT50K53" tests="8" failures="0" errors="0" skipped="0" time="1.7621948">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; accepts a valid evento" time="0.0051654">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; registra el cambio de estado inicial (null → BORRADOR)" time="0.007997827">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with missing nombre_evento" time="0.0060227">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: valida campos obligatorios y devuelve el detalle por campo" time="0.004496257">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid estado_gestion" time="0.0019283">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza un precio fuera de rango con 400 (no 500)" time="0.0035555">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with invalid hora_evento" time="0.0018316">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza una fecha pasada" time="0.004857211">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; rejects evento with extra field (other squad data)" time="0.0020919">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza evento PAGADA sin precio" time="0.003021012">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; mensajes_salientes (outbox): acepta un mensaje PENDIENTE y rechaza un estado desconocido" time="0.0072785">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta campos opcionales y guarda precio entero" time="0.00491545">
+        <testcase classname="tests/database-schema.test.ts" name="database creation script &gt; creates the expected indexes" time="0.0029019">
         </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta un evento que termina después de medianoche (contrato Check-in v1.2 §3.2)" time="0.004329616">
-        </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: no permite imponer dueño ni estado desde el body" time="0.003067228">
-        </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-07: un BORRADOR nuevo sólo se avisa a Entradas (Catálogo y Check-in no deben verlo)" time="0.00503335">
-        </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 401 sin sesión y 403 si no es organizador" time="0.003393368">
-        </testcase>
-        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 503 si Auth no está disponible y no crea nada" time="0.003256522">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/hu02-editar-evento.test.ts" timestamp="2026-10-20T18:35:04.740Z" hostname="JotaM" tests="15" failures="0" errors="0" skipped="0" time="0.541601629">
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: el dueño edita un BORRADOR, el cambio queda guardado y se informa con 200" time="0.050396263">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: permite modificar fecha, hora de inicio y hora de término" time="0.025871375">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; editar no cambia el estado ni agrega filas al historial de estados" time="0.015058621">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un BORRADOR editado sólo se avisa a Entradas" time="0.016456983">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: un PUBLICADO editado se comunica a Catálogo y Entradas; Check-in sólo si cambian nombre, dirección o fecha/hora" time="0.017947386">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado)" time="0.013346604">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; enviar los mismos valores no genera mensajes" time="0.011611163">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; Catálogo ve el cambio de un evento publicado en sus consultas REST" time="0.013487818">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: sólo BORRADOR o PUBLICADO son editables (FINALIZADO y CANCELADO → 409)" time="0.011523069">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: valida la información (cuerpo vacío, campo desconocido, formato inválido, null en un obligatorio)" time="0.011632344">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada)" time="0.01754787">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un PUBLICADO no puede quedar sin un dato obligatorio para publicar" time="0.011568684">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un BORRADOR sí puede quedar sin datos opcionales" time="0.01121841">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; HU-06: sólo el dueño (403), evento inexistente (404), id mal formado (400)" time="0.012841081">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; HU-06: sin sesión 401 · rol asistente 403 · Auth caído 503, y no se modifica nada" time="0.011454341">
+        <testcase classname="tests/database-schema.test.ts" name="demo seed &gt; loads 7 valid events (validator on) with 4 states for Org A and a coherent history" time="0.1085799">
             <system-out>
 [db:init] eventos ok
 
@@ -476,8 +268,8 @@
             </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="tests/hu04-publicar-evento.test.ts" timestamp="2026-10-20T18:35:04.744Z" hostname="JotaM" tests="9" failures="0" errors="0" skipped="0" time="0.467665071">
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: un BORRADOR propio pasa a PUBLICADO y queda registrado el cambio de estado" time="0.063852388">
+    <testsuite name="tests/gateway-prefix.test.ts" timestamp="2026-10-30T02:02:20.263Z" hostname="DESKTOP-TT50K53" tests="11" failures="0" errors="0" skipped="0" time="2.2429584">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /organizador/eventos/proximos responde igual por /api/v1 y por /api/organizador/v1" time="0.1475308">
             <system-out>
 [db:init] eventos ok
 
@@ -489,7 +281,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: al publicarse aparece en Catálogo (antes no era visible)" time="0.019589704">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; POST /organizador/eventos/buscar responde igual por /api/v1 y por /api/organizador/v1" time="0.0706901">
             <system-out>
 [db:init] eventos ok
 
@@ -501,7 +293,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409)" time="0.00989498">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /organizador/eventos/{id} responde igual por /api/v1 y por /api/organizador/v1" time="0.0510031">
             <system-out>
 [db:init] eventos ok
 
@@ -513,7 +305,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo eventos propios (evento de B siendo A → 403)" time="0.009987983">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos-disponibles responde igual por /api/v1 y por /api/organizador/v1" time="0.0459973">
             <system-out>
 [db:init] eventos ok
 
@@ -525,7 +317,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; exige hora_fin_evento para publicar (contrato Check-in v1.2)" time="0.024231263">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos/{id} (staff) responde igual por /api/v1 y por /api/organizador/v1" time="0.0450997">
             <system-out>
 [db:init] eventos ok
 
@@ -537,7 +329,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR" time="0.015082137">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos/{id}/cambios-estado responde igual por /api/v1 y por /api/organizador/v1" time="0.0475898">
             <system-out>
 [db:init] eventos ok
 
@@ -549,7 +341,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones" time="0.014230707">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos/mios responde igual por /api/v1 y por /api/organizador/v1" time="0.0422463">
             <system-out>
 [db:init] eventos ok
 
@@ -561,7 +353,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; un intento fallido no deja mensajes" time="0.010612349">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos/mios/{id} responde igual por /api/v1 y por /api/organizador/v1" time="0.0418834">
             <system-out>
 [db:init] eventos ok
 
@@ -573,7 +365,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404" time="0.011174039">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; GET /panel/eventos/mios sin cookie → 401 responde igual por /api/v1 y por /api/organizador/v1" time="0.034641">
             <system-out>
 [db:init] eventos ok
 
@@ -585,35 +377,7 @@
 
             </system-out>
         </testcase>
-    </testsuite>
-    <testsuite name="tests/hu05-mis-eventos.test.ts" timestamp="2026-10-20T18:35:04.746Z" hostname="JotaM" tests="7" failures="0" errors="0" skipped="0" time="0.388013475">
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: muestra únicamente los eventos del organizador, ordenados por fecha" time="0.063462411">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: cada evento trae nombre, fecha, ubicación y estado" time="0.007227598">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; filtra por estado_gestion y valida el filtro" time="0.011077769">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; devuelve lista vacía si no tiene eventos" time="0.002960179">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: permite seleccionar un evento propio (detalle)" time="0.007411702">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; HU-06: validación de propiedad — 403 al pedir el evento de otro organizador" time="0.005929665">
-        </testcase>
-        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; 404 con id inexistente · 400 con id mal formado" time="0.004073868">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/int02-mensajeria.test.ts" timestamp="2026-10-20T18:35:04.747Z" hostname="JotaM" tests="4" failures="0" errors="0" skipped="0" time="0.019924922">
-        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; CA: cambiar un tópico no requiere tocar código (se lee del entorno)" time="0.016685021">
-        </testcase>
-        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; cada mensaje lleva el sobre versionado (version, tipo, fecha_cambio, id_evento)" time="0.000753668">
-        </testcase>
-        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; un fallo de publicación se reintenta una vez y, si persiste, se registra sin interrumpir la operación" time="0.001036887">
-        </testcase>
-        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; si el reintento funciona, no se registra error" time="0.000255076">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/integraciones.test.ts" timestamp="2026-10-20T18:35:04.747Z" hostname="JotaM" tests="21" failures="0" errors="0" skipped="0" time="0.562755298">
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; próximos: sólo PUBLICADO con fecha futura, ordenados por fecha, con estado_disponibilidad" time="0.04910838">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; las escrituras del organizador también funcionan por el prefijo del Gateway" time="0.058608">
             <system-out>
 [db:init] eventos ok
 
@@ -625,235 +389,7 @@
 
             </system-out>
         </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: texto en nombre o descripción, case-insensitive, sólo PUBLICADO" time="0.022456027">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría" time="0.011407614">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: caracteres de regex se tratan como texto literal" time="0.009591122">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: body inválido → 400" time="0.009822153">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato" time="0.012861328">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; staff obtiene los campos de ambos contratos, con hora_fin_evento" time="0.009635806">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; organizador también puede consultar" time="0.009002772">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; un BORRADOR no se expone (404)" time="0.009537311">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; sin sesión 401 · rol no autorizado 403 · Auth caído 503" time="0.011981365">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; id inexistente → 404 · id con formato inválido → 400 (Entradas §2.3, Check-in §3.4)" time="0.011574175">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Notificaciones &gt; historial de cambios de estado, más reciente primero" time="0.01215517">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — Promociones &gt; eventos disponibles: sólo PUBLICADO con id, nombre y fecha" time="0.011398998">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inexistente → 404: /organizador/eventos/66f000000000000000000000" time="0.010196452">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado" time="0.009674828">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /organizador/eventos/no-es-id" time="0.008600502">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /panel/eventos/no-es-id/cambios-estado" time="0.008368589">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /organizador/eventos/abcdefabcdef" time="0.008425716">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; ruta inexistente → 404 en JSON con el formato de error de la API" time="0.008126687">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401" time="0.008902947">
-            <system-out>
-[db:init] eventos ok
-
-[db:init] cambios_estado_evento ok
-
-[db:init] mensajes_salientes ok
-
-[db:seed] 7 eventos cargados
-
-            </system-out>
-        </testcase>
-        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; swagger servido desde docs/api" time="0.014931084">
+        <testcase classname="tests/gateway-prefix.test.ts" name="Prefijo del API Gateway (/api/organizador/v1) &gt; una ruta inexistente bajo el prefijo del Gateway responde el error estándar 404" time="0.0323097">
             <system-out>
 [db:init] eventos ok
 
@@ -866,16 +402,646 @@
             </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="tests/require-organizer.test.ts" timestamp="2026-10-20T18:35:04.753Z" hostname="JotaM" tests="5" failures="0" errors="0" skipped="0" time="0.030084657">
-        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 without jwt cookie and never calls Auth" time="0.020513401">
+    <testsuite name="tests/hu01-crear-evento.test.ts" timestamp="2026-10-30T02:02:20.273Z" hostname="DESKTOP-TT50K53" tests="12" failures="0" errors="0" skipped="0" time="1.9891052">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: crea el evento en BORRADOR asociado al organizador autenticado" time="0.1135088">
         </testcase>
-        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 when Auth rejects the token (expired/invalid)" time="0.002595458">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; registra el cambio de estado inicial (null → BORRADOR)" time="0.0297959">
         </testcase>
-        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 403 FORBIDDEN_ROLE when the user is not an organizer" time="0.001769715">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; CA: valida campos obligatorios y devuelve el detalle por campo" time="0.0196094">
         </testcase>
-        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 503 when Auth is unavailable (fail-secure)" time="0.001603024">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza un precio fuera de rango con 400 (no 500)" time="0.0118558">
         </testcase>
-        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; passes the Auth identity to the handler" time="0.002491864">
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza una fecha pasada" time="0.0103669">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; rechaza evento PAGADA sin precio" time="0.0101356">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta campos opcionales y guarda precio entero" time="0.0213915">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; acepta un evento que termina después de medianoche (contrato Check-in v1.2 §3.2)" time="0.0167658">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: no permite imponer dueño ni estado desde el body" time="0.0133846">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-07: un BORRADOR nuevo sólo se avisa a Entradas (Catálogo y Check-in no deben verlo)" time="0.0190125">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 401 sin sesión y 403 si no es organizador" time="0.0165594">
+        </testcase>
+        <testcase classname="tests/hu01-crear-evento.test.ts" name="HU-01 Crear un evento &gt; HU-06: 503 si Auth no está disponible y no crea nada" time="0.0142492">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu02-editar-evento.test.ts" timestamp="2026-10-30T02:02:20.278Z" hostname="DESKTOP-TT50K53" tests="15" failures="0" errors="0" skipped="0" time="3.7322888">
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: el dueño edita un BORRADOR, el cambio queda guardado y se informa con 200" time="0.1627159">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: permite modificar fecha, hora de inicio y hora de término" time="0.0809703">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; editar no cambia el estado ni agrega filas al historial de estados" time="0.0572464">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un BORRADOR editado sólo se avisa a Entradas" time="0.0596742">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: un PUBLICADO editado se comunica a Catálogo y Entradas; Check-in sólo si cambian nombre, dirección o fecha/hora" time="0.0762334">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: una reprogramación de un PUBLICADO también avisa a Notificaciones (evento_reprogramado)" time="0.0540077">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; enviar los mismos valores no genera mensajes" time="0.0526355">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; Catálogo ve el cambio de un evento publicado en sus consultas REST" time="0.0483498">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: sólo BORRADOR o PUBLICADO son editables (FINALIZADO y CANCELADO → 409)" time="0.0409761">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: valida la información (cuerpo vacío, campo desconocido, formato inválido, null en un obligatorio)" time="0.0508332">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; CA: reglas cruzadas sobre el evento como quedaría (fecha pasada, precio ↔ tipo de entrada)" time="0.0578913">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un PUBLICADO no puede quedar sin un dato obligatorio para publicar" time="0.0410318">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; un BORRADOR sí puede quedar sin datos opcionales" time="0.0425782">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; HU-06: sólo el dueño (403), evento inexistente (404), id mal formado (400)" time="0.0439783">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu02-editar-evento.test.ts" name="HU-02 Editar un evento &gt; HU-06: sin sesión 401 · rol asistente 403 · Auth caído 503, y no se modifica nada" time="0.0426429">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu04-publicar-evento.test.ts" timestamp="2026-10-30T02:02:20.292Z" hostname="DESKTOP-TT50K53" tests="9" failures="0" errors="0" skipped="0" time="2.3122881">
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: un BORRADOR propio pasa a PUBLICADO y queda registrado el cambio de estado" time="0.1752639">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: al publicarse aparece en Catálogo (antes no era visible)" time="0.0667939">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo un BORRADOR puede publicarse (PUBLICADO → 409)" time="0.0350584">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: sólo eventos propios (evento de B siendo A → 403)" time="0.035281">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; exige hora_fin_evento para publicar (contrato Check-in v1.2)" time="0.0661682">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; CA: exige cantidad y tipo de entrada para publicar; el evento sigue en BORRADOR" time="0.0531848">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones" time="0.0478174">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; un intento fallido no deja mensajes" time="0.0352734">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/hu04-publicar-evento.test.ts" name="HU-04 Publicar un evento &gt; HU-06: sin sesión 401 · rol asistente 403 · id inexistente 404" time="0.0408838">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/hu05-mis-eventos.test.ts" timestamp="2026-10-30T02:02:20.300Z" hostname="DESKTOP-TT50K53" tests="7" failures="0" errors="0" skipped="0" time="2.1133238">
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: muestra únicamente los eventos del organizador, ordenados por fecha" time="0.1746326">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: cada evento trae nombre, fecha, ubicación y estado" time="0.027577">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; filtra por estado_gestion y valida el filtro" time="0.0553996">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; devuelve lista vacía si no tiene eventos" time="0.0129369">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; CA: permite seleccionar un evento propio (detalle)" time="0.0265907">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; HU-06: validación de propiedad — 403 al pedir el evento de otro organizador" time="0.0295769">
+        </testcase>
+        <testcase classname="tests/hu05-mis-eventos.test.ts" name="HU-05 Ver mis eventos &gt; 404 con id inexistente · 400 con id mal formado" time="0.0212954">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/int02-mensajeria.test.ts" timestamp="2026-10-30T02:02:20.304Z" hostname="DESKTOP-TT50K53" tests="4" failures="0" errors="0" skipped="0" time="0.0399211">
+        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; CA: cambiar un tópico no requiere tocar código (se lee del entorno)" time="0.0326751">
+        </testcase>
+        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; cada mensaje lleva el sobre versionado (version, tipo, fecha_cambio, id_evento)" time="0.002027">
+        </testcase>
+        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; un fallo de publicación se reintenta una vez y, si persiste, se registra sin interrumpir la operación" time="0.0025886">
+        </testcase>
+        <testcase classname="tests/int02-mensajeria.test.ts" name="INT-02 Abstracción de publicación al broker &gt; si el reintento funciona, no se registra error" time="0.0007016">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/integraciones.test.ts" timestamp="2026-10-30T02:02:20.306Z" hostname="DESKTOP-TT50K53" tests="21" failures="0" errors="0" skipped="0" time="2.4093674">
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; próximos: sólo PUBLICADO con fecha futura, ordenados por fecha, con estado_disponibilidad" time="0.1249308">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: texto en nombre o descripción, case-insensitive, sólo PUBLICADO" time="0.0670091">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: categoría y rango de fechas; excluye BORRADOR y FINALIZADO de la misma categoría" time="0.0359271">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: caracteres de regex se tratan como texto literal" time="0.0344744">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; buscar: body inválido → 400" time="0.0332968">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Catálogo &gt; detalle: BORRADOR no es visible (404); PUBLICADO devuelve el contrato" time="0.0445415">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; staff obtiene los campos de ambos contratos, con hora_fin_evento" time="0.0347895">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; organizador también puede consultar" time="0.0327518">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; un BORRADOR no se expone (404)" time="0.0318253">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; sin sesión 401 · rol no autorizado 403 · Auth caído 503" time="0.0400745">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Entradas y Check-in (GET compartido) &gt; id inexistente → 404 · id con formato inválido → 400 (Entradas §2.3, Check-in §3.4)" time="0.0377295">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Notificaciones &gt; historial de cambios de estado, más reciente primero" time="0.0368609">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — Promociones &gt; eventos disponibles: sólo PUBLICADO con id, nombre y fecha" time="0.0337409">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inexistente → 404: /organizador/eventos/66f000000000000000000000" time="0.032998">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id inexistente → 404: /panel/eventos/66f000000000000000000000/cambios-estado" time="0.030532">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /organizador/eventos/no-es-id" time="0.0298667">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /panel/eventos/no-es-id/cambios-estado" time="0.02919">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; id con formato inválido → 400: /organizador/eventos/abcdefabcdef" time="0.0292435">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; ruta inexistente → 404 en JSON con el formato de error de la API" time="0.0288873">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; regresión de orden de rutas: /panel/eventos/mios sin cookie sigue en 401" time="0.033679">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/integraciones.test.ts" name="Integración — robustez &gt; swagger servido desde docs/api" time="0.0294869">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/outbox-relay.test.ts" timestamp="2026-10-30T02:02:20.325Z" hostname="DESKTOP-TT50K53" tests="10" failures="0" errors="0" skipped="0" time="2.4247841">
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; un PENDIENTE se publica en el exchange con el tópico como routing key y queda ENVIADO" time="0.0389804">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; publicar un evento por la API termina con todos sus mensajes ENVIADO" time="0.1444276">
+            <system-out>
+[db:init] eventos ok
+
+[db:init] cambios_estado_evento ok
+
+[db:init] mensajes_salientes ok
+
+[db:seed] 7 eventos cargados
+
+            </system-out>
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; respeta el orden de creación de los mensajes" time="0.0300137">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; si el broker rechaza un mensaje: suma un intento, guarda el error, lo deja PENDIENTE y corta la vuelta" time="0.0335622">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; al llegar al máximo de intentos el mensaje queda FALLIDO y no bloquea a los siguientes" time="0.0258204">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; con el broker caído no toca los mensajes ni gasta intentos" time="0.0141973">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; dos publicadores en paralelo nunca publican el mismo mensaje dos veces" time="0.0854365">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; al arrancar devuelve a PENDIENTE los mensajes que quedaron ENVIANDO por una caída" time="0.0165748">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; la espera entre vueltas crece con los errores seguidos y tiene un tope" time="0.0041414">
+        </testcase>
+        <testcase classname="tests/outbox-relay.test.ts" name="Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013) &gt; start y stop: publica en segundo plano y se detiene limpio" time="0.0724987">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/require-organizer.test.ts" timestamp="2026-10-30T02:02:20.329Z" hostname="DESKTOP-TT50K53" tests="5" failures="0" errors="0" skipped="0" time="0.0653319">
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 without jwt cookie and never calls Auth" time="0.0371497">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 401 when Auth rejects the token (expired/invalid)" time="0.0067651">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 403 FORBIDDEN_ROLE when the user is not an organizer" time="0.0058427">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; 503 when Auth is unavailable (fail-secure)" time="0.0062999">
+        </testcase>
+        <testcase classname="tests/require-organizer.test.ts" name="HU-06 requireOrganizer &gt; passes the Auth identity to the handler" time="0.0065828">
         </testcase>
     </testsuite>
 </testsuites>

@@ -2,8 +2,8 @@
 
 ## Resultados
 - **Comando ejecutado**: `npm run test:report -w backend | tee docs/evidencias/pruebas-funcionalidad/vitest-output.txt`
-- **Fecha de ejecución**: 2026-10-20 (Sprint 2: HU-02, INT-02 y ajustes de HU-04)
-- **Resumen**: 109/109 tests exitosos · cobertura de sentencias 93.99 %.
+- **Fecha de ejecución**: 2026-10-29 (Sprint 2 y avance del Sprint 3: prefijo del API Gateway y relay del outbox a RabbitMQ)
+- **Resumen**: 130/130 tests exitosos en 12 archivos · cobertura de sentencias 86.53 %.
 
 ## Criterios de aceptación → tests
 
@@ -41,19 +41,21 @@
 | HU-06 | Validación de propiedad | `hu05-mis-eventos` › "403 al pedir el evento de otro organizador" |
 | HU-06 | Fail-secure si Auth no responde | `auth.client` › "fails secure with 503…" (×3) · `hu01` › "503 si Auth no está disponible y no crea nada" |
 
-## Conteo por archivo (109 tests)
+## Conteo por archivo (130 tests)
 
 | Archivo | Tests |
 |---|---|
 | `auth.client.test.ts` | 10 |
 | `contrato-openapi.test.ts` | 18 |
 | `database-schema.test.ts` | 8 |
+| `gateway-prefix.test.ts` | 11 |
 | `hu01-crear-evento.test.ts` | 12 |
 | `hu02-editar-evento.test.ts` | 15 |
 | `hu04-publicar-evento.test.ts` | 9 |
 | `hu05-mis-eventos.test.ts` | 7 |
 | `int02-mensajeria.test.ts` | 4 |
 | `integraciones.test.ts` | 21 |
+| `outbox-relay.test.ts` | 10 |
 | `require-organizer.test.ts` | 5 |
 
-Cobertura global del código backend: **93.99 %**.
+Cobertura global del código backend: **86.53 %**. Bajó respecto del 20/10 (93.99 %) porque se agregó el relay del outbox a RabbitMQ (`outbox.relay.ts`, 69.5 %): las ramas sin cubrir son las de reconexión con un broker real, que se prueban en la integración con la plataforma.

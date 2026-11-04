@@ -144,7 +144,16 @@ El sufijo `v1` identifica la versión del contrato. Un cambio incompatible gener
 - acordar política de ACK y reintentos.
 
 ---
+### 3.1.1 Estado al 03/11/2026 (acordado con Entradas)
 
+- **Mecanismo:** broker. RabbitMQ compartido de la plataforma, exchange `ticketu.events` (topic).
+- **Routing key:** `panel.evento.entradas.v1`. Entradas enlaza su cola a esta clave y a `panel.#`.
+- **Operaciones que se publican hoy:** `evento_creado` (al crear), `evento_publicado` (al publicar) y `evento_actualizado` (al editar). Cancelación y eliminación llegan con HU-03.
+- **Cuerpo:** los 8 campos del mensaje de arriba. El tipo de mensaje y su id viajan en las propiedades AMQP (ADR-0013).
+- **Consulta REST:** Entradas llama a `GET /api/organizador/v1/panel/eventos/{id_evento}` por el Gateway, reenviando la cookie `jwt` del usuario (`PANEL_SERVICE_URL=http://organizador-service:3000`).
+- **Pendiente:** campos adicionales que exige la colección `inventario_evento` de Entradas (por ejemplo `cantidad_entrada_reservada`). Hoy Entradas los completa con valores por defecto.
+
+  
 ### 3.2 Tipo de entrada
 
 Actualmente ambos contratos representan el mismo concepto, pero utilizan valores diferentes.

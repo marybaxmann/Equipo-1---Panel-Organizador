@@ -60,7 +60,7 @@ Panel publica cada cambio en el estado de los eventos en el exchange central de 
 El API Gateway unifica el acceso a todos los microservicios del ecosistema bajo un mismo host:
 
 * **Hostname en Host:** `http://localhost:8080`
-* **Hostname en Docker (`plataforma-eventos-net`):** `http://api-gateway:8080`
+* **Hostname en Docker (`plataforma-eventos-net`):** `http://ticketu-api-gateway:8080` (en `api-gateway/docker-compose.yml` el contenedor se llama `ticketu-api-gateway` y el servicio `gateway`; `api-gateway` no resuelve en el DNS de la red)
 * **Enrutamiento hacia Panel Organizador:**
   * Prefijo mapeado: `/api/organizador/` → reenvía a `http://organizador-service:3000`
   * Variable de entorno requerida en el Gateway: `ORGANIZADOR_SERVICE_URL=http://organizador-service:3000`

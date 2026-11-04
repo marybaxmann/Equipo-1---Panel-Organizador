@@ -1,0 +1,439 @@
+[
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7d8"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_creado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo Evaluación 2",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "cantidad_entradas": 200,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.186Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.674Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7da"
+    },
+    "topico": "panel.evento.catalogo.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "nombre_evento": "Demo Evaluación 2",
+      "descripcion": "Evento de prueba para la presentación",
+      "direccion_evento": "Aula Magna UV",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "hora_fin_evento": "21:00",
+      "imagen": null,
+      "categoria": null,
+      "precio": null,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO",
+      "estado_disponibilidad": "DISPONIBLE"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.229Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7db"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo Evaluación 2",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "cantidad_entradas": 200,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.231Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.681Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7dc"
+    },
+    "topico": "panel.evento.checkin.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "tipo_cambio": "PUBLICADO",
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "nombre_evento": "Demo Evaluación 2",
+      "direccion_evento": "Aula Magna UV",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "hora_fin_evento": "21:00",
+      "estado_gestion": "PUBLICADO",
+      "fecha_cambio": "2026-11-04T01:20:07.221Z"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.232Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7dd"
+    },
+    "topico": "panel.evento.notificaciones.v1",
+    "tipo": "evento_actualizado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nuevo_estado": "PUBLICADO"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.233Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.685Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea88471767abf0c459c7de"
+    },
+    "topico": "panel.evento.promociones.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "nombre_evento": "Demo Evaluación 2",
+      "fecha_evento": "2030-09-10"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:20:07.234Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.686Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea8b9e1767abf0c459c7df"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_actualizado",
+    "version": 1,
+    "payload": {
+      "id_evento": "66f1a0000000000000000002",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Feria de Innovación TITEC",
+      "fecha_evento": "2026-11-20",
+      "hora_evento": "10:00",
+      "cantidad_entradas": 350,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:34:22.505Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.689Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea8b9e1767abf0c459c7e0"
+    },
+    "topico": "panel.evento.catalogo.v1",
+    "tipo": "evento_actualizado",
+    "version": 1,
+    "payload": {
+      "id_evento": "66f1a0000000000000000002",
+      "nombre_evento": "Feria de Innovación TITEC",
+      "descripcion": "Muestra anual de proyectos de integración tecnológica.",
+      "direccion_evento": "Auditorio Principal",
+      "fecha_evento": "2026-11-20",
+      "hora_evento": "10:00",
+      "hora_fin_evento": "19:00",
+      "imagen": null,
+      "categoria": "academico",
+      "precio": null,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO",
+      "estado_disponibilidad": "DISPONIBLE"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:34:22.509Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.690Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea8b9e1767abf0c459c7e1"
+    },
+    "topico": "panel.evento.checkin.v1",
+    "tipo": "evento_actualizado",
+    "version": 1,
+    "payload": {
+      "tipo_cambio": "ACTUALIZADO",
+      "id_evento": "66f1a0000000000000000002",
+      "nombre_evento": "Feria de Innovación TITEC",
+      "direccion_evento": "Auditorio Principal",
+      "fecha_evento": "2026-11-20",
+      "hora_evento": "10:00",
+      "hora_fin_evento": "19:00",
+      "estado_gestion": "PUBLICADO",
+      "fecha_cambio": "2026-11-04T01:34:22.457Z"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:34:22.510Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.691Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aea8b9e1767abf0c459c7e2"
+    },
+    "topico": "panel.evento.notificaciones.v1",
+    "tipo": "evento_reprogramado",
+    "version": 1,
+    "payload": {
+      "id_evento": "66f1a0000000000000000002",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nuevo_estado": "PUBLICADO",
+      "fecha_cambio": "2026-11-20",
+      "hora_cambio": "10:00:00"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T01:34:22.511Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:15:48.693Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd0"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_creado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 120,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.048Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.725Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd2"
+    },
+    "topico": "panel.evento.catalogo.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "descripcion": "Prueba de envío a RabbitMQ",
+      "direccion_evento": "Aula Magna UV",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "hora_fin_evento": "20:00",
+      "imagen": null,
+      "categoria": null,
+      "precio": null,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO",
+      "estado_disponibilidad": "DISPONIBLE"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.071Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.727Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd3"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 120,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.071Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.729Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd4"
+    },
+    "topico": "panel.evento.checkin.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "tipo_cambio": "PUBLICADO",
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "direccion_evento": "Aula Magna UV",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "hora_fin_evento": "20:00",
+      "estado_gestion": "PUBLICADO",
+      "fecha_cambio": "2026-11-04T03:16:09.066Z"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.072Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.732Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd5"
+    },
+    "topico": "panel.evento.notificaciones.v1",
+    "tipo": "evento_actualizado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nuevo_estado": "PUBLICADO"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.072Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.734Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa3798d062fe094096cd6"
+    },
+    "topico": "panel.evento.promociones.v1",
+    "tipo": "evento_publicado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "fecha_evento": "2030-10-15"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:09.073Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:09.735Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6aeaa38b8d062fe094096cd9"
+    },
+    "topico": "panel.evento.entradas.v1",
+    "tipo": "evento_creado",
+    "version": 1,
+    "payload": {
+      "id_evento": "6aeaa38b8d062fe094096cd7",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker caído",
+      "fecha_evento": "2030-11-20",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 50,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    },
+    "estado": "ENVIADO",
+    "intentos": 0,
+    "fecha_creacion": {
+      "$date": "2026-11-04T03:16:27.721Z"
+    },
+    "fecha_envio": {
+      "$date": "2026-11-04T03:16:38.806Z"
+    }
+  }
+]

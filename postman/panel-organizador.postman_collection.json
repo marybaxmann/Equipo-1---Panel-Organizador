@@ -304,6 +304,110 @@
               }
             }
           ]
+        },
+        {
+          "name": "Caso: TC-ENT-03: Creación de evento en borrador notifica a Entradas (broker) / Resultado esperado: 201 en HTTP y mensaje de creación en outbox",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos",
+            "description": "Caso: TC-ENT-03: Creación de evento en borrador notifica a Entradas (broker) / Resultado esperado: 201 en HTTP y mensaje de creación en outbox. Nota de verificación manual asíncrona: Comprobar en MongoDB (panel-organizador-integracion-organizador-mongo-1, colección mensajes_salientes) que el registro con id_evento={{eventoBrokerEntradasId}}, topico='panel.evento.entradas.v1' y tipo='evento_creado' transicione a estado='ENVIADO' al publicarse en RabbitMQ.",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre_evento\":\"Evento Integración Entradas TC-ENT-03\",\"descripcion\":\"Evento para validar notificación asíncrona al broker de Entradas\",\"fecha_evento\":\"2030-09-20\",\"hora_evento\":\"11:00\",\"hora_fin_evento\":\"13:00\",\"direccion_evento\":\"Teatro Municipal\",\"cantidad_entradas\":100,\"tipo_entrada\":\"GRATUITA\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Retorna id_evento para seguimiento en outbox\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.id_evento).to.be.a(\"string\");",
+                  "    pm.expect(data.estado_gestion).to.eql(\"BORRADOR\");",
+                  "    pm.environment.set(\"eventoBrokerEntradasId\", data.id_evento);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: TC-ENT-04: Publicación de evento notifica a Entradas (broker) / Resultado esperado: 200 en HTTP y mensaje de publicación en outbox",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/panel/eventos/mios/{{eventoBrokerEntradasId}}/publicar",
+            "description": "Caso: TC-ENT-04: Publicación de evento notifica a Entradas (broker) / Resultado esperado: 200 en HTTP y mensaje de publicación en outbox. Nota de verificación manual asíncrona: Comprobar en MongoDB (panel-organizador-integracion-organizador-mongo-1, colección mensajes_salientes) que el registro con id_evento={{eventoBrokerEntradasId}}, topico='panel.evento.entradas.v1' y tipo='evento_publicado' transicione a estado='ENVIADO' al publicarse en RabbitMQ.",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-org-a"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Estado pasa a PUBLICADO y genera evento_publicado en outbox\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data.estado_gestion).to.eql(\"PUBLICADO\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Caso: Consulta de evento inexistente por Entradas / Resultado esperado: 404 EVENT_NOT_FOUND",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/panel/eventos/66f1a0000000000000000099",
+            "description": "Caso: Consulta de evento inexistente por Entradas / Resultado esperado: 404 EVENT_NOT_FOUND",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "jwt=token-staff"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Error es EVENT_NOT_FOUND\", () => {",
+                  "    pm.expect(pm.response.json().error.codigo).to.eql(\"EVENT_NOT_FOUND\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
         }
       ]
     },

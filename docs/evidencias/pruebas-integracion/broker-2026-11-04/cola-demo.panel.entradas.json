@@ -1,0 +1,176 @@
+[
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_creado",
+      "timestamp": 1793755207,
+      "message_id": "6aea88471767abf0c459c7d8",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T01:20:07.136Z",
+        "id_evento": "6aea88471767abf0c459c7d6",
+        "tipo": "evento_creado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo Evaluación 2",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "cantidad_entradas": 200,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    }
+  },
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_publicado",
+      "timestamp": 1793755207,
+      "message_id": "6aea88471767abf0c459c7db",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T01:20:07.221Z",
+        "id_evento": "6aea88471767abf0c459c7d6",
+        "tipo": "evento_publicado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "6aea88471767abf0c459c7d6",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo Evaluación 2",
+      "fecha_evento": "2030-09-10",
+      "hora_evento": "19:00",
+      "cantidad_entradas": 200,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    }
+  },
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_actualizado",
+      "timestamp": 1793756062,
+      "message_id": "6aea8b9e1767abf0c459c7df",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T01:34:22.457Z",
+        "id_evento": "66f1a0000000000000000002",
+        "tipo": "evento_actualizado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "66f1a0000000000000000002",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Feria de Innovación TITEC",
+      "fecha_evento": "2026-11-20",
+      "hora_evento": "10:00",
+      "cantidad_entradas": 350,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    }
+  },
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_creado",
+      "timestamp": 1793762169,
+      "message_id": "6aeaa3798d062fe094096cd0",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T03:16:09.043Z",
+        "id_evento": "6aeaa3798d062fe094096cce",
+        "tipo": "evento_creado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 120,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    }
+  },
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_publicado",
+      "timestamp": 1793762169,
+      "message_id": "6aeaa3798d062fe094096cd3",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T03:16:09.066Z",
+        "id_evento": "6aeaa3798d062fe094096cce",
+        "tipo": "evento_publicado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "6aeaa3798d062fe094096cce",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker Evaluación 2",
+      "fecha_evento": "2030-10-15",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 120,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "PUBLICADO"
+    }
+  },
+  {
+    "routing_key": "panel.evento.entradas.v1",
+    "exchange": "ticketu.events",
+    "properties": {
+      "app_id": "organizador-service",
+      "type": "evento_creado",
+      "timestamp": 1793762187,
+      "message_id": "6aeaa38b8d062fe094096cd9",
+      "delivery_mode": 2,
+      "headers": {
+        "fecha_cambio": "2026-11-04T03:16:27.717Z",
+        "id_evento": "6aeaa38b8d062fe094096cd7",
+        "tipo": "evento_creado",
+        "version": 1
+      },
+      "content_encoding": "utf-8",
+      "content_type": "application/json"
+    },
+    "payload": {
+      "id_evento": "6aeaa38b8d062fe094096cd7",
+      "id_usuario": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a",
+      "nombre_evento": "Demo broker caído",
+      "fecha_evento": "2030-11-20",
+      "hora_evento": "18:00",
+      "cantidad_entradas": 50,
+      "tipo_entrada": "GRATUITA",
+      "estado_gestion": "BORRADOR"
+    }
+  }
+]

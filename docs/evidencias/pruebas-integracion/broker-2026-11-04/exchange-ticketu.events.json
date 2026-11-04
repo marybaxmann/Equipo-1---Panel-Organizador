@@ -1,0 +1,6 @@
+{
+  "name": "ticketu.events",
+  "type": "topic",
+  "durable": true,
+  "vhost": "ticketu"
+}

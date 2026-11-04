@@ -53,6 +53,25 @@ pm.test("Tiene schema del contrato", () => {
     pm.expect(data).to.have.property("nombre_evento");
     pm.expect(data).to.have.property("estado_disponibilidad");
 });`,
+  entradas_error_no_encontrado: `
+pm.test("Status is 404", () => pm.response.to.have.status(404));
+pm.test("Error es EVENT_NOT_FOUND", () => {
+    pm.expect(pm.response.json().error.codigo).to.eql("EVENT_NOT_FOUND");
+});`,
+  entradas_broker_tc_ent_03: `
+pm.test("Status is 201", () => pm.response.to.have.status(201));
+pm.test("Retorna id_evento para seguimiento en outbox", () => {
+    const data = pm.response.json();
+    pm.expect(data.id_evento).to.be.a("string");
+    pm.expect(data.estado_gestion).to.eql("BORRADOR");
+    pm.environment.set("eventoBrokerEntradasId", data.id_evento);
+});`,
+  entradas_broker_tc_ent_04: `
+pm.test("Status is 200", () => pm.response.to.have.status(200));
+pm.test("Estado pasa a PUBLICADO y genera evento_publicado en outbox", () => {
+    const data = pm.response.json();
+    pm.expect(data.estado_gestion).to.eql("PUBLICADO");
+});`,
   entradas_evento: `
 pm.test("Status is 200", () => pm.response.to.have.status(200));
 pm.test("Tiene los campos de los contratos de Entradas y Check-in", () => {
@@ -188,10 +207,10 @@ pm.test("Historial tiene 2 transiciones", () => {
 });`
 };
 
-function req(name, method, url, header, body, testCode) {
+function req(name, method, url, header, body, testCode, description) {
   const item = {
     name,
-    request: { method, url, description: name, header: [], body: body ? { mode: "raw", raw: JSON.stringify(body), options: { raw: { language: "json" } } } : undefined },
+    request: { method, url, description: description ?? name, header: [], body: body ? { mode: "raw", raw: JSON.stringify(body), options: { raw: { language: "json" } } } : undefined },
     event: testCode ? [{ listen: "test", script: { exec: testCode.split('\n'), type: "text/javascript" } }] : undefined
   };
   if (header) {
@@ -230,7 +249,10 @@ const collection = {
     {
       name: "03 Entradas",
       item: [
-        req("Caso: Evento por id (sesión staff) / Resultado esperado: 200", "GET", "{{baseUrl}}/panel/eventos/66f1a0000000000000000002", { Cookie: "jwt=token-staff" }, null, tests.entradas_evento)
+        req("Caso: Evento por id (sesión staff) / Resultado esperado: 200", "GET", "{{baseUrl}}/panel/eventos/66f1a0000000000000000002", { Cookie: "jwt=token-staff" }, null, tests.entradas_evento),
+        req("Caso: TC-ENT-03: Creación de evento en borrador notifica a Entradas (broker) / Resultado esperado: 201 en HTTP y mensaje de creación en outbox", "POST", "{{baseUrl}}/panel/eventos", { "Content-Type": "application/json", Cookie: "jwt=token-org-a" }, { nombre_evento: "Evento Integración Entradas TC-ENT-03", descripcion: "Evento para validar notificación asíncrona al broker de Entradas", fecha_evento: "2030-09-20", hora_evento: "11:00", hora_fin_evento: "13:00", direccion_evento: "Teatro Municipal", cantidad_entradas: 100, tipo_entrada: "GRATUITA" }, tests.entradas_broker_tc_ent_03, "Caso: TC-ENT-03: Creación de evento en borrador notifica a Entradas (broker) / Resultado esperado: 201 en HTTP y mensaje de creación en outbox. Nota de verificación manual asíncrona: Comprobar en MongoDB (panel-organizador-integracion-organizador-mongo-1, colección mensajes_salientes) que el registro con id_evento={{eventoBrokerEntradasId}}, topico='panel.evento.entradas.v1' y tipo='evento_creado' transicione a estado='ENVIADO' al publicarse en RabbitMQ."),
+        req("Caso: TC-ENT-04: Publicación de evento notifica a Entradas (broker) / Resultado esperado: 200 en HTTP y mensaje de publicación en outbox", "POST", "{{baseUrl}}/panel/eventos/mios/{{eventoBrokerEntradasId}}/publicar", { Cookie: "jwt=token-org-a" }, null, tests.entradas_broker_tc_ent_04, "Caso: TC-ENT-04: Publicación de evento notifica a Entradas (broker) / Resultado esperado: 200 en HTTP y mensaje de publicación en outbox. Nota de verificación manual asíncrona: Comprobar en MongoDB (panel-organizador-integracion-organizador-mongo-1, colección mensajes_salientes) que el registro con id_evento={{eventoBrokerEntradasId}}, topico='panel.evento.entradas.v1' y tipo='evento_publicado' transicione a estado='ENVIADO' al publicarse en RabbitMQ."),
+        req("Caso: Consulta de evento inexistente por Entradas / Resultado esperado: 404 EVENT_NOT_FOUND", "GET", "{{baseUrl}}/panel/eventos/66f1a0000000000000000099", { Cookie: "jwt=token-staff" }, null, tests.entradas_error_no_encontrado)
       ]
     },
     {

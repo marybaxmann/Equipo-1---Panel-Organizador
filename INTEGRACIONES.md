@@ -4,8 +4,8 @@ Declaración de las dos integraciones que se evalúan. Ambas son con **Entradas 
 
 | Integración | Tipo (A, B o C) | Módulo contraparte | Servicio, endpoint o tópico | Contrato (ruta en el repo) | Ítem en GitHub |
 |---|---|---|---|---|---|
-| **I1** | **C** · Mensajería por broker | Entradas / Inventario | RabbitMQ de la plataforma: exchange `ticketu.events` (topic), routing key `panel.evento.entradas.v1`. Mensajes `evento_creado`, `evento_publicado` y `evento_actualizado` | [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §3.1 · [ADR-0013](docs/adr/0013-publicacion-outbox-rabbitmq-plataforma.md) · [ADR-0014](docs/adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | INT-09 (#30) |
-| **I2** | **B** · Servicio ofrecido | Entradas / Inventario | `GET /api/organizador/v1/panel/eventos/{id_evento}` por el API Gateway (`GET /api/v1/panel/eventos/{id_evento}` directo), con sesión `staff` u `organizador` validada con Auth | [`docs/api/openapi.yaml`](docs/api/openapi.yaml) · [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §2.3 | INT-10 (#31) |
+| **I1** | **C** · Mensajería por broker | Entradas / Inventario | RabbitMQ de la plataforma: exchange `ticketu.events` (topic), routing key `panel.evento.entradas.v1`. Mensajes `evento_creado`, `evento_publicado` y `evento_actualizado` | [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §3.1 · [ADR-0013](docs/adr/0013-publicacion-outbox-rabbitmq-plataforma.md) · [ADR-0014](docs/adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | INT-09 (#31) |
+| **I2** | **B** · Servicio ofrecido | Entradas / Inventario | `GET /api/organizador/v1/panel/eventos/{id_evento}` por el API Gateway (`GET /api/v1/panel/eventos/{id_evento}` directo), con sesión `staff` u `organizador` validada con Auth | [`docs/api/openapi.yaml`](docs/api/openapi.yaml) · [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §2.3 | INT-10 (#32) |
 
 ---
 

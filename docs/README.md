@@ -75,6 +75,8 @@ Ver [`adr/README.md`](adr/README.md) para el formato.
 
 ## 3. Contratos de integración
 
+> **Hostnames y conectividad:** para el detalle de hostnames, puertos y variables de entorno (.env) en local, Docker y Gateway para Auth, Entradas y RabbitMQ, ver [docs/hostnames-integracion.md](hostnames-integracion.md).
+
 Seis contratos. Auth está cerrado. Para los otros cinco, Panel ya expone **servicios REST** con las rutas y los campos de cada contrato ([ADR-0007](adr/0007-integracion-rest-y-datos-de-otros-squads.md)); lo que sigue pendiente es el **broker** (tópicos sin acordar, [ADR-0003](adr/0003-aislamiento-publicacion-broker.md)).
 
 | Contrato | Rol de Panel | Mecanismo | Estado | HU que dependen |

@@ -1,4 +1,4 @@
-# Responsables — Panel Organizador
+# Responsables Evaluación 1 — Panel Organizador
 
 | Integrante | Rol | Usuario GitHub | Ítems de rúbrica |
 |---|---|---|---|
@@ -7,6 +7,18 @@
 | Alonso Alejandro Vera | Frontend | `Alonso046` | UI1–UI3 |
 | Christopher Okinggton | QA / Base de Datos | `chriss-18` | BD1–BD4 |
 | Etienne Araya | Integración | `maikfeouWu` | CA1–CA2 |
+
+## Responsables por rol · Evaluación 2 (Interoperabilidad)
+
+| Rol | Ítem de la rúbrica | Responsable(s) |
+|---|---|---|
+| Back End | BE1 | Joaquín Andrés Martínez |
+| Base de Datos | BD1 | Christopher Okinggton |
+| UI/UX (front end) | UI1 | Alonso Alejandro Vera |
+| Gestión | GE1 | Mariajosé Baxmann |
+| Calidad | CA1 | Etienne Araya |
+
+Integraciones declaradas: ver [`INTEGRACIONES.md`](INTEGRACIONES.md).
 
 ## Responsables por historia de usuario
 

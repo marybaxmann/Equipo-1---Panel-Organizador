@@ -1,0 +1,175 @@
+newman
+
+Panel Organizador - Integración (CA2)
+
+□ 01 Auth (servicio consumido)
+└ Caso: Auth directo: token organizador / Resultado esperado: 200, valido=true
+  GET http://localhost:4001/internal/validar-sesion [200 OK, 358B, 62ms]
+  √  Status is 200
+  √  Es válido y organizador
+
+└ Caso: Auth directo: token expirado / Resultado esperado: 401
+  GET http://localhost:4001/internal/validar-sesion [401 Unauthorized, 189B, 8ms]
+  √  Status is 401
+
+└ Caso: Panel sin cookie / Resultado esperado: 401 SESSION_INVALID
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/mios [401 Unauthorized, 463B, 28ms]
+  √  Status is 401
+  √  Error es SESSION_INVALID
+
+└ Caso: Panel con asistente / Resultado esperado: 403 FORBIDDEN_ROLE
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/mios [403 Forbidden, 488B, 46ms]
+  √  Status is 403
+  √  Error es FORBIDDEN_ROLE
+
+└ Caso: Panel con organizador (mis eventos) / Resultado esperado: 200
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/mios [200 OK, 3.66kB, 31ms]
+  √  Status is 200
+  √  Eventos con estados válidos y los 4 estados presentes (Org A)
+
+□ 02 Catálogo
+└ Caso: Próximos / Resultado esperado: 200, no BORRADOR
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/proximos [200 OK, 4.93kB, 24ms]
+  √  Status is 200
+  √  Ningún evento en BORRADOR y trae estado_disponibilidad
+
+└ Caso: Buscar feria / Resultado esperado: 200, todos PUBLICADO
+  POST http://localhost:8080/api/organizador/v1/organizador/eventos/buscar [200 OK, 788B, 26ms]
+  √  Status is 200
+  √  Todos PUBLICADO
+
+└ Caso: Detalle de un BORRADOR / Resultado esperado: 404
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/66f1a0000000000000000001 [404 Not Found, 443B, 17ms]
+  √  Status is 404
+
+└ Caso: Detalle de un PUBLICADO / Resultado esperado: 200
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/66f1a0000000000000000002 [200 OK, 786B, 25ms]
+  √  Status is 200
+  √  Tiene schema del contrato
+
+□ 03 Entradas
+└ Caso: Evento por id (sesión staff) / Resultado esperado: 200
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000002 [200 OK, 700B, 39ms]
+  √  Status is 200
+  √  Tiene los campos de los contratos de Entradas y Check-in
+
+└ Caso: TC-ENT-03: Creación de evento en borrador notifica a Entradas (broker) / Resultado esperado: 201 en HTTP y mensaje de creación en outbox
+  POST http://localhost:8080/api/organizador/v1/panel/eventos [201 Created, 938B, 46ms]
+  √  Status is 201
+  √  Retorna id_evento para seguimiento en outbox
+
+└ Caso: TC-ENT-04: Publicación de evento notifica a Entradas (broker) / Resultado esperado: 200 en HTTP y mensaje de publicación en outbox
+  POST http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fad5508898fe522e5a/publicar [200 OK, 934B, 29ms]
+  √  Status is 200
+  √  Estado pasa a PUBLICADO y genera evento_publicado en outbox
+
+└ Caso: Consulta de evento inexistente por Entradas / Resultado esperado: 404 EVENT_NOT_FOUND
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000099 [404 Not Found, 443B, 26ms]
+  √  Status is 404
+  √  Error es EVENT_NOT_FOUND
+
+□ 04 Check-in
+└ Caso: Consulta de respaldo con sesión staff / Resultado esperado: 200 con hora_fin_evento
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000004 [200 OK, 694B, 15ms]
+  √  Status is 200
+  √  Tiene hora_fin_evento y estado_gestion
+
+└ Caso: Consulta sin sesión / Resultado esperado: 401
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000004 [401 Unauthorized, 463B, 23ms]
+  √  Status is 401
+
+└ Caso: Consulta con rol asistente / Resultado esperado: 403 FORBIDDEN_ROLE
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000004 [403 Forbidden, 463B, 18ms]
+  √  Status is 403
+  √  Error es FORBIDDEN_ROLE
+
+□ 05 Notificaciones
+└ Caso: Cambios de estado / Resultado esperado: 200
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/66f1a0000000000000000002/cambios-estado [200 OK, 643B, 25ms]
+  √  Status is 200
+  √  tipo es evento_actualizado y está ordenado
+
+□ 06 Promociones
+└ Caso: Eventos disponibles / Resultado esperado: 200
+  GET http://localhost:8080/api/organizador/v1/panel/eventos-disponibles [200 OK, 1.8kB, 16ms]
+  √  Status is 200
+  √  Sólo IDs de PUBLICADO
+
+□ 07 Flujo HU-01->HU-05
+└ Caso: Crear evento / Resultado esperado: 201
+  POST http://localhost:8080/api/organizador/v1/panel/eventos [201 Created, 837B, 23ms]
+  √  Status is 201
+  √  Guarda id_evento
+
+└ Caso: Evento recién creado no visible en Catálogo / Resultado esperado: 200 sin el id creado
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/proximos [200 OK, 5.36kB, 19ms]
+  √  El BORRADOR recién creado no aparece en Catálogo
+
+└ Caso: Org B pide el evento de A / Resultado esperado: 403
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e63 [403 Forbidden, 459B, 22ms]
+  √  Status is 403
+  √  Error es EVENT_NOT_OWNED
+
+□ 08 Sprint 2
+└ Caso: Crear un borrador y guardar {{nuevoEventoId}} / Resultado esperado: 201
+  POST http://localhost:8080/api/organizador/v1/panel/eventos [201 Created, 901B, 26ms]
+  √  Status is 201
+  √  Guarda id_evento
+
+└ Caso: Editarlo como Org A / Resultado esperado: 200 con el campo cambiado
+  PATCH http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66 [200 OK, 895B, 24ms]
+  √  Status is 200
+  √  Campo nombre_evento cambiado
+
+└ Caso: Como Org B · sin cookie · cuerpo vacío / Resultado esperado: 403 · 401 · 400
+  PATCH http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66 [403 Forbidden, 459B, 19ms]
+  √  Status is 403 (Org B)
+  √  Error es EVENT_NOT_OWNED
+  PATCH http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66   PATCH http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66 [401 Unauthorized, 463B, 18ms]
+  √  Sin cookie da 401 SESSION_INVALID
+[400 Bad Request, 538B, 22ms]
+  √  Cuerpo vacío da 400 VALIDATION_ERROR
+
+└ Caso: Publicarlo y pedirlo a Catálogo / Resultado esperado: 200 y 200
+  POST http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66/publicar [200 OK, 896B, 47ms]
+  √  Status is 200
+  √  Estado pasa a PUBLICADO
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/6aeab3fbd5508898fe522e66 [200 OK, 760B, 16ms]
+  √  Catálogo devuelve 200 para el publicado
+
+└ Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION
+  POST http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66/publicar [409 Conflict, 477B, 17ms]
+  √  Status is 409
+  √  Error es INVALID_STATE_TRANSITION
+
+└ Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva
+  PATCH http://localhost:8080/api/organizador/v1/panel/eventos/mios/6aeab3fbd5508898fe522e66 [200 OK, 896B, 30ms]
+  √  Status is 200
+  √  Hora actualizada a 16:00
+  GET http://localhost:8080/api/organizador/v1/organizador/eventos/6aeab3fbd5508898fe522e66 [200 OK, 760B, 14ms]
+  √  Catálogo devuelve la hora nueva
+
+└ Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones
+  GET http://localhost:8080/api/organizador/v1/panel/eventos/6aeab3fbd5508898fe522e66/cambios-estado [200 OK, 643B, 12ms]
+  √  Status is 200
+  √  Historial tiene 2 transiciones
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               32 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               28 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                0 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               56 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 3s                                        │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 22.1kB (approx)                          │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 25ms [min: 8ms, max: 62ms, s.d.: 11ms] │
+└───────────────────────────────────────────────────────────────┘

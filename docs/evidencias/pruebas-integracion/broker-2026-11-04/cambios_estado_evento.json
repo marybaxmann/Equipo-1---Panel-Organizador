@@ -1,0 +1,35 @@
+[
+  {
+    "id_evento": {
+      "$oid": "6aeaa3798d062fe094096cce"
+    },
+    "estado_anterior": null,
+    "nuevo_estado": "BORRADOR",
+    "fecha_cambio": {
+      "$date": "2026-11-04T03:16:09.043Z"
+    },
+    "id_usuario_responsable": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a"
+  },
+  {
+    "id_evento": {
+      "$oid": "6aeaa3798d062fe094096cce"
+    },
+    "estado_anterior": "BORRADOR",
+    "nuevo_estado": "PUBLICADO",
+    "fecha_cambio": {
+      "$date": "2026-11-04T03:16:09.066Z"
+    },
+    "id_usuario_responsable": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a"
+  },
+  {
+    "id_evento": {
+      "$oid": "6aeaa38b8d062fe094096cd7"
+    },
+    "estado_anterior": null,
+    "nuevo_estado": "BORRADOR",
+    "fecha_cambio": {
+      "$date": "2026-11-04T03:16:27.717Z"
+    },
+    "id_usuario_responsable": "3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a"
+  }
+]

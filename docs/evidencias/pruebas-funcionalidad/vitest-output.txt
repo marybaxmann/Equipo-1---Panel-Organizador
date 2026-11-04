@@ -3,7 +3,7 @@
 > vitest run --reporter=verbose --reporter=junit --outputFile.junit=../docs/evidencias/pruebas-funcionalidad/vitest-junit.xml --coverage
 
 
- RUN  v3.2.7 C:/Users/usuario/AppData/Local/Temp/claude/C--Users-usuario--claude-spares-spare-aYAjfq/51af301a-a13e-43fb-ae52-571dfe00952c/scratchpad/repo/backend
+ RUN  v3.2.7 backend
       Coverage enabled with v8
 
 stdout | tests/hu02-editar-evento.test.ts
@@ -1144,7 +1144,7 @@ stdout | tests/gateway-prefix.test.ts > Prefijo del API Gateway (/api/organizado
    Start at  23:01:31
    Duration  48.68s (transform 1.04s, setup 0ms, collect 19.26s, tests 22.38s, environment 4ms, prepare 2.29s)
 
-JUNIT report written to C:/Users/usuario/AppData/Local/Temp/claude/C--Users-usuario--claude-spares-spare-aYAjfq/51af301a-a13e-43fb-ae52-571dfe00952c/scratchpad/repo/docs/evidencias/pruebas-funcionalidad/vitest-junit.xml
+JUNIT report written to docs/evidencias/pruebas-funcionalidad/vitest-junit.xml
  % Coverage report from v8
 -------------------|---------|----------|---------|---------|-------------------
 File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 

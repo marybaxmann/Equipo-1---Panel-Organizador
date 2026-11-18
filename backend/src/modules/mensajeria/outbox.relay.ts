@@ -38,6 +38,9 @@ export type OutboxRelayOptions = {
   maxBackoffMs?: number;
   // Tópicos cuyo consumidor lee el sobre dentro del cuerpo: { envelope, payload } (ADR-0017, Entradas)
   topicsWithBodyEnvelope?: readonly string[];
+  // Exchange adicional por tópico: el mensaje se publica en el exchange de la plataforma Y en éste, con la misma
+  // routing key. Para los squads cuyo contrato fija un exchange propio (Notificaciones v1.3 §2.2, ADR-0019)
+  extraExchanges?: Readonly<Record<string, string>>;
   log?: (line: string) => void;
 };
 
@@ -118,7 +121,12 @@ export class OutboxRelay {
       if (!msg) return sent;
       try {
         const body = messageBody(msg, this.opts.topicsWithBodyEnvelope?.includes(msg.topico) ?? false);
-        channel.publish(this.opts.exchange, msg.topico, Buffer.from(JSON.stringify(body)), publishOptions(msg, this.opts.appId ?? 'organizador-service'));
+        const content = Buffer.from(JSON.stringify(body));
+        const options = publishOptions(msg, this.opts.appId ?? 'organizador-service');
+        channel.publish(this.opts.exchange, msg.topico, content, options);
+        const extra = this.opts.extraExchanges?.[msg.topico];
+        if (extra) channel.publish(extra, msg.topico, content, options);
+        // Queda ENVIADO sólo si el broker confirma las dos publicaciones
         await channel.waitForConfirms();
       } catch (error) {
         const intentos = Number(msg.intentos) + 1;
@@ -173,7 +181,9 @@ export class OutboxRelay {
 }
 
 // Conexión real a RabbitMQ: ConfirmChannel (el broker confirma cada mensaje) y exchange topic durable compartido
-export function createAmqpConnection(url: string, exchange: string, log: (line: string) => void = console.log): BrokerConnection {
+export function createAmqpConnection(
+  url: string, exchange: string, log: (line: string) => void = console.log, extraExchanges: readonly string[] = [],
+): BrokerConnection {
   let model: ChannelModel | null = null;
   let channel: ConfirmChannel | null = null;
   let opening: Promise<ConfirmChannel> | null = null;
@@ -194,6 +204,8 @@ export function createAmqpConnection(url: string, exchange: string, log: (line: 
       c.on('error', (error: Error) => log(`[outbox] error del canal: ${error.message}`));
       c.on('close', () => { if (channel === c) channel = null; });
       await c.assertExchange(exchange, 'topic', { durable: true });
+      // Exchanges propios de un squad (ADR-0019): topic y durable, como el de la plataforma
+      for (const extra of extraExchanges) await c.assertExchange(extra, 'topic', { durable: true });
       model = m; channel = c;
       log(`[outbox] conectado al broker (exchange ${exchange})`);
       return c;

@@ -307,18 +307,18 @@ Cambio de BD: colección nueva `mensajes_salientes` (`_id`, `id_evento` FK, `top
 
 ## 10. Dependencias con otros squads (issues de integración)
 
-Numeración y alcance de los **issues reales** creados por Etienne (label `integracion`, repo de trabajo). **Hay que replicarlos en el repo de presentación** para GE4 (ADR-0012).
+Numeración y alcance de los issues de integración (label `integracion`, replicados en el repo de presentación para GE4, ADR-0012). **Estado al Avance 4 (18/11/2026).**
 
 | Issue | Tema | Milestone | Estado en el código | Qué falta |
 |---|---|---|---|---|
-| INT-01 | Cliente de Auth, validación de sesión (fail-secure) | Avance 1 | ✅ implementado (ADR-0005) | URL real de Auth · el texto del issue tiene que decir que está implementado y usar `/api/v1/panel/eventos/mios`, no `/events/mine` |
-| INT-02 | Abstracción de publicación al broker | Avance 2 | ⛔ diseño en ADR-0003 (outbox) | Implementar `EventPublisher` + `mensajes_salientes` |
-| INT-03 | Integración con Catálogo | Avance 2 | 🟡 REST listo (proximos, buscar, detalle) | Mensaje `panel.evento.catalogo.v1` (tópico por confirmar) |
-| INT-04 | Sincronización con Entradas / Inventario | Avance 2 | 🟡 `GET /panel/eventos/{id}` listo, **ahora con sesión** (ADR-0011) | Acordar con Entradas cómo se autentica · **quitar del issue la tarea de devolver `capacidad_*`**: choca con BD2 y ADR-0007 |
-| INT-05 | Consulta de stock antes de eliminar | Avance 3 | ⛔ | Cliente del endpoint de stock de Entradas (HU-03) |
-| INT-06 | Integración con Notificaciones | Avance 3 | 🟡 REST `/cambios-estado` listo | Mensaje `panel.evento.notificaciones.v1` · el contrato **v1.2** (01/10) suma `id_usuario` del organizador al mensaje, y el resultado del envío lo recibe el organizador por Notificaciones, no Panel (propuesta pendiente) |
-| INT-07 | Check-in y Promociones | Avance 3 | 🟡 Check-in v1.2 alineado (ADR-0011) · Promociones `/eventos-disponibles` | Broker `panel.evento.checkin.v1` con `tipo_cambio` · mecanismo con Promociones · formato de error (propuesta §3.4) |
-| INT-08 | Pruebas de contratos de integración | Avance 4 | 🟡 contrato OpenAPI + Postman listos | Probar contra los servicios reales |
+| INT-01 | Cliente de Auth, validación de sesión (fail-secure) | Avance 1 | ✅ implementado (ADR-0005) y probado contra el Auth real en la red compartida, con `x-api-key` (INT-11) | Acordar con Auth la clave del ambiente de integración |
+| INT-02 | Abstracción de publicación al broker | Avance 2 | ✅ `EventPublisher` + outbox `mensajes_salientes` + relay a RabbitMQ (ADR-0003, ADR-0013) | — |
+| INT-03 | Integración con Catálogo | Avance 2 | ✅ REST (próximos, buscar, detalle) y mensajes `panel.evento.catalogo.v1`, incluido AGOTADO (ADR-0018) | Que Catálogo confirme que consume la cola |
+| INT-04 | Sincronización con Entradas / Inventario | Avance 2 | ✅ mensajes `panel.evento.entradas.v1` con `{ envelope, payload }` (ADR-0017) y GET compartido con sesión (ADR-0011), probados con el Entradas real | Correcciones del lado de Entradas (H1–H6 de la sesión del 17/11) |
+| INT-05 | Consulta de stock antes de eliminar | Avance 4 | ✅ cliente del stock de Entradas (ADR-0016), probado con el Entradas real | Que Entradas no reinicie el stock al editar (H2) |
+| INT-06 | Integración con Notificaciones | Avance 3 | ✅ mensajes `evento_actualizado` (cancelación) y `evento_reprogramado` en `panel.evento.notificaciones.v1` | Que Notificaciones confirme la recepción en su exchange `panel.evento.notificaciones.v1` (ADR-0019) |
+| INT-07 | Check-in y Promociones | Avance 3 | ✅ Check-in: GET con sesión de staff y mensajes con `tipo_cambio` · Promociones: `/eventos-disponibles` y mensajes | Confirmación de consumo de ambos squads · formato de error de Check-in (Sprint 5) |
+| INT-08 | Pruebas de contratos de integración | Avance 4 | ✅ contrato OpenAPI, Postman (32 requests) y sesión con los servicios reales | Carpeta HU-03 en Postman |
 
 La asimetría de la tabla "usuario (id, rol) → Auth (por confirmar)" no tiene issue: **agregarla a INT-01**.
 

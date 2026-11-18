@@ -63,7 +63,7 @@ Este directorio reúne las evidencias oficiales con fecha de las pruebas de inte
 ---
 
 > [!NOTE] Alcance de componentes reales vs. simulados
-> Las pruebas de integración se ejecutaron a través de los componentes compartidos reales de la plataforma TicketU (**API Gateway** en puerto 8080 y **RabbitMQ** en `ticketu-rabbitmq:5672` con exchange `ticketu.events`). En las pruebas del 04/11, por restricciones de ambiente de las contrapartes, la autenticación fue validada mediante el mock de desarrollo (`tools/mock-auth`) y el consumo de eventos AMQP por parte de Entradas fue monitoreado mediante cola de control y persistencia en Outbox. **Desde el 17/11 la integración con Auth está verificada contra el servicio real de Auth** (sección 5); queda repetirla en la red compartida `plataforma-eventos-net`.
+> Las pruebas de integración se ejecutaron a través de los componentes compartidos reales de la plataforma TicketU (**API Gateway** en puerto 8080 y **RabbitMQ** en `ticketu-rabbitmq:5672` con exchange `ticketu.events`). En las pruebas del 04/11, por restricciones de ambiente de las contrapartes, la autenticación fue validada mediante el mock de desarrollo (`tools/mock-auth`) y el consumo de eventos AMQP por parte de Entradas fue monitoreado mediante cola de control y persistencia en Outbox. **Desde el 17/11 Auth y Entradas están verificados contra sus servicios reales en la red compartida `plataforma-eventos-net`** (secciones 5 y 8).
 
 ---
 
@@ -100,3 +100,16 @@ Este directorio reúne las evidencias oficiales con fecha de las pruebas de inte
    ```bash
    npm run test:integration
    ```
+
+---
+
+## 8. Sesión de integración completa en la red compartida (17/11/2026)
+
+* **Documento de verificación:** [`sesion-integracion-2026-11-17.md`](sesion-integracion-2026-11-17.md)
+* **Ambiente:** servicios **reales** juntos en `plataforma-eventos-net`: API Gateway (`FWizav/backendticketU`), RabbitMQ, Auth con su seed QA, Entradas / Inventario (`e289c43`) y el Panel con `docker-compose.integracion.yml` y `SEED_DEMO=true`. Los repositorios de los otros squads no se modificaron.
+* **Resultados:**
+  - Auth dentro de la red, entrando por el Gateway (`:8080/api/auth/login` y `:8080/api/organizador/v1`): **10/10**.
+  - I1: los 7 eventos del seed llegan a `inventario_evento` de Entradas con el formato `{ envelope, payload }` (ADR-0017).
+  - I2 + HU-03: al eliminar un PUBLICADO, Entradas registra `GET /api/v1/entradas/eventos/{id}/stock` desde el contenedor del Panel.
+  - Aviso de stock: con el mensaje `entradas.evento.stock.v1` de Entradas, el Panel marca `AGOTADO`, avisa a Catálogo y la consulta pública lo muestra.
+* **Hallazgos para Entradas:** la compra gratuita no publica `entradas.evento.stock.v1`; `evento_actualizado` reinicia el stock (por eso se eliminó un evento con 3 entradas vendidas); `evento_eliminado` se guarda como PUBLICADO con 100 entradas; precio 10000 en eventos gratuitos; clave de ejemplo fija en su compose.

@@ -88,6 +88,35 @@ describe('Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013)', () => {
     expect(conSobre!.options.headers).toMatchObject({ tipo: 'evento_publicado', id_evento: '66f1a0000000000000000002' });
   });
 
+  it('un tópico con exchange adicional se publica en el de la plataforma y en el suyo, con la misma routing key (ADR-0019)', async () => {
+    await addPending(2);
+    const conn = new FakeConnection();
+    const relay = new OutboxRelay(conn, {
+      exchange: 'ticketu.events', pollMs: 10, maxIntentos: 3, log: () => {},
+      extraExchanges: { 'panel.evento.test1.v1': 'panel.evento.test1.v1' },
+    });
+    expect(await relay.runOnce()).toBe(2);
+    expect(conn.ch.published.map((p) => `${p.exchange} ${p.routingKey}`)).toEqual([
+      'ticketu.events panel.evento.test0.v1',
+      'ticketu.events panel.evento.test1.v1',
+      'panel.evento.test1.v1 panel.evento.test1.v1',
+    ]);
+    const [, plataforma, propio] = conn.ch.published;
+    expect(propio!.body).toEqual(plataforma!.body);
+    expect(propio!.options.messageId).toBe(plataforma!.options.messageId);
+  });
+
+  it('si el broker no confirma, el mensaje con exchange adicional no queda ENVIADO', async () => {
+    await addPending(1);
+    const conn = new FakeConnection();
+    conn.ch.failNext = 1;
+    const relay = new OutboxRelay(conn, {
+      exchange: 'ticketu.events', pollMs: 10, maxIntentos: 3, log: () => {}, extraExchanges: { 'panel.evento.test0.v1': 'otro.exchange' },
+    });
+    await expect(relay.runOnce()).rejects.toThrow();
+    expect((await outbox().findOne({}))!.estado).toBe('PENDIENTE');
+  });
+
   it('publicar un evento por la API termina con todos sus mensajes ENVIADO', async () => {
     await seedDemo(mongoose.connection.db!);
     const res = await request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000001/publicar').set('Cookie', 'jwt=token-org-a');

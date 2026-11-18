@@ -16,7 +16,7 @@ info:
     - Sólo `rol = organizador` accede al panel (otro rol → 403 `FORBIDDEN_ROLE`). Sesión inválida o expirada → 401.
     - La identidad (`id_usuario`) se toma sólo de la respuesta de Auth; el body nunca define dueño ni estado.
     - Validación de propiedad: un evento ajeno → 403 `EVENT_NOT_OWNED`.
-    - Si Auth no responde en 1 s (con 1 reintento) → 503 `AUTH_UNAVAILABLE` (fail-secure).
+    - Si Auth no responde en 1 s → 503 `AUTH_UNAVAILABLE` (fail-secure, sin reintento automático: contrato Auth v1.1 §6).
     - Endpoints de integración: sin cookie de usuario; acceso restringido a red interna vía API Gateway (mecanismo pendiente de acuerdo).
 
     **Acceso por el API Gateway de TicketU**

@@ -18,6 +18,7 @@ services:
       # Clave compartida del ambiente que Auth exige en x-api-key (INT-11). Se define en .env, nunca en el repo
       AUTH_INTERNAL_API_KEY: ${AUTH_INTERNAL_API_KEY:-}
       AUTH_TIMEOUT_MS: ${AUTH_TIMEOUT_MS:-1000}
+      AUTH_REINTENTOS: ${AUTH_REINTENTOS:-0}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000,http://localhost:5173}
       # Entradas / Inventario en la red compartida (HU-03): contenedor entradas-service, puerto 3000 (su docker-compose.yml)
       ENTRADAS_SERVICE_URL: ${ENTRADAS_SERVICE_URL:-http://entradas-service:3000}
@@ -26,6 +27,8 @@ services:
       EVENT_EXCHANGE: ${EVENT_EXCHANGE:-ticketu.events}
       # Entradas lee { envelope, payload } en el cuerpo (ADR-0017)
       BROKER_TOPICOS_CON_SOBRE: ${BROKER_TOPICOS_CON_SOBRE:-panel.evento.entradas.v1}
+      # Notificaciones consume del exchange panel.evento.notificaciones.v1, como fija su contrato (ADR-0019)
+      BROKER_EXCHANGES_ADICIONALES: ${BROKER_EXCHANGES_ADICIONALES:-panel.evento.notificaciones.v1=panel.evento.notificaciones.v1}
       # Aviso de stock que publica Entradas (ADR-0018): stock = 0 → AGOTADO
       TOPIC_STOCK_ENTRADAS: ${TOPIC_STOCK_ENTRADAS:-entradas.evento.stock.v1}
       BROKER_COLA_STOCK: ${BROKER_COLA_STOCK:-panel-organizador.entradas.stock}

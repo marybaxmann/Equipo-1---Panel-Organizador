@@ -47,7 +47,8 @@ npm run test:integration   # con la API y el seed levantados
 | Servicios para otros squads | `backend/src/modules/integraciones/` |
 | Swagger | `docs/api/openapi.yaml` (propio) · `docs/api/auth-consumido.yaml` (consumido) |
 
-**Sigue:** HU-02 editar (Sprint 2) y outbox + broker con HU-07 (Sprint 3, [ADR-0003](adr/0003-aislamiento-publicacion-broker.md)).
+**Hecho al Avance 4:** HU-02, HU-03 con consulta de stock a Entradas ([ADR-0016](adr/0016-eliminacion-de-eventos-y-consulta-de-stock.md)), HU-07 con outbox y RabbitMQ ([ADR-0013](adr/0013-publicacion-outbox-rabbitmq-plataforma.md), [ADR-0017](adr/0017-sobre-en-el-cuerpo-para-entradas.md), [ADR-0018](adr/0018-consumo-stock-entradas-y-disponibilidad.md)) e INT-11 (`x-api-key` con Auth).
+**Sigue (Sprint 5):** correcciones de integración (TASK-04/06) y despliegue (TASK-08).
 
 ## 2. Base de Datos · Christopher Okinggton (BD1–BD4)
 
@@ -65,14 +66,15 @@ El porqué está en [ADR-0002](adr/0002-motor-de-base-de-datos.md). **Revísalo:
 
 **Preguntas probables del profesor:** ¿por qué MongoDB si la rúbrica es relacional? · ¿dónde está la FK? (`cambios_estado_evento.id_evento`, declarada con `[FK eventos._id]`) · ¿por qué no hay datos de Auth? (sólo `id_organizador`) · ¿qué pasa con un documento inválido? (la BD lo rechaza con el error 121).
 
-**Sigue:** colección `mensajes_salientes` (Sprint 3) y pruebas funcionales de las 7 HU (TASK-03).
+**Hecho al Avance 4:** colección `mensajes_salientes`, campo `estado_disponibilidad` (AGOTADO) y evidencia de las 7 HU (TASK-03).
+**Sigue (Sprint 5):** pruebas finales (TASK-05).
 
 ## 3. UI/UX · Alonso Vera (UI1–UI3)
 
 **Lo que se avanzó sobre tu frontend:**
 - se conectó a la API real y se retiraron los mocks y la "capacidad", que es dato de Entradas;
 - se agregaron el login simulado (`/login`), la pantalla de detalle y el modal de confirmación para publicar;
-- el lápiz y la papelera muestran el aviso de Sprint 2/3;
+- el lápiz y la papelera llevan a Editar (HU-02) y a Eliminar con su modal (HU-03);
 - los emojis se cambiaron por íconos Lucide (fila 20).
 
 El detalle está en [ADR-0008](adr/0008-frontend-estandar-visual-y-login-simulado.md). **Revísalo y ajusta lo que no calce con tu diseño.**
@@ -86,7 +88,8 @@ El detalle está en [ADR-0008](adr/0008-frontend-estandar-visual-y-login-simulad
 | Pantallas | `frontend/src/pages/` (Mis eventos, Nuevo evento, Detalle, Login simulado) |
 
 **Deuda para ti:** las desviaciones listadas en `docs/ui/estandares-ui.md` y los 4 warnings de `npm run lint -w frontend`.
-**Sigue:** pantalla Editar (HU-02), modal de eliminar con el texto de la fila 33 (HU-03) y login real de Auth (Sprint 4).
+**Hecho al Avance 4:** pantalla Editar (HU-02) y Eliminar con modal (HU-03, fila 33).
+**Sigue:** login real de Auth, proxy de Vite hacia el API Gateway e integrar la interfaz en el Frontend Unificado de la plataforma (`/organizador`).
 
 ## 4. Gestión · Mariajosé Baxmann (GE1–GE4)
 
@@ -99,15 +102,16 @@ El detalle está en [ADR-0008](adr/0008-frontend-estandar-visual-y-login-simulad
 **Para dar acceso al tablero** (Projects #4): Project → ⋯ → **Settings → Manage access** → invitar con rol *Write*. Ser colaborador del repo no da acceso al tablero.
 
 **Decisiones que te tocan:**
-- si HU-04 (#4) se cierra ahora o con HU-07 ([ADR-0009](adr/0009-hu04-adelantada-al-sprint-1.md));
+- cerrar en el tablero HU-03, HU-07, INT-05 e INT-11, ya implementadas, y comentar INT-09 e INT-10 (I1 e I2) con la evidencia de la sesión del 17/11;
 - mantener el tablero al día. El sprint de cada HU lo definen los milestones de GitHub.
 
 ## 5. Calidad · Etienne Araya (CA1–CA2) · Integración con otros squads
 
 **Lo que se avanzó en tu área:**
-- 77 tests automatizados, con una tabla que relaciona cada criterio de aceptación con su test;
+- 181 tests automatizados, con una tabla que relaciona cada criterio de aceptación con su test;
 - pruebas de contrato que validan cada respuesta real contra el Swagger;
-- colección Postman con 16 casos y su resultado esperado, ejecutada con Newman;
+- colección Postman con 32 requests y su resultado esperado, ejecutada con Newman;
+- pruebas con el Auth real y una sesión de integración completa con los servicios reales en la red compartida;
 - CI en GitHub Actions.
 
 El porqué está en [ADR-0006](adr/0006-api-contract-first-openapi.md) y [ADR-0010](adr/0010-monorepo-y-flujo-de-calidad.md).
@@ -137,7 +141,8 @@ El porqué está en [ADR-0006](adr/0006-api-contract-first-openapi.md) y [ADR-00
 
 **Revisa tus issues INT** con la tabla del plan §10: INT-01 ya está implementado e INT-04 pide devolver `capacidad_*`, que choca con BD2.
 
-**Lo más urgente para ti en Sprint 3:** validar los mensajes de `docs/mensajes-sprint-3.md` con los otros squads, confirmar credenciales del broker con la cátedra, y ejecutar las pruebas de contrato (TASK-02).
+**Hecho al Avance 4:** prueba con el Auth real y sesión de integración con Gateway, RabbitMQ, Auth y Entradas reales ([evidencia](evidencias/pruebas-integracion/sesion-integracion-2026-11-17.md)).
+**Sigue (Sprint 5):** carpeta HU-03 en Postman, repetir la sesión cuando Entradas corrija sus hallazgos (H1–H6) y validación final (TASK-09).
 
 ---
 

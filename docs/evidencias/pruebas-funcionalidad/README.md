@@ -2,8 +2,8 @@
 
 ## Resultados
 - **Comando ejecutado**: `npm run test:report -w backend | tee docs/evidencias/pruebas-funcionalidad/vitest-output.txt`
-- **Fecha de ejecución**: 2026-11-18 (Avance 4: las 7 HU, HU-03 Eliminar/Cancelar, aviso de stock de Entradas con `stock-consumer`, outbox relay, CORS para el Frontend Unificado y anuncio del seed por el broker)
-- **Resumen**: 181/181 tests exitosos en 18 archivos · cobertura global de sentencias 82.26 % (ramas 92.45 %, funciones 95.65 %).
+- **Fecha de ejecución**: 2026-11-18 (Avance 4: las 7 HU, HU-03 Eliminar/Cancelar, aviso de stock de Entradas con `stock-consumer`, outbox relay con exchange propio para Notificaciones, CORS para el Frontend Unificado, anuncio del seed por el broker y validación con Auth sin reintentos)
+- **Resumen**: 185/185 tests exitosos en 18 archivos · cobertura global de sentencias 82.12 % (ramas 92.67 %, funciones 95.65 %).
 
 ## Criterios de aceptación → tests
 
@@ -40,32 +40,33 @@
 | HU-03 | Entradas no disponible → no se elimina e informa | `hu03-eliminar-evento` › "si Entradas no está disponible…(503)" · `entradas.client` › "timeout dos veces → 503…" |
 | HU-03 | Eliminado o cancelado no visible en el catálogo | `hu03-eliminar-evento` › "un evento cancelado deja de estar disponible en el catálogo público", "…sin entradas vendidas se elimina físicamente" |
 | HU-03 | Política de autorización (401/403/404/400/503) | `hu03-eliminar-evento` › "política de autorización: sin sesión 401, otro rol 403, inexistente 404, id inválido 400, Auth caído 503" |
-| HU-06 | Validar token/sesión contra Auth | `auth.client` (12 tests: reenvío de cookie, 401/403/500, timeout, reintento, fail-secure) · `require-organizer` › "passes the Auth identity…" |
+| HU-06 | Validar token/sesión contra Auth | `auth.client` (13 tests: reenvío de cookie, `x-api-key`, 401/403/500, timeout sin reintento por defecto, fail-secure) · `require-organizer` › "passes the Auth identity…" |
 | HU-06 | Rol distinto de organizador → denegar con mensaje | `require-organizer` › "403 FORBIDDEN_ROLE…" · `hu01` › "…403 si no es organizador" |
 | HU-06 | Token inválido/expirado → login | `require-organizer` › "401 when Auth rejects the token" · UI: redirección a `/login?motivo=sesion` |
 | HU-06 | Validación de propiedad | `hu05-mis-eventos` › "403 al pedir el evento de otro organizador" |
-| HU-06 | Fail-secure si Auth no responde | `auth.client` › "fails secure with 503…" (×3) · `hu01` › "503 si Auth no está disponible y no crea nada" |
+| HU-06 | Fail-secure si Auth no responde | `auth.client` › "by default does not retry…", "by default a timeout fails secure…", "fails secure with 503 when Auth is unreachable" · `hu01` › "503 si Auth no está disponible y no crea nada" |
 | HU-07 | Publicar y editar dejan el mensaje en el outbox | `hu04-publicar-evento` › "al publicar se deja un mensaje para Catálogo, Entradas, Check-in y Promociones (no Notificaciones)" · `hu02-editar-evento` › "un PUBLICADO editado se comunica a Catálogo y Entradas…", "una reprogramación de un PUBLICADO también avisa a Notificaciones" · `int02-mensajeria` (4 tests) |
 | HU-07 | El relay lo envía a RabbitMQ y lo marca ENVIADO | `outbox-relay` › "publicar un evento por la API termina con todos sus mensajes ENVIADO", "start y stop: publica en segundo plano y se detiene limpio" |
 | HU-07 | Con el broker caído queda PENDIENTE y se reintenta, sin bloquear al organizador | `outbox-relay` › "con el broker caído no toca los mensajes ni gasta intentos", "al llegar al máximo de intentos el mensaje queda FALLIDO y no bloquea a los siguientes", "la espera entre vueltas crece con los errores seguidos y tiene un tope" |
 | HU-07 | El aviso de stock de Entradas marca el evento AGOTADO y avisa a Catálogo | `stock-consumer` › "stock = 0 → el evento queda AGOTADO sin cambiar estado_gestion, y Catálogo lo ve AGOTADO", "Panel comunica AGOTADO a Catálogo por panel.evento.catalogo.v1", "si Entradas informa stock > 0 después de agotarse, el evento vuelve a DISPONIBLE y se avisa a Catálogo" (15 tests) |
 | HU-07 | Comunicar cancelación por broker a Catálogo, Entradas, Check-in, Notificaciones y Promociones | `hu03-eliminar-evento` › "la cancelación se comunica por broker…" |
 | HU-07 | El cuerpo para Entradas lleva `{ envelope, payload }` (ADR-0017) | `outbox-relay` › "en los tópicos configurados el cuerpo lleva { envelope, payload }…" |
+| HU-07 | Notificaciones recibe en su exchange acordado `panel.evento.notificaciones.v1` (ADR-0019) | `outbox-relay` › "un tópico con exchange adicional se publica en el de la plataforma y en el suyo…", "si el broker no confirma, el mensaje con exchange adicional no queda ENVIADO" |
 | INT-02 | Cambiar un tópico no requiere tocar código | `int02-mensajeria` › "cambiar un tópico no requiere tocar código" |
 | INT-02 | Sobre versionado y manejo de fallos | `int02-mensajeria` › "cada mensaje lleva el sobre versionado…", "un fallo de publicación se reintenta una vez…" |
-| INT-11 | Enviar `x-api-key` a Auth; 403 de Auth = error de configuración | `auth.client` › "sends x-api-key…", "does not send x-api-key…", "maps 403 (missing or wrong x-api-key) to AUTH_ERROR…" · `env` (4 tests) |
+| INT-11 | Enviar `x-api-key` a Auth; 403 de Auth = error de configuración | `auth.client` › "sends x-api-key…", "does not send x-api-key…", "maps 403 (missing or wrong x-api-key) to AUTH_ERROR…" · `env` (5 tests) |
 
-## Conteo por archivo (181 tests en 18 archivos)
+## Conteo por archivo (185 tests en 18 archivos)
 
 | Archivo | Tests |
 |---|---|
 | `anunciar-eventos.test.ts` | 2 |
-| `auth.client.test.ts` | 12 |
+| `auth.client.test.ts` | 13 |
 | `contrato-openapi.test.ts` | 21 |
 | `cors.test.ts` | 3 |
 | `database-schema.test.ts` | 10 |
 | `entradas.client.test.ts` | 7 |
-| `env.test.ts` | 4 |
+| `env.test.ts` | 5 |
 | `gateway-prefix.test.ts` | 11 |
 | `hu01-crear-evento.test.ts` | 12 |
 | `hu02-editar-evento.test.ts` | 15 |
@@ -74,12 +75,12 @@
 | `hu05-mis-eventos.test.ts` | 7 |
 | `int02-mensajeria.test.ts` | 4 |
 | `integraciones.test.ts` | 21 |
-| `outbox-relay.test.ts` | 11 |
+| `outbox-relay.test.ts` | 13 |
 | `require-organizer.test.ts` | 5 |
 | `stock-consumer.test.ts` | 15 |
-| **Total** | **181** |
+| **Total** | **185** |
 
-Cobertura global del código backend: **82.26 %** en sentencias (ramas 92.45 %, funciones 95.65 %). El leve ajuste respecto del Sprint anterior se debe a la incorporación del consumidor de stock de Entradas (`stock.consumer.ts`, 43.96 % de sentencias en tests unitarios): las ramas no cubiertas corresponden a los ciclos de reconexión y consumo continuo en segundo plano contra un broker RabbitMQ real, los cuales se validan en la integración con la plataforma.
+Cobertura global del código backend: **82.12 %** en sentencias (ramas 92.67 %, funciones 95.65 %). El leve ajuste respecto del Sprint anterior se debe a la incorporación del consumidor de stock de Entradas (`stock.consumer.ts`, 43.96 % de sentencias en tests unitarios): las ramas no cubiertas corresponden a los ciclos de reconexión y consumo continuo en segundo plano contra un broker RabbitMQ real, los cuales se validan en la integración con la plataforma.
 
 ---
 

@@ -58,7 +58,7 @@ docs/
 |---|---|---|
 | [0001](adr/0001-stack-del-panel-organizador.md) | Stack propuesto Python + FastAPI | Rechazado → 0004 |
 | [0002](adr/0002-motor-de-base-de-datos.md) | Motor de BD: MongoDB con validadores `$jsonSchema` | Propuesta · implementado |
-| [0003](adr/0003-aislamiento-publicacion-broker.md) | Aislamiento de la publicación al broker (outbox) | Propuesta · Sprint 3 |
+| [0003](adr/0003-aislamiento-publicacion-broker.md) | Aislamiento de la publicación al broker (outbox) | Aceptada · implementado |
 | [0004](adr/0004-stack-node-typescript.md) | Stack Node.js + TypeScript + Express + Zod | Propuesta · implementado |
 | [0005](adr/0005-validacion-de-sesion-delegada-a-auth.md) | Validación de sesión delegada a Auth (fail-secure) | Propuesta · implementado |
 | [0006](adr/0006-api-contract-first-openapi.md) | API contract-first + pruebas de contrato | Propuesta · implementado |
@@ -68,6 +68,13 @@ docs/
 | [0010](adr/0010-monorepo-y-flujo-de-calidad.md) | Monorepo y flujo de calidad | Propuesta · implementado |
 | [0011](adr/0011-alineacion-contrato-checkin-v1-2.md) | Alineación con el contrato de Check-in v1.2 | Propuesta · implementado |
 | [0012](adr/0012-repo-de-trabajo-y-repo-de-presentacion.md) | Repo de trabajo vs. repo de presentación | Propuesta · **a acordar** |
+| [0013](adr/0013-publicacion-outbox-rabbitmq-plataforma.md) | Publicación del outbox en el RabbitMQ de la plataforma | Propuesta · implementado |
+| [0014](adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | Política de consumo del broker | Propuesta · implementado |
+| [0015](adr/0015-mongodb-7-por-kernel-de-los-runners.md) | MongoDB 7 por el kernel de los runners | Propuesta · implementado |
+| [0016](adr/0016-eliminacion-de-eventos-y-consulta-de-stock.md) | Eliminación de eventos y consulta de stock a Entradas | Propuesta · implementado |
+| [0017](adr/0017-sobre-en-el-cuerpo-para-entradas.md) | Sobre `{ envelope, payload }` en el cuerpo para Entradas | Propuesta · implementado |
+| [0018](adr/0018-consumo-stock-entradas-y-disponibilidad.md) | Aviso de stock de Entradas y disponibilidad AGOTADO | Propuesta · implementado |
+| [0019](adr/0019-exchange-propio-para-notificaciones.md) | Exchange propio para Notificaciones | Propuesta · implementado |
 
 Ver [`adr/README.md`](adr/README.md) para el formato.
 
@@ -77,25 +84,18 @@ Ver [`adr/README.md`](adr/README.md) para el formato.
 
 > **Hostnames y conectividad:** para el detalle de hostnames, puertos y variables de entorno (.env) en local, Docker y Gateway para Auth, Entradas y RabbitMQ, ver [docs/hostnames-integracion.md](hostnames-integracion.md).
 
-Seis contratos. Auth está cerrado. Para los otros cinco, Panel ya expone **servicios REST** con las rutas y los campos de cada contrato ([ADR-0007](adr/0007-integracion-rest-y-datos-de-otros-squads.md)); lo que sigue pendiente es el **broker** (tópicos sin acordar, [ADR-0003](adr/0003-aislamiento-publicacion-broker.md)).
+Seis contratos, todos implementados del lado del Panel (estado al Avance 4, 18/11/2026). Los mensajes salen por el RabbitMQ de la plataforma: exchange `ticketu.events` (topic), vhost `ticketu`, una routing key `panel.evento.<squad>.v1` por squad ([ADR-0013](adr/0013-publicacion-outbox-rabbitmq-plataforma.md), [ADR-0014](adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md)). Las integraciones evaluadas (I1 e I2) están en [`INTEGRACIONES.md`](../INTEGRACIONES.md).
 
 | Contrato | Rol de Panel | Mecanismo | Estado | HU que dependen |
 |---|---|---|---|---|
-| [AUTH](CONTRATO_PANEL_AUTH.md) | Consumidor | REST síncrono | ✅ **Completo** | HU-01…HU-06 |
-| [CATALOGO](CONTRATO_PANEL_CATALOGO.md) | Proveedor | Broker | ⛔ Tópico sin acordar | HU-02, HU-04, HU-07 |
-| [ENTRADAS](CONTRATO_PANEL_ENTRADAS.md) | Proveedor | Broker + consulta | ⛔ Tópico sin acordar | HU-03 |
-| [NOTIFICACIONES](CONTRATO_PANEL_NOTIFICACIONES.md) **v1.2** | Proveedor | Broker | ⛔ Tópico sin acordar | HU-03, HU-07 |
-| [CHECKIN](CONTRATO_PANEL_CHECKIN.md) **v1.2** | Proveedor | Broker (principal) + GET con sesión (respaldo) | 🟡 GET implementado (ADR-0011) · tópico sin acordar | HU-01, HU-04, HU-07 |
-| [PROMOCIONES](CONTRATO_PANEL_PROMOCIONES.md) | Proveedor | Broker o consulta | ⛔ Ni siquiera el mecanismo | — |
+| [AUTH](CONTRATO_PANEL_AUTH.md) v1.1 | Consumidor | REST síncrono con `x-api-key` | ✅ Probado contra el Auth real en la red compartida, por el Gateway ([evidencia](evidencias/pruebas-integracion/sesion-integracion-2026-11-17.md)) | HU-01…HU-07 |
+| [ENTRADAS](CONTRATO_PANEL_ENTRADAS.md) | Proveedor **y consumidor** | Broker `panel.evento.entradas.v1` con `{ envelope, payload }` · GET compartido · Panel consulta el stock (REST) y recibe `entradas.evento.stock.v1` | ✅ Probado con el Entradas real (I1 e I2). Quedan correcciones del lado de Entradas (H1–H6 de la evidencia) | HU-01…HU-04, HU-03, HU-07 |
+| [CATALOGO](CONTRATO_PANEL_CATALOGO.md) | Proveedor | REST + broker `panel.evento.catalogo.v1` (publicado, actualizado, cancelado, eliminado, AGOTADO) | ✅ Panel publica · ⏳ Catálogo no confirmó que consume la cola | HU-02, HU-03, HU-04, HU-07 |
+| [NOTIFICACIONES](CONTRATO_PANEL_NOTIFICACIONES.md) | Proveedor | Broker: exchange propio `panel.evento.notificaciones.v1` (cancelación y reprogramación, ADR-0019) | ✅ Panel publica · ⏳ Notificaciones aún no confirma la recepción | HU-03, HU-07 |
+| [CHECKIN](CONTRATO_PANEL_CHECKIN.md) v1.2 | Proveedor | Broker `panel.evento.checkin.v1` (`tipo_cambio`) + GET con sesión de staff | ✅ Panel publica · GET probado con el Auth real · ⏳ sin confirmación de consumo | HU-02, HU-03, HU-04, HU-07 |
+| [PROMOCIONES](CONTRATO_PANEL_PROMOCIONES.md) | Proveedor | `GET /eventos-disponibles` + broker `panel.evento.promociones.v1` | ✅ Panel publica · ⏳ Promociones no definió su mecanismo | HU-04, HU-07 |
 
-**Lo único que Panel consume es Auth.** En los otros cinco Panel es el proveedor:
-es quien tiene que emitir los mensajes.
-
-### El bloqueo, en una línea
-
-Los cinco contratos de broker dicen `Nombre exacto del evento/tópico: PENDIENTE DE
-ACUERDO`. Hasta que eso se acuerde, los criterios de aceptación que exigen
-"notificar al microservicio de Catálogo" no se pueden cumplir ni probar.
+**Panel consume Auth y Entradas.** Para los demás es el proveedor: emite los mensajes y expone los servicios REST de cada contrato.
 
 ---
 
@@ -108,30 +108,28 @@ ACUERDO`. Hasta que eso se acuerde, los criterios de aceptación que exigen
 | HU-06 | Verificación de autorización | 1 | 01/10/2026 | Contrato Auth | ✅ **Hecha** |
 | HU-01 | Crear un evento | 1 | 01/10/2026 | HU-06 | ✅ **Hecha** |
 | HU-05 | Ver mis eventos | 1 | 01/10/2026 | HU-06, HU-01 | ✅ **Hecha** |
-| HU-02 | Editar un evento | 2 | 22/10/2026 | HU-01 + tópico Catálogo | ⛔ Parcial |
-| HU-04 | Publicar un evento | 1 (adelantada) | 01/10/2026 | HU-01 + tópico Catálogo | ✅ **Hecha salvo el mensaje al broker** (ADR-0009) |
-| HU-07 | Notificar cambios de estado | 3 | 05/11/2026 | Tópicos de los 5 contratos | ⛔ No (diseño en ADR-0003) |
-| HU-03 | Eliminar un evento | 3 | 05/11/2026 | HU-01 + tópicos Catálogo/Entradas/Notif. | ⛔ Parcial |
+| HU-02 | Editar un evento | 2 | 28/10/2026 | HU-01 | ✅ **Hecha** |
+| HU-04 | Publicar un evento | 1 (adelantada) | 01/10/2026 | HU-01 | ✅ **Hecha** (ADR-0009; mensajes al broker con HU-07) |
+| HU-07 | Notificar cambios de estado | 3 y 4 | 05/11 y 18/11/2026 | Contratos de los 5 squads | ✅ **Hecha**: outbox + RabbitMQ (Avance 3); cancelación, eliminación y aviso de stock (Avance 4) |
+| HU-03 | Eliminar un evento | 4 (planificada en el 3) | 18/11/2026 | Consulta de stock de Entradas (INT-05) | ✅ **Hecha** (ADR-0016) |
 
-"Parcial" significa que la lógica de dominio y la persistencia se pueden escribir
-y probar; lo único que no se puede cerrar es el paso de notificación.
+Las 7 HU están implementadas y con pruebas: ver [`evidencias/pruebas-funcionalidad/README.md`](evidencias/pruebas-funcionalidad/README.md) (criterio → test).
 
-### Secuencia recomendada (desde el Sprint 2)
+### Lo que sigue (Sprint 5, entrega final 25/11)
 
-1. **Cada responsable revisa su área** con [`guia-equipo.md`](guia-equipo.md) y acepta o corrige los ADR que le tocan.
-2. **HU-02** (editar) sobre lo existente; la pantalla reutiliza el formulario de creación.
-3. **En paralelo y desde ya:** acordar con los otros squads la tecnología del broker y los tópicos. Es lo que traba el Sprint 3.
-4. **Sprint 3:** outbox + publicador (ADR-0003), HU-07 y HU-03.
-5. Detalle por sprint, con tareas y criterios de salida: [`plan-proyecto.md`](plan-proyecto.md).
+1. **Correcciones de integración** (TASK-04 y TASK-06) a medida que los otros squads respondan, en especial los hallazgos H1–H6 de Entradas.
+2. **Pruebas y validación final** (TASK-05 y TASK-09), repitiendo la sesión con los servicios reales.
+3. **Despliegue** (TASK-08) y **documentación final** (TASK-07).
+4. Detalle por sprint, con tareas y criterios de salida: [`plan-proyecto.md`](plan-proyecto.md).
 
 ### Hitos
 
 | Milestone | Fecha | Contenido |
 |---|---|---|
 | Avance 1 | 01/10/2026 (jueves) | HU-06, HU-01, HU-05 + HU-04 adelantada |
-| Avance 2 | 22/10/2026 | HU-02 |
-| Avance 3 | 05/11/2026 | HU-07, HU-03 |
-| Avance 4 | 18/11/2026 | TASK-01 a TASK-04 (integración y pruebas) |
+| Avance 2 | 28/10/2026 (movido desde el 22/10) | HU-02 |
+| Avance 3 | 05/11/2026 | HU-07: envío al broker (outbox + RabbitMQ) y prefijo del Gateway |
+| Avance 4 | 18/11/2026 | HU-03, cierre de HU-07, TASK-01 a TASK-04 (integración y pruebas) |
 | Entrega final | 25/11/2026 | TASK-05 a TASK-10 |
 
 ---

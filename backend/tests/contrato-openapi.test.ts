@@ -30,6 +30,15 @@ const cases: Array<[string, () => request.Test, ReturnType<typeof schemaOf>]> = 
   ['POST /panel/eventos/mios/{id}/publicar → Evento', () => request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000001/publicar').set('Cookie', 'jwt=token-org-a'), schemaOf('Evento')],
   ['PATCH /panel/eventos/mios/{id} → Evento', () => request(ctx.app).patch('/api/v1/panel/eventos/mios/66f1a0000000000000000002').set('Cookie', 'jwt=token-org-a')
     .send({ hora_fin_evento: '19:00', cantidad_entradas: 350 }), schemaOf('Evento')],
+  ['DELETE /panel/eventos/mios/{id} (BORRADOR) → ResultadoEliminacion', () => request(ctx.app).delete('/api/v1/panel/eventos/mios/66f1a0000000000000000001').set('Cookie', 'jwt=token-org-a'), schemaOf('ResultadoEliminacion')],
+  ['DELETE /panel/eventos/mios/{id} (con ventas) → ResultadoEliminacion', () => {
+    ctx.entradas.stock.set('66f1a0000000000000000002', 10);
+    return request(ctx.app).delete('/api/v1/panel/eventos/mios/66f1a0000000000000000002').set('Cookie', 'jwt=token-org-a');
+  }, schemaOf('ResultadoEliminacion')],
+  ['503 Entradas no disponible → Error', () => {
+    ctx.entradas.unavailable = true;
+    return request(ctx.app).delete('/api/v1/panel/eventos/mios/66f1a0000000000000000002').set('Cookie', 'jwt=token-org-a');
+  }, schemaOf('Error')],
   ['409 → Error', () => request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000002/publicar').set('Cookie', 'jwt=token-org-a'), schemaOf('Error')],
   ['GET /organizador/eventos/proximos → EventoCatalogo[]', () => request(ctx.app).get('/api/v1/organizador/eventos/proximos'), arrayOf('EventoCatalogo')],
   ['POST /organizador/eventos/buscar → EventoCatalogo[]', () => request(ctx.app).post('/api/v1/organizador/eventos/buscar').send({ texto: 'feria' }), arrayOf('EventoCatalogo')],

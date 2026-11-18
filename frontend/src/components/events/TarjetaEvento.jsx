@@ -16,6 +16,7 @@ export default function TarjetaEvento({ evento, onPublicar, onEditar, onEliminar
   const { mes, dia } = formatearFecha(evento.fecha_evento);
   const estadoClase = evento.estado_gestion?.toLowerCase();
   const esBorrador = evento.estado_gestion === "BORRADOR";
+  const esEliminable = evento.estado_gestion === "BORRADOR" || evento.estado_gestion === "PUBLICADO";
   // Los botones no deben abrir el detalle al hacer clic
   const accion = (fn) => (e) => { e.stopPropagation(); fn?.(evento); };
 
@@ -79,8 +80,9 @@ export default function TarjetaEvento({ evento, onPublicar, onEditar, onEliminar
           </button>
           <button
             className="accion accion--danger"
-            title="Eliminar evento (Sprint 3 — HU-03)"
+            title={esEliminable ? "Eliminar evento" : "Sólo un evento en Borrador o Publicado puede eliminarse"}
             aria-label="Eliminar"
+            disabled={!esEliminable}
             onClick={accion(onEliminar)}
           >
             <Trash2 size={20} strokeWidth={2} />

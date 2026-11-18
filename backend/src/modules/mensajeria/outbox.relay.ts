@@ -36,6 +36,8 @@ export type OutboxRelayOptions = {
   maxIntentos: number;
   appId?: string;
   maxBackoffMs?: number;
+  // Tópicos cuyo consumidor lee el sobre dentro del cuerpo: { envelope, payload } (ADR-0017, Entradas)
+  topicsWithBodyEnvelope?: readonly string[];
   log?: (line: string) => void;
 };
 
@@ -43,12 +45,25 @@ const COLLECTION = 'mensajes_salientes';
 const MAX_ERROR_LENGTH = 500;
 const errorText = (error: unknown) => (error instanceof Error ? error.message : String(error)).slice(0, MAX_ERROR_LENGTH);
 
-// Propiedades AMQP: el cuerpo es exactamente el del contrato de cada squad; el sobre (ADR-0003) viaja en las cabeceras
+// Propiedades AMQP: el sobre (ADR-0003) viaja siempre en las cabeceras, también cuando va dentro del cuerpo
 export function publishOptions(msg: MensajeSaliente, appId: string): Options.Publish {
   return {
     contentType: 'application/json', contentEncoding: 'utf-8', persistent: true,
     messageId: msg._id.toHexString(), type: msg.tipo, appId, timestamp: Math.floor(msg.fecha_creacion.getTime() / 1000),
     headers: { version: msg.version, tipo: msg.tipo, id_evento: msg.id_evento.toHexString(), fecha_cambio: msg.fecha_cambio.toISOString() },
+  };
+}
+
+// Cuerpo del mensaje. Por defecto, exactamente el del contrato de cada squad (ADR-0013). Para los tópicos de
+// topicsWithBodyEnvelope, el sobre va también dentro del cuerpo, que es como lo lee Entradas (ADR-0017)
+export function messageBody(msg: MensajeSaliente, withEnvelope: boolean): Record<string, unknown> {
+  if (!withEnvelope) return msg.payload;
+  return {
+    envelope: {
+      id_mensaje: msg._id.toHexString(), tipo: msg.tipo, id_evento: msg.id_evento.toHexString(), version: Number(msg.version),
+      fecha_cambio: msg.fecha_cambio.toISOString(), timestamp: msg.fecha_creacion.toISOString(),
+    },
+    payload: msg.payload,
   };
 }
 
@@ -102,7 +117,8 @@ export class OutboxRelay {
       const msg = await this.claimNext();
       if (!msg) return sent;
       try {
-        channel.publish(this.opts.exchange, msg.topico, Buffer.from(JSON.stringify(msg.payload)), publishOptions(msg, this.opts.appId ?? 'organizador-service'));
+        const body = messageBody(msg, this.opts.topicsWithBodyEnvelope?.includes(msg.topico) ?? false);
+        channel.publish(this.opts.exchange, msg.topico, Buffer.from(JSON.stringify(body)), publishOptions(msg, this.opts.appId ?? 'organizador-service'));
         await channel.waitForConfirms();
       } catch (error) {
         const intentos = Number(msg.intentos) + 1;

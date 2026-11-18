@@ -117,6 +117,14 @@
         ],
         "description": "Estado administrativo del evento. Todo evento nace en BORRADOR."
       },
+      "estado_disponibilidad": {
+        "bsonType": "string",
+        "enum": [
+          "DISPONIBLE",
+          "AGOTADO"
+        ],
+        "description": "Disponibilidad que Panel comunica a Catálogo (contrato Entradas §3.4, Catálogo §3.1). AGOTADO cuando Entradas informa stock = 0 por entradas.evento.stock.v1. Si falta, se considera DISPONIBLE. PASADO no se guarda: se calcula por fecha. El stock no se guarda (ADR-0007)."
+      },
       "fecha_creacion": {
         "bsonType": "date",
         "description": "Fecha y hora de creación del registro."

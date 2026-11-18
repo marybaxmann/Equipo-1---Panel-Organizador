@@ -69,15 +69,34 @@ describe('Publicador del outbox hacia RabbitMQ (HU-07, ADR-0013)', () => {
     });
   });
 
+  it('en los tópicos configurados el cuerpo lleva { envelope, payload }, como lo lee Entradas (ADR-0017)', async () => {
+    await addPending(2);
+    const conn = new FakeConnection();
+    const relay = new OutboxRelay(conn, { exchange: 'ticketu.events', pollMs: 10, maxIntentos: 3, log: () => {}, topicsWithBodyEnvelope: ['panel.evento.test1.v1'] });
+    expect(await relay.runOnce()).toBe(2);
+    const [plano, conSobre] = conn.ch.published;
+    expect(plano!.body).toEqual({ id_evento: '66f1a0000000000000000002', orden: 0 });
+    const doc = await outbox().findOne({ topico: 'panel.evento.test1.v1' });
+    expect(conSobre!.body).toEqual({
+      envelope: {
+        id_mensaje: doc!._id.toHexString(), tipo: 'evento_publicado', id_evento: '66f1a0000000000000000002', version: 1,
+        fecha_cambio: doc!.fecha_cambio.toISOString(), timestamp: doc!.fecha_creacion.toISOString(),
+      },
+      payload: { id_evento: '66f1a0000000000000000002', orden: 1 },
+    });
+    // Las propiedades AMQP no cambian: el sobre sigue también en las cabeceras
+    expect(conSobre!.options.headers).toMatchObject({ tipo: 'evento_publicado', id_evento: '66f1a0000000000000000002' });
+  });
+
   it('publicar un evento por la API termina con todos sus mensajes ENVIADO', async () => {
     await seedDemo(mongoose.connection.db!);
     const res = await request(ctx.app).post('/api/v1/panel/eventos/mios/66f1a0000000000000000001/publicar').set('Cookie', 'jwt=token-org-a');
     expect(res.status).toBe(200);
     const conn = new FakeConnection();
     const enviados = await relayWith(conn).runOnce();
-    expect(enviados).toBe(5);
+    expect(enviados).toBe(4);
     expect(conn.ch.published.map((p) => p.routingKey).sort()).toEqual([
-      'panel.evento.catalogo.v1', 'panel.evento.checkin.v1', 'panel.evento.entradas.v1', 'panel.evento.notificaciones.v1', 'panel.evento.promociones.v1',
+      'panel.evento.catalogo.v1', 'panel.evento.checkin.v1', 'panel.evento.entradas.v1', 'panel.evento.promociones.v1',
     ]);
     expect(await outbox().countDocuments({ estado: { $ne: 'ENVIADO' } })).toBe(0);
   });

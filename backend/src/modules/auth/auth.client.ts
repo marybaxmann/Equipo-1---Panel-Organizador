@@ -15,13 +15,16 @@ type Attempt = { kind: 'response'; response: Response } | { kind: 'unavailable' 
 const sessionInvalid = () => new AppError(401, 'SESSION_INVALID', 'Sesión inválida o expirada. Inicia sesión nuevamente.');
 const authError = () => new AppError(502, 'AUTH_ERROR', 'No se pudo validar la sesión con Auth.');
 
-export function createHttpAuthClient(opts: { baseUrl: string; timeoutMs: number }): AuthClient {
+export function createHttpAuthClient(opts: { baseUrl: string; timeoutMs: number; apiKey?: string | undefined; logError?: (line: string) => void }): AuthClient {
   const url = new URL('/internal/validar-sesion', opts.baseUrl);
+  const logError = opts.logError ?? console.error;
+  // Contrato Auth v1.1 §5: clave compartida del ambiente, sólo entre backends (nunca llega al frontend)
+  const headers = (jwt: string): Record<string, string> => ({ Cookie: `jwt=${jwt}`, ...(opts.apiKey && { 'x-api-key': opts.apiKey }) });
 
   async function attempt(jwt: string): Promise<Attempt> {
     try {
       // La cookie se reenvía tal cual: Panel no decodifica ni valida el JWT (contrato §2.1)
-      const response = await fetch(url, { headers: { Cookie: `jwt=${jwt}` }, signal: AbortSignal.timeout(opts.timeoutMs) });
+      const response = await fetch(url, { headers: headers(jwt), signal: AbortSignal.timeout(opts.timeoutMs) });
       if (response.status === 503) {
         await response.body?.cancel();
         return { kind: 'unavailable' };
@@ -39,7 +42,11 @@ export function createHttpAuthClient(opts: { baseUrl: string; timeoutMs: number 
 
   async function toUser(response: Response): Promise<AuthUser> {
     if (response.status === 401) return discardAndThrow(response, sessionInvalid());
-    if (response.status === 403) return discardAndThrow(response, new AppError(403, 'ACCESS_DENIED', 'Auth denegó el acceso.'));
+    if (response.status === 403) {
+      // Contrato Auth v1.1 §4: 403 = x-api-key ausente o incorrecta. Es un error de configuración del Panel, no del usuario
+      logError('[auth] Auth rechazó la x-api-key (403): revisar AUTH_INTERNAL_API_KEY');
+      return discardAndThrow(response, authError());
+    }
     if (!response.ok) return discardAndThrow(response, authError());
     const parsed = authResponseSchema.safeParse(await response.json().catch(() => null));
     if (!parsed.success) throw authError();

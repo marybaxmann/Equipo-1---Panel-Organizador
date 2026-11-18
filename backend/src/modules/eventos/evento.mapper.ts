@@ -1,7 +1,11 @@
 import { fromDateOnly, todayInSantiago } from '../../core/time.js';
 import type { EventoDoc } from './evento.model.js';
 
-const disponibilidad = (e: EventoDoc) => (fromDateOnly(e.fecha_evento) < todayInSantiago() ? 'PASADO' : 'DISPONIBLE');
+// Contrato Catálogo §3.1: PASADO por fecha; AGOTADO cuando Entradas informó stock = 0 (contrato Entradas §3.4)
+const disponibilidad = (e: EventoDoc) => {
+  if (fromDateOnly(e.fecha_evento) < todayInSantiago()) return 'PASADO';
+  return e.estado_disponibilidad === 'AGOTADO' ? 'AGOTADO' : 'DISPONIBLE';
+};
 
 export const toEventoResumen = (e: EventoDoc) => ({
   id_evento: e._id.toString(),

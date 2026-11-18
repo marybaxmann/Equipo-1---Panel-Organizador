@@ -24,11 +24,15 @@ describe('database creation script', () => {
   it('accepts a valid evento', async () => {
     await expect(db.collection('eventos').insertOne(validEvento())).resolves.toBeTruthy();
   });
+  it('accepts an evento marked AGOTADO by Entradas (contrato Entradas §3.4)', async () => {
+    await expect(db.collection('eventos').insertOne({ ...validEvento(), estado_disponibilidad: 'AGOTADO' })).resolves.toBeTruthy();
+  });
   it.each([
     ['missing nombre_evento', (e: any) => { delete e.nombre_evento; }],
     ['invalid estado_gestion', (e: any) => { e.estado_gestion = 'ACTIVO'; }],
     ['invalid hora_evento', (e: any) => { e.hora_evento = '25:00'; }],
     ['extra field (other squad data)', (e: any) => { e.stock = 10; }],
+    ['invalid estado_disponibilidad (PASADO is computed, not stored)', (e: any) => { e.estado_disponibilidad = 'PASADO'; }],
   ])('rejects evento with %s', async (_label, mutate) => {
     const doc = validEvento(); mutate(doc);
     await expect(db.collection('eventos').insertOne(doc)).rejects.toMatchObject({ code: 121 });

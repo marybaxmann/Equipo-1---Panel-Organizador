@@ -13,13 +13,23 @@ services:
     environment:
       PORT: 3000
       MONGO_URI: mongodb://organizador-mongo:27017/panel_organizador
-      # Nombre del servicio de Auth en la red compartida (confirmar con el squad de Auth)
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-service:3000}
+      # Auth corre en el puerto 10000 (guía Docker de Auth). Se llama directo al contenedor, nunca por el Gateway (contrato v1.1 §3)
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-service:10000}
+      # Clave compartida del ambiente que Auth exige en x-api-key (INT-11). Se define en .env, nunca en el repo
+      AUTH_INTERNAL_API_KEY: ${AUTH_INTERNAL_API_KEY:-}
       AUTH_TIMEOUT_MS: ${AUTH_TIMEOUT_MS:-1000}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000,http://localhost:5173}
+      # Entradas / Inventario en la red compartida (HU-03): contenedor entradas-service, puerto 3000 (su docker-compose.yml)
+      ENTRADAS_SERVICE_URL: ${ENTRADAS_SERVICE_URL:-http://entradas-service:3000}
       # RabbitMQ de la plataforma: dentro de Docker se usa el nombre del contenedor, nunca localhost
       BROKER_URL: ${BROKER_URL:-amqp://ticketu:ticketu_dev@ticketu-rabbitmq:5672/ticketu}
       EVENT_EXCHANGE: ${EVENT_EXCHANGE:-ticketu.events}
+      # Entradas lee { envelope, payload } en el cuerpo (ADR-0017)
+      BROKER_TOPICOS_CON_SOBRE: ${BROKER_TOPICOS_CON_SOBRE:-panel.evento.entradas.v1}
+      # Aviso de stock que publica Entradas (ADR-0018): stock = 0 → AGOTADO
+      TOPIC_STOCK_ENTRADAS: ${TOPIC_STOCK_ENTRADAS:-entradas.evento.stock.v1}
+      BROKER_COLA_STOCK: ${BROKER_COLA_STOCK:-panel-organizador.entradas.stock}
+      # true = carga los 7 eventos de demo y los anuncia por el broker. BORRA los eventos existentes: sólo para pruebas
       SEED_DEMO: ${SEED_DEMO:-false}
     depends_on:
       organizador-mongo:

@@ -8,7 +8,12 @@ import type { Topics } from './topics.js';
 export type EventoChange =
   | { kind: 'CREADO'; evento: EventoDoc; idUsuario: string }
   | { kind: 'PUBLICADO'; evento: EventoDoc; idUsuario: string }
-  | { kind: 'ACTUALIZADO'; antes: EventoDoc; evento: EventoDoc; idUsuario: string };
+  | { kind: 'ACTUALIZADO'; antes: EventoDoc; evento: EventoDoc; idUsuario: string }
+  | { kind: 'CANCELADO'; evento: EventoDoc; idUsuario: string }
+  // evento = el documento tal como estaba antes de borrarlo; fecha = cuándo se borró
+  | { kind: 'ELIMINADO'; evento: EventoDoc; idUsuario: string; fecha: Date }
+  // Entradas informó un cambio de stock (contrato Entradas §3.4): no lo hace un usuario, por eso no lleva idUsuario
+  | { kind: 'DISPONIBILIDAD'; evento: EventoDoc };
 
 export type EventoNotifier = (change: EventoChange) => Promise<void>;
 
@@ -30,15 +35,16 @@ const comparable = (value: unknown) => (value instanceof Date ? value.getTime() 
 export const changedFields = (antes: EventoDoc, despues: EventoDoc): EditableField[] =>
   EDITABLE_FIELDS.filter((campo) => comparable(antes[campo]) !== comparable(despues[campo]));
 
-// Contrato Entradas v1.2 §3.1: los mismos 8 campos del GET compartido
+// Contrato Entradas v1.2 §3.1: los mismos 8 campos del GET compartido, más precio (su inventario guarda precio_unitario; ADR-0017)
 const entradasPayload = (e: EventoDoc) => ({
   id_evento: e._id.toString(), id_usuario: e.id_organizador, nombre_evento: e.nombre_evento,
   fecha_evento: fromDateOnly(e.fecha_evento), hora_evento: e.hora_evento,
   cantidad_entradas: e.cantidad_entradas ?? null, tipo_entrada: e.tipo_entrada ?? null, estado_gestion: e.estado_gestion,
+  precio: e.precio ?? null,
 });
 
 // Contrato Check-in v1.2 §3.3: estado completo del evento, para reemplazar la copia local sin combinar datos
-const checkinPayload = (e: EventoDoc, tipoCambio: 'PUBLICADO' | 'ACTUALIZADO') => ({
+const checkinPayload = (e: EventoDoc, tipoCambio: 'PUBLICADO' | 'ACTUALIZADO' | 'CANCELADO') => ({
   tipo_cambio: tipoCambio, id_evento: e._id.toString(), nombre_evento: e.nombre_evento,
   direccion_evento: e.direccion_evento, fecha_evento: fromDateOnly(e.fecha_evento), hora_evento: e.hora_evento,
   hora_fin_evento: e.hora_fin_evento ?? null, estado_gestion: e.estado_gestion,
@@ -48,21 +54,23 @@ const checkinPayload = (e: EventoDoc, tipoCambio: 'PUBLICADO' | 'ACTUALIZADO') =
 export function buildMessages(change: EventoChange, topics: Topics): Array<{ topic: string; message: OutgoingMessage }> {
   const e = change.evento;
   const id = e._id.toString();
+  const fechaCambio = change.kind === 'ELIMINADO' ? change.fecha : e.fecha_actualizacion;
   const message = (tipo: string, payload: Record<string, unknown>) => ({
-    envelope: { version: MESSAGE_VERSION, tipo, fecha_cambio: e.fecha_actualizacion.toISOString(), id_evento: id }, payload,
+    envelope: { version: MESSAGE_VERSION, tipo, fecha_cambio: fechaCambio.toISOString(), id_evento: id }, payload,
   });
-  const notificacion = { id_evento: id, id_usuario: change.idUsuario, nuevo_estado: e.estado_gestion };
+  const notificacion = (idUsuario: string) => ({ id_evento: id, id_usuario: idUsuario, nuevo_estado: e.estado_gestion });
 
   switch (change.kind) {
     case 'CREADO':
       // Un BORRADOR sólo lo conoce Entradas (Entradas §3.1); Catálogo y Check-in no deben verlo
       return [{ topic: topics.entradas, message: message('evento_creado', entradasPayload(e)) }];
     case 'PUBLICADO':
+      // Notificaciones no recibe la publicación: sólo le sirven cancelación y reprogramación (minuta 24/10, compromiso 1).
+      // Un evento recién publicado no tiene compradores a quienes avisar
       return [
         { topic: topics.catalogo, message: message('evento_publicado', toCatalogoEvento(e)) },
         { topic: topics.entradas, message: message('evento_publicado', entradasPayload(e)) },
         { topic: topics.checkin, message: message('evento_publicado', checkinPayload(e, 'PUBLICADO')) },
-        { topic: topics.notificaciones, message: message('evento_actualizado', notificacion) },
         { topic: topics.promociones, message: message('evento_publicado', toPromocionesEvento(e)) },
       ];
     case 'ACTUALIZADO': {
@@ -78,11 +86,36 @@ export function buildMessages(change: EventoChange, topics: Topics): Array<{ top
         // En este mensaje fecha_cambio y hora_cambio son la NUEVA fecha y hora del evento (Notificaciones §2.4)
         out.push({
           topic: topics.notificaciones,
-          message: message('evento_reprogramado', { ...notificacion, fecha_cambio: fromDateOnly(e.fecha_evento), hora_cambio: `${e.hora_evento}:00` }),
+          message: message('evento_reprogramado', { ...notificacion(change.idUsuario), fecha_cambio: fromDateOnly(e.fecha_evento), hora_cambio: `${e.hora_evento}:00` }),
         });
       }
       return out;
     }
+    case 'CANCELADO':
+      // HU-03 con entradas vendidas. Notificaciones recibe evento_actualizado con nuevo_estado CANCELADO (contrato §2.3, minuta 29/10)
+      return [
+        { topic: topics.catalogo, message: message('evento_cancelado', toCatalogoEvento(e)) },
+        { topic: topics.entradas, message: message('evento_cancelado', entradasPayload(e)) },
+        { topic: topics.checkin, message: message('evento_cancelado', checkinPayload(e, 'CANCELADO')) },
+        { topic: topics.notificaciones, message: message('evento_actualizado', notificacion(change.idUsuario)) },
+        { topic: topics.promociones, message: message('evento_cancelado', toPromocionesEvento(e)) },
+      ];
+    case 'ELIMINADO': {
+      // Borrado físico: no hay entradas vendidas, así que Check-in y Notificaciones no tienen nada que hacer.
+      // Un BORRADOR sólo lo conocía Entradas; un PUBLICADO, también Catálogo y Promociones
+      const eliminado = { id_evento: id, id_usuario: change.idUsuario };
+      const out = [{ topic: topics.entradas, message: message('evento_eliminado', eliminado) }];
+      if (e.estado_gestion === 'PUBLICADO') {
+        out.push({ topic: topics.catalogo, message: message('evento_eliminado', eliminado) });
+        out.push({ topic: topics.promociones, message: message('evento_eliminado', eliminado) });
+      }
+      return out;
+    }
+    case 'DISPONIBILIDAD':
+      // Contrato Entradas §3.4: Panel comunica AGOTADO a quien consume la disponibilidad, hoy Catálogo (contrato Catálogo §3.1 y §3.3).
+      // Un evento que Catálogo no muestra (BORRADOR, CANCELADO, FINALIZADO) no genera mensaje
+      if (e.estado_gestion !== 'PUBLICADO') return [];
+      return [{ topic: topics.catalogo, message: message('evento_actualizado', toCatalogoEvento(e)) }];
   }
 }
 

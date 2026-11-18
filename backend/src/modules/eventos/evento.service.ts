@@ -1,5 +1,6 @@
 import { AppError, type FieldIssue } from '../../core/errors/app-error.js';
 import { toDateOnly } from '../../core/time.js';
+import type { EntradasClient } from '../integraciones/entradas.client.js';
 import type { EventoNotifier } from '../mensajeria/evento.notifier.js';
 import { CambioEstadoModel } from './cambio-estado.model.js';
 import { EventoModel, type EventoDoc, type EventState } from './evento.model.js';
@@ -114,4 +115,47 @@ export async function updateEvento(idEvento: string, input: UpdateEventoInput, o
   if (!despues) throw new AppError(409, 'EVENT_NOT_EDITABLE', 'El evento cambió de estado mientras se editaba. Vuelve a cargarlo.');
   await notify({ kind: 'ACTUALIZADO', antes, evento: despues, idUsuario: organizerId });
   return despues;
+}
+
+// HU-03: sólo BORRADOR y PUBLICADO se eliminan (FINALIZADO y CANCELADO ya cerraron su ciclo)
+const ESTADOS_ELIMINABLES: readonly EventState[] = ['BORRADOR', 'PUBLICADO'];
+
+export type ResultadoEliminacion = { resultado: 'ELIMINADO'; id_evento: string } | { resultado: 'CANCELADO'; evento: EventoDoc };
+
+const cambioConcurrente = () =>
+  new AppError(409, 'INVALID_STATE_TRANSITION', 'El evento cambió de estado mientras se eliminaba. Vuelve a cargarlo.');
+
+export async function eliminarEvento(
+  idEvento: string, organizerId: string, jwt: string, notify: EventoNotifier, entradas: EntradasClient,
+): Promise<ResultadoEliminacion> {
+  const evento = await getOwnedEvento(idEvento, organizerId);
+  if (!ESTADOS_ELIMINABLES.includes(evento.estado_gestion)) {
+    throw new AppError(409, 'INVALID_STATE_TRANSITION', 'Sólo un evento en Borrador o Publicado puede eliminarse.');
+  }
+  if (evento.estado_gestion === 'PUBLICADO') {
+    // Contrato Entradas §3.4: stock < cantidad_entradas = hay entradas vendidas. Si Entradas no responde, la consulta
+    // lanza 503 y el evento queda tal cual. null = Entradas no conoce el evento, así que no hay ventas
+    const stock = await entradas.getStock(idEvento, jwt);
+    if (stock !== null && stock < (evento.cantidad_entradas ?? 0)) return cancelarEvento(evento, organizerId, notify);
+  }
+  // La condición sobre el estado leído evita borrar un evento que otra petición acaba de cambiar
+  const borrado = await EventoModel.findOneAndDelete({ _id: evento._id, estado_gestion: evento.estado_gestion }).lean<EventoDoc>();
+  if (!borrado) throw cambioConcurrente();
+  await notify({ kind: 'ELIMINADO', evento: borrado, idUsuario: organizerId, fecha: new Date() });
+  return { resultado: 'ELIMINADO', id_evento: idEvento };
+}
+
+async function cancelarEvento(evento: EventoDoc, organizerId: string, notify: EventoNotifier): Promise<ResultadoEliminacion> {
+  const cancelado = await EventoModel.findOneAndUpdate(
+    { _id: evento._id, estado_gestion: 'PUBLICADO' },
+    { $set: { estado_gestion: 'CANCELADO' } },
+    { returnDocument: 'after' },
+  ).lean<EventoDoc>();
+  if (!cancelado) throw cambioConcurrente();
+  await CambioEstadoModel.create({
+    id_evento: cancelado._id, estado_anterior: 'PUBLICADO', nuevo_estado: 'CANCELADO',
+    fecha_cambio: cancelado.fecha_actualizacion, id_usuario_responsable: organizerId,
+  });
+  await notify({ kind: 'CANCELADO', evento: cancelado, idUsuario: organizerId });
+  return { resultado: 'CANCELADO', evento: cancelado };
 }

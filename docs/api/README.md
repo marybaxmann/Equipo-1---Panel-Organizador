@@ -25,8 +25,8 @@ Los endpoints del organizador piden la cookie `jwt`. Al iniciar sesión en el fr
 | 1 | Integración | 6 GET/POST para Catálogo, Entradas, Check-in, Notificaciones y Promociones | Sprint 1 · Integración — … |
 | 2 | HU-02 Editar | `PATCH /api/v1/panel/eventos/mios/{id}` | Sprint 2 · HU-02 |
 | 2 | INT-02 Mensajes salientes | sin endpoint: colección `mensajes_salientes` | Sprint 2 · HU-02 (descripción) |
-| 3 | HU-03 Eliminar | `DELETE /api/v1/panel/eventos/mios/{id}` | Sprint 3 · HU-03 (planificado) |
 | 3 | HU-07 Notificar | sin endpoint: entrega del outbox al broker | — |
+| 4 | HU-03 Eliminar | `DELETE /api/v1/panel/eventos/mios/{id}` | Sprint 4 · HU-03 — Eliminar un evento |
 
 ## Sprint 1 — Crear, ver y publicar
 
@@ -71,13 +71,25 @@ Los endpoints del organizador piden la cookie `jwt`. Al iniciar sesión en el fr
 - **¿Ya envían al broker?** Sí. El broker es el RabbitMQ compartido de la plataforma TicketU (exchange `ticketu.events`, ADR-0013) y el publicador ya está implementado. Cada cambio queda primero en el outbox (`mensajes_salientes`, ADR-0003) y un proceso lo envía a RabbitMQ; si el broker no está disponible, el mensaje queda `PENDIENTE` y se reintenta, así que nada se pierde ni bloquea al organizador. Falta la prueba contra el RabbitMQ real de la plataforma (HU-07, Sprint 3).
 - **¿Se puede cambiar el nombre de un tópico?** Sí. Los tópicos se leen de `.env` (`TOPIC_*`), así que cambiarlos no requiere tocar código.
 
-## Sprint 3 — Eliminar y notificar (planificado)
+## Sprint 3 — Enviar al broker
 
-- **HU-03** · `DELETE /mios/{id}` → 204.
-  - Un BORRADOR se borra físicamente.
-  - Un evento PUBLICADO se borra solo si Entradas confirma que no hay entradas vendidas. Si las hay, pasa a CANCELADO.
-  - Si Entradas no responde, no se borra.
-- **HU-07** · Un proceso toma los mensajes `PENDIENTE` de `mensajes_salientes`, los envía al broker y los marca como enviados. Si falla, suma un intento.
+- **HU-07** · Un proceso toma los mensajes `PENDIENTE` de `mensajes_salientes`, los envía al RabbitMQ de la plataforma y los marca como `ENVIADO`. Si falla, suma un intento (ADR-0013).
+
+## Sprint 4 — Eliminar, cancelar y conectar con los servicios reales
+
+**Antes:** levantar el Entradas simulado (`docker compose up -d` lo incluye en el puerto 4002) y poner `ENTRADAS_SERVICE_URL=http://localhost:4002` en `.env`. Stock simulado: Feria 300 de 300 (sin ventas), Charla de Ciberseguridad 95 de 120 (con ventas), Torneo 64 de 64.
+
+1. **HU-03, BORRADOR** · `DELETE /mios/66f1a0000000000000000001` con Org A → 200 `ELIMINADO`. Ya no está en `eventos`. En `mensajes_salientes` queda un `evento_eliminado` para Entradas.
+2. **HU-03, PUBLICADO sin ventas** · `DELETE /mios/66f1a0000000000000000002` (Feria) → 200 `ELIMINADO`. Deja de aparecer en `GET /organizador/eventos/proximos`.
+3. **HU-03, PUBLICADO con ventas** · `DELETE /mios/66f1a0000000000000000003` (Charla) → 200 `CANCELADO` con el evento. En `cambios_estado_evento` queda `PUBLICADO → CANCELADO`.
+4. **HU-07** · Mostrar los mensajes de la Charla: `evento_cancelado` a Catálogo, Entradas, Check-in y Promociones, y `evento_actualizado` con `nuevo_estado: CANCELADO` a Notificaciones. Con el broker levantado pasan a `ENVIADO`.
+5. **Entradas caído** · Detener el mock (`docker compose stop mock-entradas`) y eliminar el Torneo con Org B → 503 `ENTRADAS_UNAVAILABLE`. El evento sigue PUBLICADO.
+6. **No se puede eliminar** · un FINALIZADO o CANCELADO → 409; el evento de otro organizador → 403.
+7. **INT-11** · Con `AUTH_INTERNAL_API_KEY` en `.env`, el Panel envía `x-api-key` a Auth. Si la clave no coincide, Auth responde 403 y el Panel responde 502 `AUTH_ERROR` (error de configuración, no del usuario).
+
+**Si preguntan:**
+- **¿Por qué no se borra siempre?** Si hay entradas vendidas, borrar dejaría a los compradores sin evento. Por eso pasa a CANCELADO y Notificaciones avisa a los compradores.
+- **¿Qué pasa si Entradas no responde?** No se puede confirmar que no haya ventas, así que no se toca el evento (fail-secure, igual que con Auth).
 
 ## Pruebas que respaldan cada sprint
 
@@ -85,5 +97,7 @@ Los endpoints del organizador piden la cookie `jwt`. Al iniciar sesión en el fr
 | --- | --- | --- |
 | 1 | `hu01-`, `hu04-`, `hu05-`, `require-organizer`, `auth.client`, `integraciones` | Carpetas 01 a 07 |
 | 2 | `hu02-editar-evento`, `int02-mensajeria`, y los casos nuevos en `hu04-` | Carpeta 08 Sprint 2 (7 casos) |
+| 3 | `outbox-relay`, `gateway-prefix` | Evidencias de broker en `docs/evidencias/` |
+| 4 | `hu03-eliminar-evento`, `entradas.client`, y los casos de `x-api-key` en `auth.client` | Pendiente: carpeta HU-03 |
 
 En cada sprint, `contrato-openapi.test.ts` comprueba que las respuestas reales cumplen este Swagger.

@@ -76,10 +76,10 @@ describe('HU-01 Crear un evento', () => {
     const mensajes = await mongoose.connection.db!.collection('mensajes_salientes').find().toArray();
     expect(mensajes).toHaveLength(1);
     expect(mensajes[0]).toMatchObject({ topico: 'panel.evento.entradas.v1', tipo: 'evento_creado', estado: 'PENDIENTE' });
-    // Contrato Entradas v1.2 §3.1: los 8 campos del GET compartido
+    // Contrato Entradas v1.2 §3.1: los 8 campos del GET compartido, más precio (ADR-0017)
     expect(mensajes[0]!.payload).toEqual({
       id_evento: res.body.id_evento, id_usuario: ORG_A.id_usuario, nombre_evento: valid.nombre_evento,
-      fecha_evento: valid.fecha_evento, hora_evento: valid.hora_evento, cantidad_entradas: 80, tipo_entrada: 'GRATUITA', estado_gestion: 'BORRADOR',
+      fecha_evento: valid.fecha_evento, hora_evento: valid.hora_evento, cantidad_entradas: 80, tipo_entrada: 'GRATUITA', estado_gestion: 'BORRADOR', precio: null,
     });
   });
 

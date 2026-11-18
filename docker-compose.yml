@@ -9,5 +9,15 @@ services:
     command: node server.mjs
     volumes: ["./tools/mock-auth:/app:ro"]
     ports: ["4001:4001"]
+    # Con AUTH_INTERNAL_API_KEY en .env, el mock exige la misma x-api-key que el Auth real
+    environment:
+      INTERNAL_API_KEY: ${AUTH_INTERNAL_API_KEY:-}
+  # Stock de Entradas simulado para HU-03 (tools/mock-entradas)
+  mock-entradas:
+    image: node:26-alpine
+    working_dir: /app
+    command: node server.mjs
+    volumes: ["./tools/mock-entradas:/app:ro"]
+    ports: ["4002:4002"]
 volumes:
   mongo-data:

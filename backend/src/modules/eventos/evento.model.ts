@@ -3,6 +3,10 @@ import { Schema, model, type Types } from 'mongoose';
 export const EVENT_STATES = ['BORRADOR', 'PUBLICADO', 'FINALIZADO', 'CANCELADO'] as const;
 export type EventState = (typeof EVENT_STATES)[number];
 
+// Sólo se guarda lo que informa Entradas (contrato Entradas §3.4); PASADO se calcula por fecha en el mapper
+export const DISPONIBILIDADES = ['DISPONIBLE', 'AGOTADO'] as const;
+export type Disponibilidad = (typeof DISPONIBILIDADES)[number];
+
 // Tipo explícito: InferSchemaType no infiere bien Schema.Types.Int32
 export interface EventoAttrs {
   id_organizador: string;
@@ -18,6 +22,8 @@ export interface EventoAttrs {
   tipo_entrada: 'GRATUITA' | 'PAGADA' | null;
   precio: number | null;
   estado_gestion: EventState;
+  // Opcional: los eventos anteriores a este campo no lo tienen y se consideran DISPONIBLE
+  estado_disponibilidad?: Disponibilidad;
   fecha_creacion: Date;
   fecha_actualizacion: Date;
 }
@@ -39,6 +45,7 @@ const eventoSchema = new Schema<EventoAttrs>(
     tipo_entrada: { type: String, enum: ['GRATUITA', 'PAGADA', null], default: null },
     precio: { type: Schema.Types.Int32, default: null },
     estado_gestion: { type: String, enum: EVENT_STATES, required: true, default: 'BORRADOR' },
+    estado_disponibilidad: { type: String, enum: DISPONIBILIDADES },
   },
   {
     collection: 'eventos',

@@ -65,19 +65,17 @@ describe('HU-04 Publicar un evento', () => {
     expect(guardado.body.estado_gestion).toBe('BORRADOR');
   });
 
-  it('HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in, Notificaciones y Promociones', async () => {
+  it('HU-07: al publicar se deja un mensaje para Catálogo, Entradas, Check-in y Promociones (no Notificaciones)', async () => {
     await publicar(A_BORRADOR);
     const mensajes = await mongoose.connection.db!.collection('mensajes_salientes')
       .find({ id_evento: new mongoose.Types.ObjectId(A_BORRADOR) }).toArray();
+    // Notificaciones sólo recibe cancelación y reprogramación (minuta 24/10, compromiso 1)
     expect(mensajes.map((m) => m.topico).sort()).toEqual([
-      'panel.evento.catalogo.v1', 'panel.evento.checkin.v1', 'panel.evento.entradas.v1',
-      'panel.evento.notificaciones.v1', 'panel.evento.promociones.v1',
+      'panel.evento.catalogo.v1', 'panel.evento.checkin.v1', 'panel.evento.entradas.v1', 'panel.evento.promociones.v1',
     ]);
     expect(mensajes.every((m) => m.estado === 'PENDIENTE' && m.intentos === 0 && m.version === 1)).toBe(true);
     const checkin = mensajes.find((m) => m.topico === 'panel.evento.checkin.v1')!;
     expect(checkin.payload).toMatchObject({ tipo_cambio: 'PUBLICADO', id_evento: A_BORRADOR, estado_gestion: 'PUBLICADO', hora_fin_evento: '20:00' });
-    const notificacion = mensajes.find((m) => m.topico === 'panel.evento.notificaciones.v1')!;
-    expect(notificacion).toMatchObject({ tipo: 'evento_actualizado', payload: { id_evento: A_BORRADOR, nuevo_estado: 'PUBLICADO' } });
   });
 
   it('un intento fallido no deja mensajes', async () => {

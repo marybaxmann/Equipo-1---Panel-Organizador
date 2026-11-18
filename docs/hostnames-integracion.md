@@ -36,7 +36,7 @@ Panel publica cada cambio en el estado de los eventos en el exchange central de 
 
 * **Exchange:** `ticketu.events` (tipo *topic*, durable)
 * **Tópico / Routing Key (Panel → Entradas):** `panel.evento.entradas.v1`
-* **Tópico / Routing Key de retorno (Entradas → Panel cuando stock = 0):** `entradas.evento.stock.v1`
+* **Tópico / Routing Key de retorno (Entradas → Panel cuando stock = 0):** `entradas.evento.stock.v1`. Panel lo escucha con su cola durable `panel-organizador.entradas.stock` (`TOPIC_STOCK_ENTRADAS`, `BROKER_COLA_STOCK`; ADR-0018) y marca el evento `AGOTADO` para Catálogo
 * **Parámetros de conexión del Broker:**
   * **En Docker (`plataforma-eventos-net`):** `amqp://ticketu:ticketu_dev@ticketu-rabbitmq:5672/ticketu`
   * **En Local:** `amqp://ticketu:ticketu_dev@localhost:5672/ticketu`
@@ -74,7 +74,7 @@ El API Gateway unifica el acceso a todos los microservicios del ecosistema bajo 
 # Configuración del servidor Panel
 PORT=3000
 MONGO_URI=mongodb://organizador-mongo:27017/panel_organizador
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=http://localhost:3000,http://localhost:5173
 
 # Integración con Auth
 AUTH_SERVICE_URL=http://auth-service:10000
@@ -88,4 +88,7 @@ TOPIC_CATALOGO=panel.evento.catalogo.v1
 TOPIC_NOTIFICACIONES=panel.evento.notificaciones.v1
 TOPIC_CHECKIN=panel.evento.checkin.v1
 TOPIC_PROMOCIONES=panel.evento.promociones.v1
+# Lo que Panel recibe de Entradas (ADR-0018)
+TOPIC_STOCK_ENTRADAS=entradas.evento.stock.v1
+BROKER_COLA_STOCK=panel-organizador.entradas.stock
 ```

@@ -56,8 +56,14 @@ tags:
       - Un id con formato inválido responde 400 `INVALID_EVENT_ID` y una ruta inexistente responde un 404 en JSON.
 
       **Demo:** editar la hora de un BORRADOR (200, no escribe historial); publicarlo; editar su fecha (200) y mostrar en `mensajes_salientes` el `evento_reprogramado` para Notificaciones. Con Org B → 403; con un evento FINALIZADO → 409.
-  - name: "Sprint 3 · HU-03 — Eliminar (planificado)"
-    description: Definido en el contrato, no implementado todavía. Depende del stock de Entradas (INT-05).
+  - name: "Sprint 4 · HU-03 — Eliminar un evento"
+    description: |-
+      Lo nuevo del Sprint 4: eliminar consulta el stock a Entradas (INT-05) y publica la cancelación o eliminación (HU-07).
+      La validación de sesión ahora envía `x-api-key` a Auth (contrato Auth v1.1, INT-11).
+
+      **Demo:** con el Entradas simulado (`tools/mock-entradas`), eliminar un BORRADOR (desaparece); eliminar la Feria (300 entradas, stock 300 → se elimina);
+      eliminar la Charla de Ciberseguridad (120 entradas, stock 95 → pasa a CANCELADO) y mostrar `evento_cancelado` en `mensajes_salientes`;
+      apagar el mock y eliminar otro PUBLICADO → 503, el evento no cambia.
   - name: Sistema
     description: Operación del servicio.
 paths:
@@ -216,21 +222,36 @@ paths:
         "503":
           $ref: "#/components/responses/AuthUnavailable"
     delete:
-      summary: HU-03 · Eliminar un evento propio (Sprint 3)
+      summary: HU-03 · Eliminar un evento propio
       description: |-
-        **Planificado para Sprint 3.**
-        Reglas: valida sesión, rol y propiedad; permite eliminar eventos en BORRADOR; un evento PUBLICADO sólo si Entradas confirma que no hay entradas vendidas (a acordar con Entradas), si no → 409. Notifica a Catálogo y Notificaciones.
-      x-sprint: 3
+        Implementado en Sprint 4. Valida sesión, rol y propiedad (HU-06). Sólo BORRADOR y PUBLICADO (otro estado → 409 `INVALID_STATE_TRANSITION`).
+        - **BORRADOR:** se elimina físicamente, sin consultar a Entradas.
+        - **PUBLICADO:** se consulta el stock a Entradas (`GET /api/v1/entradas/eventos/{id_evento}/stock`, contrato Entradas §3.4, INT-05).
+          Si `stock = cantidad_entradas` (o Entradas no conoce el evento) se elimina físicamente; si hay entradas vendidas
+          (`stock < cantidad_entradas`) **no se elimina**: pasa a CANCELADO y se registra en `cambios_estado_evento`.
+        - **Entradas no disponible:** 503 `ENTRADAS_UNAVAILABLE` y el evento queda igual.
+
+        Después deja los mensajes en el outbox (HU-07): al eliminar, `evento_eliminado` a Entradas (y a Catálogo y Promociones si estaba publicado);
+        al cancelar, `evento_cancelado` a Catálogo, Entradas, Check-in (`tipo_cambio: CANCELADO`) y Promociones, y `evento_actualizado` con `nuevo_estado: CANCELADO` a Notificaciones.
       tags:
-        - "Sprint 3 · HU-03 — Eliminar (planificado)"
+        - "Sprint 4 · HU-03 — Eliminar un evento"
       operationId: deleteEvento
       security:
         - cookieJwt: []
       parameters:
         - $ref: "#/components/parameters/IdEvento"
       responses:
-        "204":
-          description: Evento eliminado.
+        "200":
+          description: Evento eliminado o, si tenía entradas vendidas, cancelado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultadoEliminacion"
+              examples:
+                ELIMINADO:
+                  value:
+                    resultado: ELIMINADO
+                    id_evento: 66f1a0000000000000000001
         "400":
           $ref: "#/components/responses/InvalidId"
         "401":
@@ -244,7 +265,22 @@ paths:
         "502":
           $ref: "#/components/responses/AuthError"
         "503":
-          $ref: "#/components/responses/AuthUnavailable"
+          description: Auth o Entradas no disponibles (fail-secure). El evento no se modifica.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                AUTH_UNAVAILABLE:
+                  value:
+                    error:
+                      codigo: AUTH_UNAVAILABLE
+                      mensaje: El servicio de autenticación no está disponible. Intenta más tarde.
+                ENTRADAS_UNAVAILABLE:
+                  value:
+                    error:
+                      codigo: ENTRADAS_UNAVAILABLE
+                      mensaje: No se pudo consultar el stock a Entradas / Inventario. El evento no se eliminó; intenta más tarde.
   /api/v1/panel/eventos/mios/{id_evento}/publicar:
     post:
       summary: HU-04 · Publicar un evento propio
@@ -812,6 +848,27 @@ components:
             - mensaje
       required:
         - error
+    ResultadoEliminacion:
+      description: Resultado de HU-03. Con `ELIMINADO` el evento ya no existe; con `CANCELADO` se devuelve el evento completo.
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required: [resultado, id_evento]
+          properties:
+            resultado:
+              type: string
+              const: ELIMINADO
+            id_evento:
+              type: string
+        - type: object
+          additionalProperties: false
+          required: [resultado, evento]
+          properties:
+            resultado:
+              type: string
+              const: CANCELADO
+            evento:
+              $ref: "#/components/schemas/Evento"
     EventoUpdate:
       type: object
       description: HU-02 (S2). Mismos campos y reglas que EventoCreate, todos opcionales; al menos uno.
@@ -997,11 +1054,6 @@ components:
                 error:
                   codigo: EVENT_NOT_OWNED
                   mensaje: No tienes permiso sobre este evento.
-            ACCESS_DENIED:
-              value:
-                error:
-                  codigo: ACCESS_DENIED
-                  mensaje: Auth denegó el acceso.
             ROL_NO_AUTORIZADO:
               value:
                 error:
@@ -1025,7 +1077,7 @@ components:
                   codigo: ROUTE_NOT_FOUND
                   mensaje: No existe la ruta GET /api/v1/no-existe.
     AuthError:
-      description: Auth respondió 500 o un cuerpo inesperado.
+      description: Auth respondió 500, un cuerpo inesperado o 403 por `x-api-key` ausente o incorrecta (error de configuración entre servicios).
       content:
         application/json:
           schema:
@@ -1049,7 +1101,7 @@ components:
                   codigo: AUTH_UNAVAILABLE
                   mensaje: El servicio de autenticación no está disponible. Intenta más tarde.
     Conflict:
-      description: Conflicto de estado (p.ej. eliminar evento con entradas).
+      description: Conflicto de estado (p. ej. publicar algo que no es BORRADOR, o eliminar un evento FINALIZADO o CANCELADO).
       content:
         application/json:
           schema:

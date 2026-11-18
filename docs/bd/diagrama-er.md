@@ -1,6 +1,6 @@
 # Diagrama Entidad-Relación y Diccionario de Datos
 
-Generado automáticamente desde la base de datos `panel_organizador` el `2026-10-27T22:45:35.972Z` con `database/scripts/generate-docs.mjs`.
+Generado automáticamente desde la base de datos `panel_organizador` el `2026-11-17T22:52:34.428Z` con `database/scripts/generate-docs.mjs`.
 
 ## Diagrama Entidad-Relación
 
@@ -21,6 +21,7 @@ erDiagram
     string tipo_entrada "NULL, enum"
     int precio "NULL"
     string estado_gestion "NOT NULL, enum"
+    string estado_disponibilidad "NULL, enum"
     date fecha_creacion "NOT NULL"
     date fecha_actualizacion "NOT NULL"
   }
@@ -76,6 +77,7 @@ Eventos creados y administrados por organizadores en el Panel Organizador. Fuent
 | tipo_entrada | string (enum) | SI |  | enum: GRATUITA, PAGADA | Indica si las entradas del evento son gratuitas o pagadas. |
 | precio | int | SI |  | min: 0; max: 10000000 | Precio de la entrada en pesos chilenos (CLP), máximo 10.000.000. 0 o nulo si es gratuita. |
 | estado_gestion | string (enum) | NO |  | enum: BORRADOR, PUBLICADO, FINALIZADO, CANCELADO | Estado administrativo del evento. Todo evento nace en BORRADOR. |
+| estado_disponibilidad | string (enum) | SI |  | enum: DISPONIBLE, AGOTADO | Disponibilidad que Panel comunica a Catálogo (contrato Entradas §3.4, Catálogo §3.1). AGOTADO cuando Entradas informa stock = 0 por entradas.evento.stock.v1. Si falta, se considera DISPONIBLE. PASADO no se guarda: se calcula por fecha. El stock no se guarda (ADR-0007). |
 | fecha_creacion | date | NO |  |  | Fecha y hora de creación del registro. |
 | fecha_actualizacion | date | NO |  |  | Fecha y hora de la última modificación del registro. |
 

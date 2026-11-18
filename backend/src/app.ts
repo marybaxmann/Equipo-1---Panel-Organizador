@@ -5,13 +5,14 @@ import { errorHandler } from './core/middlewares/error-handler.js';
 import { mountSwagger } from './docs/swagger.js';
 import type { AuthClient } from './modules/auth/auth.client.js';
 import { organizerRouter } from './modules/eventos/organizer.routes.js';
+import type { EntradasClient } from './modules/integraciones/entradas.client.js';
 import { integrationRouter } from './modules/integraciones/integration.routes.js';
 import type { EventoNotifier } from './modules/mensajeria/evento.notifier.js';
 
 // notifier: cómo se avisa a los otros squads de cada cambio del evento (INT-02, outbox en producción)
 export const API_BASES = ['/api/v1', '/api/organizador/v1'] as const;
 
-export type AppDeps ={ authClient: AuthClient; notifier: EventoNotifier; corsOrigin?: string };
+export type AppDeps = { authClient: AuthClient; entradasClient: EntradasClient; notifier: EventoNotifier; corsOrigin?: string | string[] };
 
 export function createApp(deps: AppDeps): Express {
   const app = express();
@@ -25,7 +26,7 @@ export function createApp(deps: AppDeps): Express {
   // que es el prefijo que el API Gateway de TicketU reenvía a este servicio sin recortarlo
   for (const base of API_BASES) {
     // El orden importa: organizerRouter primero, para que /panel/eventos/mios exija sesión
-    app.use(`${base}/panel/eventos`, organizerRouter(deps.authClient, deps.notifier));
+    app.use(`${base}/panel/eventos`, organizerRouter(deps.authClient, deps.notifier, deps.entradasClient));
     app.use(base, integrationRouter(deps.authClient));
   }
   mountSwagger(app);

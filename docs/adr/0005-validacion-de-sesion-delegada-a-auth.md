@@ -33,7 +33,7 @@ un timeout de 1 s y un reintento, pero Auth todavía no los confirmó. Tampoco h
 | Auth 401 o `valido:false` | no | 401 `SESSION_INVALID` → el front vuelve al login |
 | Auth 403 (`x-api-key` ausente o incorrecta, contrato Auth v1.1) | no | 502 `AUTH_ERROR` + registro en el log. *Hasta el 16/11 era 403 `ACCESS_DENIED`; cambió con INT-11 porque en v1.1 el 403 es un error de configuración del Panel, no del usuario.* |
 | Auth 500 o body inesperado | no | 502 `AUTH_ERROR` |
-| Timeout (`AUTH_TIMEOUT_MS`, 1000 ms), error de red o 503 | **1 vez** | si vuelve a fallar: **503 `AUTH_UNAVAILABLE`** y la operación **no se ejecuta** |
+| Timeout (`AUTH_TIMEOUT_MS`, 1000 ms), error de red o 503 | **no** por defecto (`AUTH_REINTENTOS=0`, contrato Auth v1.1 §6) | **503 `AUTH_UNAVAILABLE`** y la operación **no se ejecuta**. *Hasta el 18/11 se reintentaba 1 vez; Auth v1.1 pide no reintentar en la integración inicial. Se puede volver a 1 con `AUTH_REINTENTOS=1` si Auth lo acuerda.* |
 
 - La cookie se reenvía **cruda**, como `Cookie: jwt=<valor>`.
 - Desde el contrato Auth v1.1 (INT-11) se envía además `x-api-key` con `AUTH_INTERNAL_API_KEY`, la clave compartida del ambiente. Nunca llega al frontend ni se escribe en el log.
@@ -51,7 +51,7 @@ un timeout de 1 s y un reintento, pero Auth todavía no los confirmó. Tampoco h
 ## 5. Consecuencias
 
 - Tests: `backend/tests/auth.client.test.ts` (10 casos contra un servidor HTTP real) y `require-organizer.test.ts`.
-- En el peor caso, una operación tarda ~2 s antes del 503 (timeout + 1 reintento).
+- En el peor caso, una operación tarda ~1 s antes del 503 (el timeout, sin reintento).
 - Para pasar a Auth real sólo hay que cambiar `AUTH_SERVICE_URL`; el mock deja de usarse.
 
 ## 6. Cómo se revierte

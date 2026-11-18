@@ -22,7 +22,7 @@ Panel Organizador actúa como **consumidor** de Auth. Antes de ejecutar operacio
 * **Endpoint de validación:** `GET /internal/validar-sesion`
 * **Cabecera obligatoria:** `Cookie: jwt=<token>`
 * **Timeout configurado:** `1000 ms` (`AUTH_TIMEOUT_MS=1000`)
-* **Comportamiento ante falla:** Fail-Secure (HTTP `503 AUTH_UNAVAILABLE`). Máximo 1 reintento ante caída o timeout.
+* **Comportamiento ante falla:** Fail-Secure (HTTP `503 AUTH_UNAVAILABLE`). Sin reintentos automáticos por defecto (contrato Auth v1.1 §6, `AUTH_REINTENTOS=0`).
 * **Referencia contractual:** [`docs/CONTRATO_PANEL_AUTH.md`](CONTRATO_PANEL_AUTH.md) y [`docs/api/auth-consumido.yaml`](api/auth-consumido.yaml).
 
 ---

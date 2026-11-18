@@ -238,7 +238,7 @@ El timeout es una medida de protección del consumidor y no representa una garan
 
 El contrato oficial Auth v1.1 establece que no se deben ejecutar reintentos automáticos por defecto durante la integración inicial.
 
-Por lo tanto, la propuesta anterior de Panel de realizar un reintento automático ante indisponibilidad debe revisarse para alinearse con el contrato vigente.
+Panel quedó alineado el 18/11/2026: por defecto no reintenta la consulta (`AUTH_REINTENTOS=0`, ADR-0005). Ante timeout, error de red o `503` responde `503 AUTH_UNAVAILABLE` sin ejecutar la operación.
 
 Comportamiento esperado:
 

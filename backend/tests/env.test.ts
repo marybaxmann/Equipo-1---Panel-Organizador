@@ -23,6 +23,13 @@ describe('Configuración por variables de entorno', () => {
       .toEqual(['http://localhost:3000', 'http://frontend:3000']);
   });
 
+  it('BROKER_EXCHANGES_ADICIONALES se lee como mapa tópico → exchange', () => {
+    expect(loadEnv(base).BROKER_EXCHANGES_ADICIONALES).toEqual({});
+    expect(loadEnv({ ...base, BROKER_EXCHANGES_ADICIONALES: 'panel.evento.notificaciones.v1=panel.evento.notificaciones.v1, a=b' }).BROKER_EXCHANGES_ADICIONALES)
+      .toEqual({ 'panel.evento.notificaciones.v1': 'panel.evento.notificaciones.v1', a: 'b' });
+    expect(() => loadEnv({ ...base, BROKER_EXCHANGES_ADICIONALES: 'sin-exchange' })).toThrow();
+  });
+
   it('sin una variable obligatoria el servicio no arranca', () => {
     expect(() => loadEnv({ MONGO_URI: 'mongodb://x' })).toThrow();
   });

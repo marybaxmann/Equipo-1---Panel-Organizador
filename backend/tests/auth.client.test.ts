@@ -66,20 +66,26 @@ describe('HttpAuthClient', () => {
     expect(received).toHaveLength(1);
   });
 
-  it('retries once on 503 and succeeds if the retry succeeds', async () => {
+  it('by default does not retry (Auth v1.1 §6): a 503 fails secure after one call', async () => {
     const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 503 }, ok]), timeoutMs: 500 });
+    await expect(client.validateSession('x')).rejects.toMatchObject({ status: 503, code: 'AUTH_UNAVAILABLE' });
+    expect(received).toHaveLength(1);
+  });
+
+  it('by default a timeout fails secure with 503 after one call', async () => {
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ ...ok, delayMs: 400 }]), timeoutMs: 100 });
+    await expect(client.validateSession('x')).rejects.toMatchObject({ status: 503, code: 'AUTH_UNAVAILABLE' });
+    expect(received).toHaveLength(1);
+  });
+
+  it('with AUTH_REINTENTOS = 1 retries a 503 once and succeeds if the retry succeeds', async () => {
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 503 }, ok]), timeoutMs: 500, retries: 1 });
     await expect(client.validateSession('x')).resolves.toMatchObject({ id_usuario: 'u-1' });
     expect(received).toHaveLength(2);
   });
 
-  it('fails secure with 503 after timeout + one retry', async () => {
-    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ ...ok, delayMs: 400 }]), timeoutMs: 100 });
-    await expect(client.validateSession('x')).rejects.toMatchObject({ status: 503, code: 'AUTH_UNAVAILABLE' });
-    expect(received).toHaveLength(2);
-  });
-
-  it('fails secure with 503 when Auth answers 503 twice', async () => {
-    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 503 }]), timeoutMs: 500 });
+  it('with AUTH_REINTENTOS = 1 fails secure when Auth answers 503 twice', async () => {
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 503 }]), timeoutMs: 500, retries: 1 });
     await expect(client.validateSession('x')).rejects.toMatchObject({ status: 503, code: 'AUTH_UNAVAILABLE' });
     expect(received).toHaveLength(2);
   });

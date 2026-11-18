@@ -6,6 +6,8 @@ const envSchema = z.object({
   MONGO_URI: z.string().min(1),
   AUTH_SERVICE_URL: z.url(),
   AUTH_TIMEOUT_MS: z.coerce.number().int().positive().default(1000),
+  // Contrato Auth v1.1 §6: sin reintentos automáticos por defecto. Sólo se reintenta timeout, error de red o 503
+  AUTH_REINTENTOS: z.coerce.number().int().min(0).max(2).default(0),
   // Clave compartida que Auth exige en x-api-key (contrato Auth v1.1, INT-11). Sin ella, el Auth real responde 403
   AUTH_INTERNAL_API_KEY: z.string().min(1).optional(),
   // Entradas / Inventario, para consultar el stock antes de eliminar un evento publicado (HU-03, INT-05).
@@ -23,6 +25,12 @@ const envSchema = z.object({
   // Tópicos separados por coma que llevan el sobre dentro del cuerpo { envelope, payload } (ADR-0017). Hoy: el de Entradas
   BROKER_TOPICOS_CON_SOBRE: z.string().default('')
     .transform((v) => v.split(',').map((t) => t.trim()).filter(Boolean)),
+  // Exchange adicional por tópico, "topico=exchange" separados por coma (ADR-0019). Hoy: Notificaciones, cuyo contrato
+  // fija el exchange panel.evento.notificaciones.v1. El mensaje sale igual en EVENT_EXCHANGE
+  BROKER_EXCHANGES_ADICIONALES: z.string().default('')
+    .transform((v) => Object.fromEntries(v.split(',').map((par) => par.trim()).filter(Boolean)
+      .map((par) => par.split('=').map((x) => x.trim()) as [string, string])))
+    .refine((m) => Object.entries(m).every(([t, e]) => Boolean(t) && Boolean(e)), 'Formato esperado: topico=exchange,topico2=exchange2'),
   // Lo que Panel recibe de Entradas: aviso de stock (contrato Entradas §3.4, ADR-0018). Cola durable propia del Panel
   TOPIC_STOCK_ENTRADAS: z.string().min(1).default('entradas.evento.stock.v1'),
   BROKER_COLA_STOCK: z.string().min(1).default('panel-organizador.entradas.stock'),

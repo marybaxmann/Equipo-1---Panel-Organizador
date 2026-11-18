@@ -13,7 +13,7 @@ const env = loadEnv();
 await mongoose.connect(env.MONGO_URI);
 console.log('[db] connected');
 const authClient = createHttpAuthClient({
-  baseUrl: env.AUTH_SERVICE_URL, timeoutMs: env.AUTH_TIMEOUT_MS, apiKey: env.AUTH_INTERNAL_API_KEY,
+  baseUrl: env.AUTH_SERVICE_URL, timeoutMs: env.AUTH_TIMEOUT_MS, apiKey: env.AUTH_INTERNAL_API_KEY, retries: env.AUTH_REINTENTOS,
 });
 const entradasClient = createHttpEntradasClient({ baseUrl: env.ENTRADAS_SERVICE_URL, timeoutMs: env.ENTRADAS_TIMEOUT_MS });
 const notifier = createEventoNotifier(new OutboxEventPublisher(), loadTopics());
@@ -26,9 +26,10 @@ let relay: OutboxRelay | null = null;
 // Consumidor del aviso de stock de Entradas (ADR-0018): marca AGOTADO y lo comunica a Catálogo por el mismo outbox
 let stockConsumer: StockConsumer | null = null;
 if (env.BROKER_URL) {
-  relay = new OutboxRelay(createAmqpConnection(env.BROKER_URL, env.EVENT_EXCHANGE), {
+  relay = new OutboxRelay(createAmqpConnection(env.BROKER_URL, env.EVENT_EXCHANGE, console.log, Object.values(env.BROKER_EXCHANGES_ADICIONALES)), {
     exchange: env.EVENT_EXCHANGE, pollMs: env.OUTBOX_POLL_MS, maxIntentos: env.OUTBOX_MAX_INTENTOS,
     topicsWithBodyEnvelope: env.BROKER_TOPICOS_CON_SOBRE,
+    extraExchanges: env.BROKER_EXCHANGES_ADICIONALES,
   });
   await relay.start();
   stockConsumer = startStockConsumer({

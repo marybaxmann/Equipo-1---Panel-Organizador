@@ -15,7 +15,9 @@ type Attempt = { kind: 'response'; response: Response } | { kind: 'unavailable' 
 const sessionInvalid = () => new AppError(401, 'SESSION_INVALID', 'Sesión inválida o expirada. Inicia sesión nuevamente.');
 const authError = () => new AppError(502, 'AUTH_ERROR', 'No se pudo validar la sesión con Auth.');
 
-export function createHttpAuthClient(opts: { baseUrl: string; timeoutMs: number; apiKey?: string | undefined; logError?: (line: string) => void }): AuthClient {
+export function createHttpAuthClient(opts: {
+  baseUrl: string; timeoutMs: number; apiKey?: string | undefined; retries?: number; logError?: (line: string) => void;
+}): AuthClient {
   const url = new URL('/internal/validar-sesion', opts.baseUrl);
   const logError = opts.logError ?? console.error;
   // Contrato Auth v1.1 §5: clave compartida del ambiente, sólo entre backends (nunca llega al frontend)
@@ -56,8 +58,9 @@ export function createHttpAuthClient(opts: { baseUrl: string; timeoutMs: number;
 
   return {
     async validateSession(jwt) {
+      // Contrato Auth v1.1 §6: sin reintentos automáticos por defecto (AUTH_REINTENTOS = 0). Nunca se reintenta un 401 o 403
       let result = await attempt(jwt);
-      if (result.kind === 'unavailable') result = await attempt(jwt); // contrato §3.2: máximo 1 reintento
+      for (let i = 0; i < (opts.retries ?? 0) && result.kind === 'unavailable'; i++) result = await attempt(jwt);
       if (result.kind === 'unavailable') {
         // Fail-secure: si no podemos confirmar la identidad, no se ejecuta la operación
         throw new AppError(503, 'AUTH_UNAVAILABLE', 'El servicio de autenticación no está disponible. Intenta más tarde.');

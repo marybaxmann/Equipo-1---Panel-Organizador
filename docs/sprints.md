@@ -44,6 +44,9 @@ Completar el ciclo de vida del evento y comunicar sus cambios de estado a otros 
 - HU-07 — Notificar cambios de estado a otros microservicios
 - HU-03 — Eliminar un evento
 
+### Resultado
+En el Avance 3 se entregó el envío de los mensajes al broker de la plataforma (outbox + RabbitMQ, [ADR-0013](adr/0013-publicacion-outbox-rabbitmq-plataforma.md)) y el prefijo del API Gateway. **HU-03 y el cierre de HU-07 pasaron al Avance 4**, porque eliminar un evento publicado requiere consultar el stock a Entradas (INT-05).
+
 ---
 
 ## Sprint 4 — Integración entre microservicios
@@ -59,6 +62,13 @@ Integrar el Panel Organizador con los servicios reales de los demás equipos.
 - TASK-02 — Pruebas de contratos de integración
 - TASK-03 — Pruebas funcionales del Panel Organizador
 - TASK-04 — Corrección de errores de integración
+
+### Resultado (Avance 4, 18/11)
+- **HU-03** Eliminar: borrador o evento sin ventas se elimina; con ventas pasa a Cancelado; con Entradas caído no se toca ([ADR-0016](adr/0016-eliminacion-de-eventos-y-consulta-de-stock.md)). Botón y modal en el frontend.
+- **HU-07** completa: mensajes de cancelación y eliminación, sobre `{ envelope, payload }` para Entradas ([ADR-0017](adr/0017-sobre-en-el-cuerpo-para-entradas.md)) y aviso de stock AGOTADO ([ADR-0018](adr/0018-consumo-stock-entradas-y-disponibilidad.md)).
+- **INT-11** `x-api-key` con Auth (contrato v1.1).
+- **TASK-01/02:** sesión de integración con Gateway, RabbitMQ, Auth y Entradas reales en `plataforma-eventos-net` ([evidencia](evidencias/pruebas-integracion/sesion-integracion-2026-11-17.md)).
+- **TASK-03:** 181 pruebas automatizadas y recorrido manual de las 7 HU ([evidencia](evidencias/pruebas-funcionalidad/README.md)).
 
 ---
 

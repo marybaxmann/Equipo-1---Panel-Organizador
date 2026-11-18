@@ -148,8 +148,10 @@ El sufijo `v1` identifica la versión del contrato. Un cambio incompatible gener
 
 - **Mecanismo:** broker. RabbitMQ compartido de la plataforma, exchange `ticketu.events` (topic).
 - **Routing key:** `panel.evento.entradas.v1`. Entradas enlaza su cola a esta clave y a `panel.#`.
-- **Operaciones que se publican hoy:** `evento_creado` (al crear), `evento_publicado` (al publicar) y `evento_actualizado` (al editar). Cancelación y eliminación llegan con HU-03.
-- **Cuerpo:** los 8 campos del mensaje de arriba. El tipo de mensaje y su id viajan en las propiedades AMQP (ADR-0013).
+- **Operaciones que se publican hoy:** `evento_creado` (al crear), `evento_publicado` (al publicar) y `evento_actualizado` (al editar). Desde el Sprint 4 (HU-03, ADR-0016) también `evento_cancelado` (mismo cuerpo, con `estado_gestion: CANCELADO`) y `evento_eliminado` (`{ id_evento, id_usuario }`).
+- **Consulta de stock (§3.4):** implementada del lado del Panel con `ENTRADAS_SERVICE_URL`. Entradas ya la tiene en su repo (`GET /api/v1/entradas/eventos/{id_evento}/stock` → `{ id_evento, stock }`, 404 si no conoce el evento).
+- **Pendiente de Entradas (ADR-0017 §3):** distinguir `envelope.tipo` (hoy `evento_eliminado` se guardaría como alta), no reiniciar `stock_actual` en cada actualización y bloquear la venta con `evento_cancelado`.
+- **Cuerpo:** desde el 16/11 es `{ envelope, payload }`, como lo lee el consumidor de Entradas (ADR-0017). `payload` lleva los 8 campos del mensaje de arriba más `precio`. El sobre también sigue en las propiedades AMQP (ADR-0013).
 - **Consulta REST:** Entradas llama a `GET /api/organizador/v1/panel/eventos/{id_evento}` por el Gateway, reenviando la cookie `jwt` del usuario (`PANEL_SERVICE_URL=http://organizador-service:3000`).
 - **Pendiente:** campos adicionales que exige la colección `inventario_evento` de Entradas (por ejemplo `cantidad_entrada_reservada`). Hoy Entradas los completa con valores por defecto.
 

@@ -1,0 +1,55 @@
+# HU-03 Eliminar + HU-07 mensajes · corrida local 16/11/2026
+# API Panel (puerto 3100) · MongoDB 7 · mock-auth · mock-entradas (Feria stock 300/300, Charla 95/120) · RabbitMQ 3, exchange ticketu.events
+# Cola de control ligada a panel.# para ver qué publica el relay del outbox
+
+## BORRADOR propio → se elimina sin consultar a Entradas
+DELETE /api/v1/panel/eventos/mios/66f1a0000000000000000001  (cookie jwt=token-org-a)
+{"resultado":"ELIMINADO","id_evento":"66f1a0000000000000000001"}
+HTTP 200
+
+## PUBLICADO sin ventas (Feria) → se elimina
+DELETE /api/v1/panel/eventos/mios/66f1a0000000000000000002  (cookie jwt=token-org-a)
+{"resultado":"ELIMINADO","id_evento":"66f1a0000000000000000002"}
+HTTP 200
+
+## PUBLICADO con ventas (Charla) → pasa a CANCELADO
+DELETE /api/v1/panel/eventos/mios/66f1a0000000000000000003  (cookie jwt=token-org-a)
+{"resultado":"CANCELADO","evento":{"id_evento":"66f1a0000000000000000003","nombre_evento":"Charla de Ciberseguridad","fecha_evento":"2026-12-03","hora_evento":"17:00","direccion_evento":"Sala Multiuso, Facultad de Ingeniería","estado_gestion":"CANCELADO","id_organizador":"3f1e2c1a-4b8d-4a2e-9c3f-7d1e2f9b2d4a","descripcion":"Buenas prácticas de seguridad en aplicaciones web.","hora_fin_evento":"19:00","categoria":"tecnologia","imagen":null,"cantidad_entradas":120,"tipo_entrada":"GRATUITA","precio":null,"fecha_creacion":"2026-07-01T12:00:00.000Z","fecha_actualizacion":"2026-11-16T22:34:57.090Z"}}
+HTTP 200
+
+## FINALIZADO → 409
+DELETE /api/v1/panel/eventos/mios/66f1a0000000000000000004  (cookie jwt=token-org-a)
+{"error":{"codigo":"INVALID_STATE_TRANSITION","mensaje":"Sólo un evento en Borrador o Publicado puede eliminarse."}}
+HTTP 409
+
+## Evento de otro organizador → 403
+DELETE /api/v1/panel/eventos/mios/66f1b0000000000000000001  (cookie jwt=token-org-a)
+{"error":{"codigo":"EVENT_NOT_OWNED","mensaje":"No tienes permiso sobre este evento."}}
+HTTP 403
+
+## Entradas detenido (Torneo de B) → 503 y el evento no cambia
+DELETE /api/v1/panel/eventos/mios/66f1b0000000000000000001  (cookie jwt=token-org-b)
+{"error":{"codigo":"ENTRADAS_UNAVAILABLE","mensaje":"No se pudo consultar el stock a Entradas / Inventario. El evento no se eliminó; intenta más tarde."}}
+HTTP 503
+
+## Catálogo después: GET /api/v1/organizador/eventos/proximos
+- 66f1b0000000000000000001 Torneo Interuniversitario de Ajedrez PUBLICADO
+
+## Mensajes recibidos en RabbitMQ (routing key · tipo · formato del cuerpo)
+- panel.evento.entradas.v1 · evento_eliminado · { envelope, payload }
+- panel.evento.entradas.v1 · evento_eliminado · { envelope, payload }
+- panel.evento.catalogo.v1 · evento_eliminado · cuerpo plano
+- panel.evento.promociones.v1 · evento_eliminado · cuerpo plano
+- panel.evento.catalogo.v1 · evento_cancelado · cuerpo plano
+- panel.evento.entradas.v1 · evento_cancelado · { envelope, payload }
+- panel.evento.checkin.v1 · evento_cancelado · cuerpo plano
+- panel.evento.notificaciones.v1 · evento_actualizado · cuerpo plano
+- panel.evento.promociones.v1 · evento_cancelado · cuerpo plano
+
+## Estado en MongoDB
+- eventos 66f1a0000000000000000001: (eliminado)
+- eventos 66f1a0000000000000000002: (eliminado)
+- eventos 66f1a0000000000000000003: CANCELADO
+- eventos 66f1b0000000000000000001: PUBLICADO
+- mensajes_salientes ENVIADO: 9
+- cambios_estado_evento Charla: PUBLICADO → CANCELADO

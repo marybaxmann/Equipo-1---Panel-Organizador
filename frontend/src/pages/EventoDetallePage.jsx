@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { obtenerEvento, publicarEvento } from "../api/eventsApi.js";
+import { eliminarEvento, obtenerEvento, publicarEvento } from "../api/eventsApi.js";
 import { ApiError } from "../api/httpClient.js";
 import { useSesion } from "../context/SesionContext.jsx";
 import Boton from "../components/ui/Boton.jsx";
@@ -11,7 +11,7 @@ export default function EventoDetallePage() {
   const { idEvento } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { actualizarEventoLocal } = useSesion();
+  const { actualizarEventoLocal, quitarEventoLocal } = useSesion();
 
   const [evento, setEvento] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,6 +20,8 @@ export default function EventoDetallePage() {
 
   const [modalPublicar, setModalPublicar] = useState(false);
   const [publicando, setPublicando] = useState(false);
+  const [modalEliminar, setModalEliminar] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
   const [errorModal, setErrorModal] = useState("");
 
   useEffect(() => {
@@ -67,6 +69,35 @@ export default function EventoDetallePage() {
     }
   }
 
+  async function confirmarEliminar() {
+    setEliminando(true);
+    setErrorModal("");
+    try {
+      const res = await eliminarEvento(evento.id_evento);
+      if (res?.resultado === "CANCELADO") {
+        setEvento((prev) => ({ ...prev, ...res.evento }));
+        actualizarEventoLocal(res.evento);
+        setAviso(`El evento "${evento.nombre_evento}" tiene entradas vendidas, así que se canceló en vez de eliminarse.`);
+        setModalEliminar(false);
+      } else {
+        quitarEventoLocal(evento.id_evento);
+        navigate("/mis-eventos", { state: { aviso: `Evento "${evento.nombre_evento}" eliminado.` } });
+      }
+    } catch (err) {
+      if (err?.codigo === "ENTRADAS_UNAVAILABLE" || err?.status === 503) {
+        setErrorModal("No se pudo consultar el stock. El evento no se eliminó; intenta más tarde.");
+      } else if (err?.codigo === "EVENT_NOT_OWNED" || err?.status === 403) {
+        setErrorModal("No tienes permiso sobre este evento.");
+      } else if (err?.status === 401) {
+        setErrorModal("Tu sesión no es válida o expiró.");
+      } else {
+        setErrorModal(err?.message || "No se pudo eliminar el evento.");
+      }
+    } finally {
+      setEliminando(false);
+    }
+  }
+
   if (loading) return <div style={{ padding: "var(--space-5)", textAlign: "center", color: "var(--color-text-secondary)" }}>Cargando evento...</div>;
   if (error) {
     return (
@@ -80,6 +111,7 @@ export default function EventoDetallePage() {
   if (!evento) return null;
 
   const esBorrador = evento.estado_gestion === "BORRADOR";
+  const esEliminable = evento.estado_gestion === "BORRADOR" || evento.estado_gestion === "PUBLICADO";
 
   return (
     <div style={{ padding: "var(--space-5)", maxWidth: "900px", margin: "0 auto", fontFamily: "var(--font-body)" }}>
@@ -110,7 +142,12 @@ export default function EventoDetallePage() {
           >
             Publicar
           </Boton>
-          <Boton variante="peligro" disabled title="Disponible en Sprint 3 (HU-03)">
+          <Boton
+            variante="peligro"
+            disabled={!esEliminable}
+            title={esEliminable ? "Eliminar evento" : "Sólo un evento en Borrador o Publicado puede eliminarse"}
+            onClick={() => setModalEliminar(true)}
+          >
             Eliminar
           </Boton>
         </div>
@@ -161,6 +198,34 @@ export default function EventoDetallePage() {
           {/* Texto exacto acordado en el checklist visual (fila 33) */}
           <p>¿Publicar este evento? Será visible en el catálogo público.</p>
           <p><strong>{evento.nombre_evento}</strong></p>
+          {errorModal && <p style={{ color: "var(--color-danger-text)" }}>{errorModal}</p>}
+        </Modal>
+      )}
+
+      {modalEliminar && (
+        <Modal
+          titulo={`¿Eliminar «${evento.nombre_evento}»?`}
+          onCerrar={() => { setModalEliminar(false); setErrorModal(""); }}
+          acciones={
+            <>
+              <Boton
+                variante="secundario"
+                onClick={() => { setModalEliminar(false); setErrorModal(""); }}
+                disabled={eliminando}
+              >
+                Cancelar
+              </Boton>
+              <Boton
+                variante="peligro"
+                onClick={confirmarEliminar}
+                disabled={eliminando}
+              >
+                {eliminando ? "Eliminando..." : "Eliminar"}
+              </Boton>
+            </>
+          }
+        >
+          <p>Si es un borrador o no tiene entradas vendidas, se elimina. Si ya vendió entradas, se cancela y se avisa a los compradores.</p>
           {errorModal && <p style={{ color: "var(--color-danger-text)" }}>{errorModal}</p>}
         </Modal>
       )}

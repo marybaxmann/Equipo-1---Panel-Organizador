@@ -5,12 +5,12 @@ import { createHttpAuthClient } from '../src/modules/auth/auth.client.js';
 
 type Step = { status: number; body?: unknown; delayMs?: number };
 let server: http.Server | undefined;
-const received: { cookie: string | undefined }[] = [];
+const received: { cookie: string | undefined; apiKey: string | undefined }[] = [];
 
 async function fakeAuth(steps: Step[]): Promise<string> {
   received.length = 0;
   server = http.createServer((req, res) => {
-    received.push({ cookie: req.headers.cookie });
+    received.push({ cookie: req.headers.cookie, apiKey: req.headers['x-api-key'] as string | undefined });
     const step = steps[Math.min(received.length - 1, steps.length - 1)]!;
     setTimeout(() => res.writeHead(step.status, { 'Content-Type': 'application/json' }).end(JSON.stringify(step.body ?? {})), step.delayMs ?? 0);
   });
@@ -39,10 +39,25 @@ describe('HttpAuthClient', () => {
     await expect(client.validateSession('x')).rejects.toMatchObject({ status: 401 });
   });
 
-  it('maps 403 to ACCESS_DENIED without retrying', async () => {
-    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 403 }]), timeoutMs: 500 });
-    await expect(client.validateSession('x')).rejects.toMatchObject({ status: 403, code: 'ACCESS_DENIED' });
+  it('sends x-api-key when the shared key is configured (Auth v1.1, INT-11)', async () => {
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([ok]), timeoutMs: 500, apiKey: 'clave-del-ambiente' });
+    await client.validateSession('abc');
+    expect(received[0]).toEqual({ cookie: 'jwt=abc', apiKey: 'clave-del-ambiente' });
+  });
+
+  it('does not send x-api-key when no key is configured', async () => {
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([ok]), timeoutMs: 500 });
+    await client.validateSession('abc');
+    expect(received[0]!.apiKey).toBeUndefined();
+  });
+
+  it('maps 403 (missing or wrong x-api-key) to AUTH_ERROR (502), logs it and does not retry', async () => {
+    const logged: string[] = [];
+    const client = createHttpAuthClient({ baseUrl: await fakeAuth([{ status: 403 }]), timeoutMs: 500, apiKey: 'mala', logError: (l) => logged.push(l) });
+    await expect(client.validateSession('x')).rejects.toMatchObject({ status: 502, code: 'AUTH_ERROR' });
     expect(received).toHaveLength(1);
+    expect(logged.join()).toContain('x-api-key');
+    expect(logged.join()).not.toContain('mala');
   });
 
   it('maps 500 to AUTH_ERROR (502) without retrying', async () => {

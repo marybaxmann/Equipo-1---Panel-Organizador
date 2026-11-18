@@ -31,11 +31,12 @@ un timeout de 1 s y un reintento, pero Auth todavía no los confirmó. Tampoco h
 | Auth 200 `valido:true`, rol `organizador` | — | continúa; `res.locals.user = { id_usuario, rol }` |
 | Auth 200 con otro rol | — | 403 `FORBIDDEN_ROLE` |
 | Auth 401 o `valido:false` | no | 401 `SESSION_INVALID` → el front vuelve al login |
-| Auth 403 | no | 403 `ACCESS_DENIED` |
+| Auth 403 (`x-api-key` ausente o incorrecta, contrato Auth v1.1) | no | 502 `AUTH_ERROR` + registro en el log. *Hasta el 16/11 era 403 `ACCESS_DENIED`; cambió con INT-11 porque en v1.1 el 403 es un error de configuración del Panel, no del usuario.* |
 | Auth 500 o body inesperado | no | 502 `AUTH_ERROR` |
 | Timeout (`AUTH_TIMEOUT_MS`, 1000 ms), error de red o 503 | **1 vez** | si vuelve a fallar: **503 `AUTH_UNAVAILABLE`** y la operación **no se ejecuta** |
 
 - La cookie se reenvía **cruda**, como `Cookie: jwt=<valor>`.
+- Desde el contrato Auth v1.1 (INT-11) se envía además `x-api-key` con `AUTH_INTERNAL_API_KEY`, la clave compartida del ambiente. Nunca llega al frontend ni se escribe en el log.
 - La identidad **nunca** sale del body ni del frontend. El body de creación rechaza `id_organizador` y `estado_gestion` (Zod estricto).
 - Además del rol, se valida **propiedad**: un evento ajeno da 403 `EVENT_NOT_OWNED`. Se eligió 403 y no 404 para que la validación de propiedad sea demostrable. El costo es que revela que el id existe.
 

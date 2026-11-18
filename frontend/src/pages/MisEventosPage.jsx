@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { publicarEvento } from "../api/eventsApi.js";
+import { eliminarEvento, publicarEvento } from "../api/eventsApi.js";
 import Modal from "../components/ui/Modal.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSesion } from "../context/SesionContext.jsx";
@@ -11,18 +11,47 @@ import "./MisEventosPage.css";
 
 /** HU-05 — Ver mis eventos. */
 export default function MisEventosPage() {
-  const { eventos, actualizarEventoLocal } = useSesion();
+  const { eventos, actualizarEventoLocal, quitarEventoLocal } = useSesion();
   const navigate = useNavigate();
   const location = useLocation();
   const [filtro, setFiltro] = useState("TODOS");
   const [busqueda, setBusqueda] = useState("");
-  // modal: { tipo: "publicar" | "sprint", evento, mensaje } · aviso: confirmación tras publicar
+  // modal: { tipo: "publicar" | "eliminar" | "sprint", evento, mensaje } · aviso: confirmación tras publicar o eliminar
   const [modal, setModal] = useState(null);
   const [aviso, setAviso] = useState(location.state?.aviso ?? "");
   const [publicando, setPublicando] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
   const [errorModal, setErrorModal] = useState("");
 
   const cerrarModal = () => { setModal(null); setErrorModal(""); };
+
+  async function confirmarEliminar() {
+    setEliminando(true);
+    setErrorModal("");
+    try {
+      const res = await eliminarEvento(modal.evento.id_evento);
+      if (res?.resultado === "CANCELADO") {
+        actualizarEventoLocal(res.evento);
+        setAviso(`El evento "${modal.evento.nombre_evento}" tiene entradas vendidas, así que se canceló en vez de eliminarse.`);
+      } else {
+        quitarEventoLocal(modal.evento.id_evento);
+        setAviso(`Evento "${modal.evento.nombre_evento}" eliminado.`);
+      }
+      setModal(null);
+    } catch (err) {
+      if (err?.codigo === "ENTRADAS_UNAVAILABLE" || err?.status === 503) {
+        setErrorModal("No se pudo consultar el stock. El evento no se eliminó; intenta más tarde.");
+      } else if (err?.codigo === "EVENT_NOT_OWNED" || err?.status === 403) {
+        setErrorModal("No tienes permiso sobre este evento.");
+      } else if (err?.status === 401) {
+        setErrorModal("Tu sesión no es válida o expiró.");
+      } else {
+        setErrorModal(err?.message || "No se pudo eliminar el evento.");
+      }
+    } finally {
+      setEliminando(false);
+    }
+  }
 
   async function confirmarPublicar() {
     setPublicando(true);
@@ -90,7 +119,7 @@ export default function MisEventosPage() {
               evento={evento}
               onPublicar={(e) => setModal({ tipo: "publicar", evento: e })}
               onEditar={(e) => navigate(`/mis-eventos/${e.id_evento}/editar`)}
-              onEliminar={() => setModal({ tipo: "sprint", mensaje: "La eliminación de eventos (HU-03) está contemplada en el Sprint 3." })}
+              onEliminar={(e) => setModal({ tipo: "eliminar", evento: e })}
             />
           ))}
         </div>
@@ -108,6 +137,20 @@ export default function MisEventosPage() {
           {/* Texto exacto acordado en el checklist visual (fila 33) */}
           <p>¿Publicar este evento? Será visible en el catálogo público.</p>
           <p><strong>{modal.evento.nombre_evento}</strong></p>
+          {errorModal && <p style={{ color: "var(--color-danger-text)" }}>{errorModal}</p>}
+        </Modal>
+      )}
+
+      {modal?.tipo === "eliminar" && (
+        <Modal
+          titulo={`¿Eliminar «${modal.evento.nombre_evento}»?`}
+          onCerrar={cerrarModal}
+          acciones={<>
+            <Boton variante="secundario" onClick={cerrarModal} disabled={eliminando}>Cancelar</Boton>
+            <Boton variante="peligro" onClick={confirmarEliminar} disabled={eliminando}>{eliminando ? "Eliminando..." : "Eliminar"}</Boton>
+          </>}
+        >
+          <p>Si es un borrador o no tiene entradas vendidas, se elimina. Si ya vendió entradas, se cancela y se avisa a los compradores.</p>
           {errorModal && <p style={{ color: "var(--color-danger-text)" }}>{errorModal}</p>}
         </Modal>
       )}

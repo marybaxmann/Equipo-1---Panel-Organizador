@@ -8,6 +8,7 @@
     "db:init": "npm run init -w database",
     "db:seed": "npm run seed -w database",
     "db:docs": "npm run docs -w database",
+    "db:anunciar": "tsx --env-file-if-exists=.env backend/src/scripts/anunciar-eventos.ts",
     "dev:api": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
     "test": "npm test -w backend",

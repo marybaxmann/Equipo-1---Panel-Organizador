@@ -69,15 +69,17 @@ docker run --rm --network plataforma-eventos-net curlimages/curl -s http://organ
 
 ## Usuarios de demo
 
-En local, Auth está simulado (`tools/mock-auth`). El login simulado del frontend fija la cookie `jwt`:
+En local, Auth está simulado (`tools/mock-auth`). El mock replica `GET /internal/validar-sesion` del servicio de Auth (contrato v1.1): mismo cuerpo de respuesta, roles `usuario`/`organizador`/`staff`, RUT con puntos y guion, errores `{ valido, codigo_http, error, mensaje }` y `Cache-Control: no-store`. Si se define `AUTH_INTERNAL_API_KEY` en `.env`, el mock exige la misma cabecera `x-api-key` que el Auth real (403 si falta) y el Panel la envía. El login simulado del frontend fija la cookie `jwt`:
 
 | Botón | Token | Qué demuestra |
 |---|---|---|
 | Organizadora A | `token-org-a` | 5 eventos en los 4 estados (Borrador, Publicado, Finalizado, Cancelado) |
 | Organizador B | `token-org-b` | 2 eventos. Su evento `66f1b0000000000000000001` sirve para probar "no te pertenece" (403) siendo A |
-| Asistente | `token-asistente` | Rol distinto de organizador → acceso denegado (403) |
+| Asistente | `token-asistente` | Auth lo entrega con rol `usuario` (comprador) → acceso denegado (403) |
 | (sólo API) Staff | `token-staff` | Rol `staff` de Check-in: puede consultar `GET /api/v1/panel/eventos/{id}` (ADR-0011) |
 | Sesión expirada | `token-expirado` | Sesión inválida → vuelve al login (401) |
+| (sólo API) Sesión revocada / cuenta inactiva | `token-revocado`, `token-inactivo` | Auth responde 401 → el Panel responde 401 |
+| (sólo API) Error de Auth | `token-error` | Auth responde 500 → el Panel responde 502 `AUTH_ERROR` |
 | Auth lento | `token-lento` | Auth no responde a tiempo → fail-secure (503) |
 
 ## Responsables por rol (rúbrica Evaluación 1)

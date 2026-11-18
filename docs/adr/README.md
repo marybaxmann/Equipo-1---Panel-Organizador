@@ -47,6 +47,9 @@ evita: deja explícito qué sigue abierto, para que no se dé por resuelto por o
 | [0013](0013-publicacion-outbox-rabbitmq-plataforma.md) | Publicación del outbox en el RabbitMQ de la plataforma TicketU | Propuesta · implementado |
 | [0014](0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | Política de consumo del broker y responsabilidades de la plataforma | Propuesta · Sprint 3 |
 | [0015](0015-mongodb-7-por-kernel-de-los-runners.md) | MongoDB 7 en Docker por incompatibilidad de MongoDB 8 con kernel 6.19+ | Propuesta · implementado |
+| [0016](0016-eliminacion-de-eventos-y-consulta-de-stock.md) | Eliminación de eventos (HU-03): consulta de stock a Entradas y mensajes de cancelación | Propuesta · implementado |
+| [0017](0017-sobre-en-el-cuerpo-para-entradas.md) | Sobre dentro del cuerpo del mensaje para Entradas (`{ envelope, payload }`) | Propuesta · implementado |
+| [0018](0018-consumo-stock-entradas-y-disponibilidad.md) | Consumo del aviso de stock de Entradas y disponibilidad AGOTADO | Propuesta · implementado |
 
 > "Propuesta · implementado" = ya está en el código, pero **el equipo todavía no lo revisó**. Cada responsable de área
 > revisa los suyos (ver `docs/guia-equipo.md`) y lo pasa a `Aceptado`, o propone cambios en un PR.

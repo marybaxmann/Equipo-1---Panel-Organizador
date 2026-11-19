@@ -2,7 +2,7 @@
 
 Declaración de las tres integraciones evaluables en el ambiente de pruebas (workstation), una por tipo. Las instrucciones de instalación, variables de entorno y usuarios de prueba están en [`INSTALACION.md`](INSTALACION.md).
 
-> Los valores marcados `<completar>` se confirman en workstation durante la verificación en clase del 19/11. Direcciones en workstation: API Gateway `http://localhost:8080`, Frontend Unificado `http://localhost:3000`, consola de RabbitMQ `http://localhost:15672`.
+> Direcciones en workstation: API Gateway `http://localhost:8080`, Frontend Unificado `http://localhost:3000`, consola de RabbitMQ `http://localhost:15672`.
 
 | Integración | Tipo | Módulo contraparte | Servicio, ruta en el gateway o tópico | Cómo se evidencia | Dónde verificarlo |
 |---|---|---|---|---|---|
@@ -49,15 +49,17 @@ Declaración de las tres integraciones evaluables en el ambiente de pruebas (wor
 
 1. Iniciar sesión en Auth con `staff1@ticketu.test` por el Gateway y conservar la cookie:
    ```bash
-   curl -i -c cookies.txt -X POST http://localhost:8080/api/auth/login -H "Content-Type: application/json" -d '<cuerpo de login de Auth con staff1@ticketu.test y su contraseña de QA>'
+   curl -i -c cookies.txt -X POST http://localhost:8080/api/auth/login -H "Content-Type: application/json" -d '{"email":"staff1@ticketu.test","password":"<contraseña QA publicada por Auth>"}'
    ```
-   El formato del cuerpo es el que define el contrato de Auth (`<completar>`). Auth responde con la cookie `jwt`, que queda en `cookies.txt`.
+   El cuerpo `{ email, password }` es el que define Auth (`LoginDto`); la contraseña común de QA está en `INSTALACION.md` del repo de Auth. Auth responde con la cookie `jwt`, que queda en `cookies.txt`.
 2. Consultar un evento publicado por el Gateway:
    ```bash
    curl -i -b cookies.txt http://localhost:8080/api/organizador/v1/panel/eventos/<id_evento_publicado>
    ```
    Respuesta esperada: `200` con `id_evento`, `id_usuario`, `nombre_evento`, `fecha_evento`, `hora_evento`, `hora_fin_evento`, `cantidad_entradas`, `tipo_entrada` y `estado_gestion`.
 3. **Trazas del Gateway:** `docker logs ticketu-api-gateway` muestra la petición a `/api/organizador/v1/panel/eventos/...`. **Trazas del Panel:** `docker compose -f docker-compose.integracion.yml logs organizador-service`.
+
+**Consumo real de Entradas:** además, Entradas carga los eventos del Panel por el Gateway con `GET /api/organizador/v1/organizador/eventos/proximos` (`back-end/services/panel_service.py` del repo de Entradas, `PANEL_SERVICE_URL=http://ticketu-api-gateway:8080`). Esa llamada también queda en los logs del Gateway.
 
 **Manejo de errores (en vivo):**
 
@@ -102,7 +104,7 @@ Declaración de las tres integraciones evaluables en el ambiente de pruebas (wor
 
 **Manejo de errores (en código):** si el broker no está disponible, la operación del organizador responde igual y el mensaje queda `PENDIENTE`; se reintenta hasta `OUTBOX_MAX_INTENTOS` (10 por defecto) y luego queda `FALLIDO`. Cada error se registra con `[outbox] error al publicar ...` (`backend/src/modules/mensajeria/outbox.relay.ts`).
 
-**Configuración:** `BROKER_URL`, `EVENT_EXCHANGE`, `TOPIC_ENTRADAS` y `BROKER_TOPICOS_CON_SOBRE` por variables de entorno. Valor en workstation: `BROKER_URL=<completar>`.
+**Configuración:** `BROKER_URL`, `EVENT_EXCHANGE`, `TOPIC_ENTRADAS` y `BROKER_TOPICOS_CON_SOBRE` por variables de entorno. Valor en workstation: `BROKER_URL=amqp://ticketu:ticketu_dev@ticketu-rabbitmq:5672/ticketu` (ver `INSTALACION.md`).
 
 **Código:** `backend/src/modules/mensajeria/` (`evento.notifier.ts`, `outbox.publisher.ts`, `outbox.relay.ts`).
 

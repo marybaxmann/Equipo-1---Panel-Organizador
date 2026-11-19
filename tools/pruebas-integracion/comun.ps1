@@ -7,9 +7,15 @@ $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [En
 $RepoPanel = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 # Los repos de los otros squads se buscan como carpetas hermanas del repo del Panel (se pueden cambiar por parametro)
 $CarpetaRepos = Split-Path $RepoPanel -Parent
-# Contrasena de los usuarios QA de Auth. Desde el 18/11 cada uno la elige al crearlos (QA_SEED_PASSWORD en
-# tools/crear-usuarios-qa.cjs de su repo): se toma de QA_SEED_PASSWORD; si no esta, se usa la del ambiente del 17/11
-$ClaveQA = if ($env:QA_SEED_PASSWORD) { $env:QA_SEED_PASSWORD } else { 'TicketuQA2026!' }
+# Contrasena de los usuarios QA de Auth: la que se eligio al crearlos (QA_SEED_PASSWORD en tools/crear-usuarios-qa.cjs
+# de su repo). No tiene valor por defecto: los scripts que hacen login la piden al inicio y se detienen si falta
+function Get-ClaveQA {
+  if (-not $env:QA_SEED_PASSWORD) {
+    Write-Host 'Define QA_SEED_PASSWORD con la contrasena de los usuarios QA de Auth antes de ejecutar este script.' -ForegroundColor Red
+    exit 1
+  }
+  return $env:QA_SEED_PASSWORD
+}
 $script:Resultados = New-Object System.Collections.ArrayList
 
 function New-CarpetaTemporal([string]$nombre) {
@@ -76,6 +82,8 @@ function Show-Resumen([string]$titulo) {
   $script:Resultados | Format-Table -AutoSize -Wrap | Out-Host
   $fallas = @($script:Resultados | Where-Object { $_.Resultado -ne 'OK' }).Count
   $total = $script:Resultados.Count
+  # Si el script se corto antes de la primera prueba, no hay nada que dar por bueno
+  if ($total -eq 0) { Write-Host "NO SE EJECUTO NINGUNA PRUEBA - $titulo (revisa el error de arriba)" -ForegroundColor Red; return 1 }
   if ($fallas -eq 0) { Write-Host "TODAS LAS PRUEBAS OK ($total/$total) - $titulo" -ForegroundColor Green }
   else { Write-Host "$fallas de $total prueba(s) con FALLA - $titulo" -ForegroundColor Red }
   return $fallas

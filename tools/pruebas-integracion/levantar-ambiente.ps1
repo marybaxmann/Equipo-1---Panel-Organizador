@@ -52,12 +52,16 @@ Write-Paso 'Entradas / Inventario (:3003)'
 # Su Mongo publica el 27017 del host, el mismo del Mongo de desarrollo del Panel: si esta encendido, se detiene
 if (docker ps --format '{{.Names}}' | Where-Object { $_ -eq 'panel-organizador-mongo-1' }) { docker stop panel-organizador-mongo-1 | Out-Null; Write-Host 'Mongo de desarrollo del Panel detenido (usaba el 27017)' }
 docker compose -f "$RepoEntradas\docker-compose.yml" up -d --build 2>&1 | Select-Object -Last 2
+# Entradas no reintenta la conexion a RabbitMQ: si ya corria desde antes que el broker (p. ej. tras reiniciar Docker),
+# queda sin broker. Se reinicia para que se conecte con RabbitMQ ya listo
+docker restart entradas-service | Out-Null
 
 Write-Paso "Panel Organizador ($(if ($SinSeed) { 'sin tocar sus datos' } else { 'SEED_DEMO=true' }))"
-$compose = @('compose')
-if (-not $SinSeed) { $compose += @('--env-file', "$PSScriptRoot\panel-integracion.env") }
-$compose += @('-f', "$RepoPanel\docker-compose.integracion.yml", 'up', '-d', '--build')
-docker @compose 2>&1 | Select-Object -Last 2
+# Siempre con --env-file: sin el, Docker lee el .env de desarrollo del repo, que apunta Auth a localhost (no existe dentro
+# del contenedor). Una variable del entorno pesa mas que el archivo, asi -SinSeed apaga el seed
+if ($SinSeed) { $env:SEED_DEMO = 'false' }
+docker compose --env-file "$PSScriptRoot\panel-integracion.env" -f "$RepoPanel\docker-compose.integracion.yml" up -d --build 2>&1 | Select-Object -Last 2
+if ($SinSeed) { Remove-Item Env:SEED_DEMO }
 
 Write-Host "`nEsperando que respondan el Gateway y el Panel por el Gateway..."
 $okGateway = Wait-Http 'http://localhost:8080/health' 40 2

@@ -9,6 +9,7 @@ param(
   [string]$AuthUrl = 'http://localhost:10000'
 )
 . "$PSScriptRoot\comun.ps1"
+$ClaveQA = Get-ClaveQA
 if (-not $AuthEnv) { $AuthEnv = Join-Path $CarpetaRepos 'auth-arquitectura\backend\.env' }
 $tmp = New-CarpetaTemporal 'prueba-jwt'
 function Get-Sha([string]$v) { $b = [Text.Encoding]::UTF8.GetBytes($v); (-join ([Security.Cryptography.SHA256]::Create().ComputeHash($b) | ForEach-Object { $_.ToString('x2') })).Substring(0, 16) }

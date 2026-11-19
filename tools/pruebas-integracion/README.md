@@ -19,7 +19,7 @@ Las pruebas contra los mocks (Postman/Newman, `npm test`) no necesitan nada de e
 
 Los repos de los otros squads **no se modifican**. Auth, Entradas y el Panel se levantan con sus propios compose. Solo el Gateway necesita `gateway.override.yml`, porque su `.env` no viene en el repo y su `.env.example` apunta Auth al puerto 3000 en vez del 10000.
 
-Los usuarios QA usan la contraseña de `QA_SEED_PASSWORD`, la misma con que se crearon en Auth. Si no está definida, se usa la del ambiente del 17/11.
+Los usuarios QA usan la contraseña de `QA_SEED_PASSWORD`, la misma con que se crearon en Auth. Sin esa variable, los scripts que hacen login se detienen con el mensaje «Define QA_SEED_PASSWORD».
 
 ## Secretos
 

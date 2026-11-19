@@ -1,40 +1,120 @@
-# Integraciones — Panel Organizador (Evaluación 2)
+# Integraciones — Panel Organizador (Evaluación 3)
 
-Declaración de las dos integraciones que se evalúan. Ambas son con **Entradas / Inventario** y son de tipos distintos (C y B), como exige la especificación.
+Declaración de las tres integraciones evaluables en el ambiente de pruebas (workstation), una por tipo. Las instrucciones de instalación, variables de entorno y usuarios de prueba están en [`INSTALACION.md`](INSTALACION.md).
 
-| Integración | Tipo (A, B o C) | Módulo contraparte | Servicio, endpoint o tópico | Contrato (ruta en el repo) | Ítem en GitHub |
+> Los valores marcados `<completar>` se confirman en workstation durante la verificación en clase del 19/11.
+
+| Integración | Tipo | Módulo contraparte | Servicio, ruta en el gateway o tópico | Cómo se evidencia | Dónde verificarlo |
 |---|---|---|---|---|---|
-| **I1** | **C** · Mensajería por broker | Entradas / Inventario | RabbitMQ de la plataforma: exchange `ticketu.events` (topic), routing key `panel.evento.entradas.v1`. Mensajes `evento_creado`, `evento_publicado`, `evento_actualizado`, `evento_cancelado` y `evento_eliminado`, con cuerpo `{ envelope, payload }` | [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §3.1 · [ADR-0013](docs/adr/0013-publicacion-outbox-rabbitmq-plataforma.md) · [ADR-0014](docs/adr/0014-politica-consumo-broker-y-responsabilidades-plataforma.md) | INT-09 (#31) |
-| **I2** | **B** · Servicio ofrecido | Entradas / Inventario | `GET /api/organizador/v1/panel/eventos/{id_evento}` por el API Gateway (`GET /api/v1/panel/eventos/{id_evento}` directo), con sesión `staff` u `organizador` validada con Auth | [`docs/api/openapi.yaml`](docs/api/openapi.yaml) · [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §2.3 | INT-10 (#32) |
+| **I1** | A. Autenticación | Auth | `GET /internal/validar-sesion` (Auth), reenviando la cookie `jwt` en cada petición | Funcionalidad + trazas | Login con `organizador1@ticketu.test` → Mis eventos; rechazo con `comprador1@ticketu.test` (403) y con jwt alterado (401); log del Panel |
+| **I2** | B. API Gateway | Entradas / Inventario (también Check-in) | Servicio provisto: `GET /api/organizador/v1/panel/eventos/{id_evento}` en el API Gateway | Funcionalidad + trazas | `curl` al Gateway con sesión `staff1` u `organizador1`; logs del Gateway y del Panel |
+| **I3** | C. Broker | Entradas / Inventario | Exchange `ticketu.events` (topic), routing key `panel.evento.entradas.v1` | Base de datos + consola del broker + trazas | `mensajes_salientes` (PENDIENTE → ENVIADO); consola de RabbitMQ; log `[outbox]` del Panel; `inventario_evento` de Entradas |
 
 ---
 
-## I1 · Panel publica el ciclo de vida del evento y Entradas lo consume
+## I1 · Autenticación con Auth (tipo A)
 
-- **Qué pasa:** cuando el organizador crea, publica, edita, cancela o elimina un evento, Panel guarda el cambio y deja un mensaje en su outbox (`mensajes_salientes`). Un proceso lo publica en RabbitMQ y Entradas lo consume para crear o actualizar su inventario del evento. El cuerpo lleva `{ envelope, payload }`, que es como lo lee el consumidor de Entradas ([ADR-0017](docs/adr/0017-sobre-en-el-cuerpo-para-entradas.md)).
-- **Código:** `backend/src/modules/mensajeria/` (`evento.notifier.ts`, `outbox.publisher.ts`, `outbox.relay.ts`) y `backend/src/modules/eventos/evento.mapper.ts`.
-- **Configuración:** `BROKER_URL`, `EVENT_EXCHANGE`, `TOPIC_ENTRADAS` y `BROKER_TOPICOS_CON_SOBRE` por variables de entorno (`.env` y `docker-compose.integracion.yml`). Con `SEED_DEMO=true`, los eventos de demo también se anuncian por el broker.
-- **Manejo de errores:** si el broker no está disponible, el organizador no espera; el mensaje queda `PENDIENTE` y se reintenta hasta `OUTBOX_MAX_INTENTOS`.
-- **Evidencia en datos:** `cambios_estado_evento` (BORRADOR → PUBLICADO, con fecha) y `mensajes_salientes` (pasa de `PENDIENTE` a `ENVIADO`).
-- **Pruebas:** `backend/tests/int02-mensajeria.test.ts`, `backend/tests/outbox-relay.test.ts`, `backend/tests/hu03-eliminar-evento.test.ts` y evidencias en `docs/evidencias/`.
-- **Prueba con el servicio real (17/11/2026):** con Gateway, RabbitMQ, Auth y Entradas reales en `plataforma-eventos-net`, los 7 eventos del Panel quedaron en `inventario_evento` de Entradas ([sesión de integración, prueba B](docs/evidencias/pruebas-integracion/sesion-integracion-2026-11-17.md)).
-- **Responsables:** Etienne Araya (integración y pruebas) · Joaquín Martínez (backend).
+**Qué hace:** antes de cualquier operación, Panel reenvía a Auth la cookie `jwt` del usuario, sin decodificarla, y usa el `usuario.rol` que Auth devuelve. Solo el rol `organizador` gestiona eventos, y solo los propios.
 
-## I2 · Entradas consulta los datos del evento a Panel
+**Cómo verificarlo (usuarios de Auth en workstation):**
 
-- **Qué pasa:** Entradas llama al GET de Panel por el API Gateway, reenviando la cookie `jwt` del usuario, y usa los datos del evento (nombre, fecha, hora, cantidad y tipo de entrada) en su aplicación.
-- **Código:** `backend/src/modules/integraciones/integration.routes.ts` y `backend/src/modules/auth/require-organizer.ts`.
-- **Configuración:** el Gateway enruta `/api/organizador/*` a `ORGANIZADOR_SERVICE_URL=http://organizador-service:3000`; Panel valida la sesión con `AUTH_SERVICE_URL`.
-- **Manejo de errores:** id con formato inválido → 400, sin sesión → 401, rol no permitido → 403, evento inexistente → 404, Auth no disponible → 503 (fail-secure).
-- **Evidencia en datos:** la respuesta del GET coincide con el documento del evento en la colección `eventos`.
-- **Pruebas:** `backend/tests/integraciones.test.ts`, `backend/tests/gateway-prefix.test.ts` y carpetas «03 Entradas» y «04 Check-in» de la colección Postman.
-- **Prueba con el servicio real (17/11/2026):** las llamadas al Panel por el Gateway con sesiones reales de Auth responden según el contrato, incluido el staff en el GET compartido ([sesión de integración, prueba A](docs/evidencias/pruebas-integracion/sesion-integracion-2026-11-17.md)).
-- **Responsables:** Joaquín Martínez (backend) · Etienne Araya (integración y pruebas).
+1. **Acceso permitido:** iniciar sesión con `organizador1@ticketu.test` → abrir *Mis eventos* → la lista carga (200).
+2. **Rechazo por rol:** iniciar sesión con `comprador1@ticketu.test` (rol `usuario`) → pantalla *Acceso denegado* (403 `FORBIDDEN_ROLE`).
+3. **Rechazo de token inválido:**
+   ```bash
+   curl -i <GATEWAY_URL>/api/organizador/v1/panel/eventos/mios --cookie "jwt=token-alterado"
+   ```
+   Respuesta esperada: `401` con `{"error":{"codigo":"SESSION_INVALID",...}}`.
+4. **Sin token:** el mismo `curl` sin `--cookie` → `401 SESSION_INVALID`.
+
+**Transparencia:** el usuario inicia sesión una sola vez en Auth; el navegador envía la cookie `jwt` automáticamente. No se copian tokens ni hay tokens fijos en el código.
+
+**Configuración:** `AUTH_SERVICE_URL`, `AUTH_INTERNAL_API_KEY` y `AUTH_TIMEOUT_MS` por variables de entorno (`docker-compose.integracion.yml`). Valor en workstation: `AUTH_SERVICE_URL=<completar>`.
+
+**Trazas:** `docker compose -f docker-compose.integracion.yml logs organizador-service`. Si Auth rechaza la clave interna, el Panel registra `[auth] Auth rechazó la x-api-key (403)` y responde `502 AUTH_ERROR`.
+
+**Código:** `backend/src/modules/auth/auth.client.ts` (validación, timeout y fail-secure) y `backend/src/modules/auth/require-organizer.ts` (rol y propiedad).
+
+**Contrato:** [`docs/CONTRATO_PANEL_AUTH.md`](docs/CONTRATO_PANEL_AUTH.md) · `CONTRATO_INTEGRACION_AUTH.md` del repo `equipo-auth/arquitectura` (rama `main`).
 
 ---
 
-## Además: lo que Panel consume de Entradas (no declarado como I1/I2)
+## I2 · Servicio provisto por el API Gateway (tipo B)
 
-- **Consulta de stock antes de eliminar (HU-03, INT-05):** `GET /api/v1/entradas/eventos/{id_evento}/stock` en `entradas-service:3000`. Sin ventas el evento se elimina, con ventas pasa a CANCELADO y, si Entradas no responde, no se toca (503) ([ADR-0016](docs/adr/0016-eliminacion-de-eventos-y-consulta-de-stock.md)). Probado con el Entradas real el 17/11 (prueba C de la sesión).
-- **Aviso de stock agotado:** Panel escucha `entradas.evento.stock.v1` en su cola durable `panel-organizador.entradas.stock`, marca el evento AGOTADO y se lo comunica a Catálogo ([ADR-0018](docs/adr/0018-consumo-stock-entradas-y-disponibilidad.md)). El lado del Panel quedó verificado con el código de Entradas; Entradas todavía no lo publica en la compra gratuita (hallazgo H1).
-- **Pendiente del lado de Entradas:** los hallazgos H1–H6 de la sesión del 17/11, en especial que `evento_actualizado` no reinicie `stock_actual` (H2).
+**Qué hace:** Entradas (y Check-in como respaldo) consulta los datos de un evento a Panel **a través del API Gateway**. El Gateway enruta `/api/organizador/*` al contenedor `organizador-service:3000`. Panel valida la sesión con Auth y admite los roles `staff` y `organizador`.
+
+**Ruta en el Gateway:** `GET <GATEWAY_URL>/api/organizador/v1/panel/eventos/{id_evento}` → Panel `GET /api/v1/panel/eventos/{id_evento}`.
+
+**Cómo verificarlo:**
+
+1. Iniciar sesión en Auth con `staff1@ticketu.test` por el Gateway y conservar la cookie:
+   ```bash
+   curl -i -c cookies.txt -X POST <GATEWAY_URL>/api/auth/login -H "Content-Type: application/json" -d '<cuerpo de login de Auth con staff1@ticketu.test y su contraseña de QA>'
+   ```
+   El formato del cuerpo es el que define el contrato de Auth (`<completar>`). Auth responde con la cookie `jwt`, que queda en `cookies.txt`.
+2. Consultar un evento publicado por el Gateway:
+   ```bash
+   curl -i -b cookies.txt <GATEWAY_URL>/api/organizador/v1/panel/eventos/<id_evento_publicado>
+   ```
+   Respuesta esperada: `200` con `id_evento`, `id_usuario`, `nombre_evento`, `fecha_evento`, `hora_evento`, `hora_fin_evento`, `cantidad_entradas`, `tipo_entrada` y `estado_gestion`.
+3. **Trazas del Gateway:** `docker logs ticketu-api-gateway` muestra la petición a `/api/organizador/v1/panel/eventos/...`. **Trazas del Panel:** `docker compose -f docker-compose.integracion.yml logs organizador-service`.
+
+**Manejo de errores (en vivo):**
+
+| Caso | Cómo provocarlo | Respuesta |
+|---|---|---|
+| Evento inexistente | id `66f000000000000000000000` | `404 EVENT_NOT_FOUND` |
+| Id con formato inválido | id `no-es-id` | `400 INVALID_EVENT_ID` |
+| Sin sesión | `curl` sin cookie | `401 SESSION_INVALID` |
+| Rol no permitido | sesión de `comprador1` | `403 FORBIDDEN_ROLE` |
+
+**Manejo de errores (en código):** si Auth no responde dentro de `AUTH_TIMEOUT_MS`, Panel aplica fail-secure y responde `503 AUTH_UNAVAILABLE` (`backend/src/modules/auth/auth.client.ts`). Todos los errores salen con el mismo formato `{ "error": { "codigo", "mensaje" } }` (`backend/src/core/middlewares/error-handler.ts`).
+
+**Configuración:** la ruta `/api/organizador/*` y la dirección `ORGANIZADOR_SERVICE_URL=http://organizador-service:3000` se configuran en el Gateway (repo `FWizav/backendticketU`). Valor del Gateway en workstation: `<GATEWAY_URL>=<completar>`.
+
+**Contrato:** [`docs/api/openapi.yaml`](docs/api/openapi.yaml) (operación `getEventoIntegracion`, tags *Integración — Entradas* y *Integración — Check-in*) · [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §2.3 · [`docs/CONTRATO_PANEL_CHECKIN.md`](docs/CONTRATO_PANEL_CHECKIN.md) §3.4. Corresponde a la tabla de dependencias TITEC 2026-2: Entradas recibe de Panel id usuario, nombre, hora, fecha, cantidad y tipo de entrada; Check-in recibe id, nombre, dirección, hora de inicio, hora de fin y fecha.
+
+**Código:** `backend/src/modules/integraciones/integration.routes.ts` · prefijo del Gateway probado en `backend/tests/gateway-prefix.test.ts`.
+
+---
+
+## I3 · Publicación de eventos en el broker (tipo C)
+
+**Qué hace:** cuando el organizador crea, publica, edita, cancela o elimina un evento, Panel guarda el cambio y deja el mensaje en su outbox (`mensajes_salientes`). Un proceso lo publica en RabbitMQ y Entradas lo consume para crear o actualizar el inventario del evento.
+
+**Tópico y esquema:**
+
+- Exchange `ticketu.events` (tipo topic, durable), routing key `panel.evento.entradas.v1`.
+- Tipos de mensaje: `evento_creado`, `evento_publicado`, `evento_actualizado`, `evento_cancelado`, `evento_eliminado`.
+- Cuerpo: `{ "envelope": { "version", "tipo", "fecha_cambio", "id_evento" }, "payload": { ...datos del evento } }`. Especificación completa en [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §3.1 y [ADR-0017](docs/adr/0017-sobre-en-el-cuerpo-para-entradas.md).
+
+**Cómo verificarlo:**
+
+1. Iniciar sesión como `organizador1@ticketu.test`, crear un evento y publicarlo.
+2. **Base de datos del Panel** (antes y después):
+   ```bash
+   docker compose -f docker-compose.integracion.yml exec organizador-mongo mongosh panel_organizador --quiet --eval "db.mensajes_salientes.find({}, {topico:1, tipo:1, estado:1, fecha_envio:1}).sort({fecha_creacion:-1}).limit(5)"
+   ```
+   Esperado: mensajes `evento_creado` y `evento_publicado` con `topico: "panel.evento.entradas.v1"` y `estado: "ENVIADO"`, con `fecha_envio`.
+3. **Trazas del Panel:** `docker compose -f docker-compose.integracion.yml logs organizador-service` muestra `[outbox] panel.evento.entradas.v1 → evento_publicado <id_evento>`.
+4. **Consola de RabbitMQ:** `<RABBITMQ_CONSOLA>=<completar>` → vhost `ticketu` → exchange `ticketu.events` → mensajes publicados y entregados a la cola de Entradas.
+5. **Efecto en la contraparte:** el evento aparece en la colección `inventario_evento` de Entradas, con `stock_inicial` igual a `cantidad_entradas`.
+
+**Manejo de errores (en código):** si el broker no está disponible, la operación del organizador responde igual y el mensaje queda `PENDIENTE`; se reintenta hasta `OUTBOX_MAX_INTENTOS` (10 por defecto) y luego queda `FALLIDO`. Cada error se registra con `[outbox] error al publicar ...` (`backend/src/modules/mensajeria/outbox.relay.ts`).
+
+**Configuración:** `BROKER_URL`, `EVENT_EXCHANGE`, `TOPIC_ENTRADAS` y `BROKER_TOPICOS_CON_SOBRE` por variables de entorno. Valor en workstation: `BROKER_URL=<completar>`.
+
+**Código:** `backend/src/modules/mensajeria/` (`evento.notifier.ts`, `outbox.publisher.ts`, `outbox.relay.ts`).
+
+**Contrato:** [`docs/CONTRATO_PANEL_ENTRADAS.md`](docs/CONTRATO_PANEL_ENTRADAS.md) §3.1 · [ADR-0013](docs/adr/0013-publicacion-outbox-rabbitmq-plataforma.md). Corresponde a la tabla de dependencias: Entradas recibe de Panel los datos del evento.
+
+---
+
+## Si la contraparte no está disponible en workstation
+
+- **I2:** se evidencia la parte propia: el servicio de Panel responde por el Gateway con la ruta y el formato del contrato (pasos 1 y 2 de I2).
+- **I3:** se evidencia la parte propia: el mensaje se publica en `ticketu.events` con la routing key y el esquema acordados (`mensajes_salientes` en ENVIADO y log `[outbox]`).
+
+## Responsables
+
+Etienne Araya (integración y pruebas) · Joaquín Martínez (backend) · Mariajosé Baxmann (contratos).

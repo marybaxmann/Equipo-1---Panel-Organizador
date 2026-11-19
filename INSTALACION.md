@@ -90,8 +90,13 @@ npm run dev:web
 Queda disponible en `http://localhost:5173`. Variables en `frontend/.env`:
 
 ```dotenv
-VITE_API_BASE_URL=/api/v1/panel
-VITE_AUTH_LOGIN_URL=/login
+VITE_API_BASE_URL=/api/organizador/v1/panel
+VITE_AUTH_LOGIN_URL=<completar: login de Auth en workstation>
+```
+
+El proxy de Vite (`frontend/vite.config.js`) envía `/api` al API Gateway (`http://localhost:8080`), que enruta `/api/organizador/*` al backend del Panel.
+
+La interfaz del Panel también está integrada en el Frontend Unificado de TicketU (`FWizav/FrontendTitec`, ruta `/organizador`), con inicio de sesión real de Auth. Ver `docs/integracion-frontend-unificado.md`.
 ```
 
 **Pendiente de confirmación:** valores finales de estas variables y del proxy de Vite (`frontend/vite.config.js`, hoy `/api` → `http://localhost:3000`) para que el frontend use el login real de Auth y llegue al backend en workstation.

@@ -14,7 +14,8 @@ Panel Organizador permite a un usuario con rol `organizador` crear, editar, publ
 
 | Componente | Dirección o puerto |
 |---|---|
-| Frontend Panel | `http://localhost:5173` |
+| Frontend Unificado | `http://localhost:3000/organizador` · Login en `http://localhost:3000/auth/admin/login` |
+| Frontend Standalone (Vite) | `http://localhost:5173` |
 | Backend Panel (Docker) | `http://organizador-service:3000` · Swagger en `/api-docs` |
 | API Gateway | `http://localhost:8080` (host) · `http://ticketu-api-gateway:8080` (Docker) |
 | Auth | `http://auth-service:10000` |
@@ -83,18 +84,39 @@ docker run --rm --network plataforma-eventos-net curlimages/curl -s http://organ
 
 ## 6. Iniciar el frontend
 
+### Frontend Unificado (Evaluación 3)
+
+El Panel de Organizador se encuentra integrado en el Frontend Unificado de la plataforma (`FrontendTitec`):
+
+- **URL de acceso:** `http://localhost:3000/organizador`
+- **Ruta de inicio de sesión (Auth):** `http://localhost:3000/auth/admin/login`
+
+Para levantarlo en workstation o entorno local:
+
+```bash
+git clone https://github.com/FWizav/FrontendTitec.git
+cd FrontendTitec
+# asegurando la integración de la rama feature/organizador-panel (PR #20)
+npm install
+# Configurar .env.local con:
+# NEXT_PUBLIC_GATEWAY_URL=http://localhost:8080
+npm run dev
+```
+
+### Frontend Standalone de desarrollo (Vite)
+
 ```bash
 npm run dev:web
 ```
 
-Queda disponible en `http://localhost:5173`. Variables en `frontend/.env`:
+Queda disponible en `http://localhost:5173`. Variables en `frontend/.env` (o `.env.example`):
 
 ```dotenv
-VITE_API_BASE_URL=/api/v1/panel
+VITE_API_BASE_URL=/api/organizador/v1/panel
 VITE_AUTH_LOGIN_URL=/login
 ```
 
-**Pendiente de confirmación:** valores finales de estas variables y del proxy de Vite (`frontend/vite.config.js`, hoy `/api` → `http://localhost:3000`) para que el frontend use el login real de Auth y llegue al backend en workstation.
+El proxy de Vite (`frontend/vite.config.js`) enruta `/api` hacia `http://localhost:8080` (API Gateway), que a su vez enruta `/api/organizador/*` al microservicio `organizador-service:3000`.
 
 ## 7. Usuarios de prueba
 

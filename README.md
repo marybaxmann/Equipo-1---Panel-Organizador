@@ -2,6 +2,12 @@
 
 Módulo encargado de la gestión de eventos para los organizadores, permitiendo crear, editar, publicar y gestionar el ciclo de vida de los eventos en la plataforma TicketU.
 
+## Evaluación 3 — Instalación en workstation
+
+- **Instalación, variables de entorno, usuarios de prueba y flujo principal:** [`INSTALACION.md`](INSTALACION.md)
+- **Declaración de las tres integraciones (Auth, API Gateway y broker):** [`INTEGRACIONES.md`](INTEGRACIONES.md)
+- **Rama de entrega:** `main`
+
 ## Plan del proyecto
 
 - **Hoja de ruta** (sprints, tareas, responsables, criterios de salida): [`docs/plan-proyecto.md`](docs/plan-proyecto.md)
@@ -13,15 +19,15 @@ Módulo encargado de la gestión de eventos para los organizadores, permitiendo 
 | Repo | Uso |
 |---|---|
 | [`Joaquin-Martinez-Aravena/panel-organizador`](https://github.com/Joaquin-Martinez-Aravena/panel-organizador) | Repo de trabajo del equipo: desarrollo, pruebas y PRs |
-| [`marybaxmann/Equipo-1---Panel-Organizador`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador) | Repo de presentación al profesor. Se actualiza a mano en momentos acordados |
+| [`marybaxmann/Equipo-1---Panel-Organizador`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador) | Repo de entrega al profesor (rama `main`) |
 
 ## Requisitos
 - Node.js 26.x
 - Docker y Docker Compose
 
-## Levantar el entorno local
+## Levantar el entorno local (desarrollo)
 
-En terminales separadas, ejecuta los siguientes 6 comandos:
+Para desarrollo, con MongoDB y Auth simulados. Para workstation, ver [`INSTALACION.md`](INSTALACION.md). En terminales separadas, ejecuta los siguientes 6 comandos:
 
 ```bash
 # 1. Configurar variables de entorno
@@ -105,7 +111,7 @@ En local, Auth está simulado (`tools/mock-auth`). El mock replica `GET /interna
 | **BD4** | Diseño técnico (PK, tipos, FK, nulabilidad, sin ciclos) | Validadores `$jsonSchema` en [`database/schema/`](database/schema/) · diagrama con PK/FK/NULL · test [`backend/tests/database-schema.test.ts`](backend/tests/database-schema.test.ts) |
 | **UI1–UI3** | App funcional y estándares de UI | [`frontend/`](frontend/) · [`docs/ui/checklist-consistencia-visual.md`](docs/ui/checklist-consistencia-visual.md) (acordado entre squads) · [`docs/ui/estandares-ui.md`](docs/ui/estandares-ui.md) · se evalúa con la demo en vivo |
 | **GE1–GE3** | Planificación, historias y avance | [Issues](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues) · [Milestones](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/milestones) · tablero del proyecto (GitHub Projects) · [`docs/sprints.md`](docs/sprints.md) |
-| **GE4** | Trabajo de integración | [Issues con label `integracion`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues?q=label%3Aintegracion) · contratos en [`docs/`](docs/) |
+| **GE4** | Trabajo de integración | [Issues con label `INTEGRACION`](https://github.com/marybaxmann/Equipo-1---Panel-Organizador/issues?q=label%3AINTEGRACION) · contratos en [`docs/`](docs/) |
 | **CA1** | Pruebas de funcionalidad | [`docs/evidencias/pruebas-funcionalidad/`](docs/evidencias/pruebas-funcionalidad/README.md) (109 tests, cobertura 94 %) · CI en GitHub Actions |
 | **CA2** | Pruebas de integración | [`postman/`](postman/) · resultados en [`docs/evidencias/pruebas-integracion/`](docs/evidencias/pruebas-integracion/README.md) · pruebas de contrato OpenAPI en [`backend/tests/contrato-openapi.test.ts`](backend/tests/contrato-openapi.test.ts) |
 | — | Responsables por rol, HU, tarea y contrato | [`RESPONSABLES.md`](RESPONSABLES.md) |

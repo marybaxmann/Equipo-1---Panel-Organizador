@@ -8,13 +8,14 @@ Panel Organizador permite a un usuario con rol `organizador` crear, editar, publ
 
 - Git, Node.js 26.x y npm.
 - Docker con Docker Compose.
-- Servicios de la plataforma TicketU levantados en workstation: Auth, API Gateway, RabbitMQ y Entradas / Inventario, conectados a la red `plataforma-eventos-net`. Cada equipo dueño instala su servicio.
+- Servicios de la plataforma TicketU levantados en workstation: Auth, API Gateway, RabbitMQ, Entradas / Inventario y Frontend Unificado, conectados a la red `plataforma-eventos-net`. Cada equipo dueño instala su servicio.
 
 ## 2. Componentes y direcciones
 
 | Componente | Dirección o puerto |
 |---|---|
-| Frontend Panel | `http://localhost:5173` |
+| Frontend Unificado (evaluación) | `http://localhost:3000` · login en `/auth/admin/login` · Panel en `/organizador` |
+| Frontend propio del Panel (desarrollo) | `http://localhost:5173` |
 | Backend Panel (Docker) | `http://organizador-service:3000` · Swagger en `/api-docs` |
 | API Gateway | `http://localhost:8080` (host) · `http://ticketu-api-gateway:8080` (Docker) |
 | Auth | `http://auth-service:10000` |
@@ -81,22 +82,29 @@ docker compose -f docker-compose.integracion.yml logs organizador-service
 docker run --rm --network plataforma-eventos-net curlimages/curl -s http://organizador-service:3000/health
 ```
 
-## 6. Iniciar el frontend
+## 6. Frontend
+
+**Frontend para la evaluación:** la revisión se hace en el Frontend Unificado de TicketU (`FWizav/FrontendTitec`, rama `main`), que integra la interfaz del Panel y usa el inicio de sesión real de Auth. Lo instala su equipo dueño en workstation.
+
+- Inicio de sesión: `http://localhost:3000/auth/admin/login`
+- Panel Organizador: `http://localhost:3000/organizador`
+
+Detalle de la integración: `docs/integracion-frontend-unificado.md`.
+
+**Frontend propio (desarrollo local):** también se puede levantar el frontend de este repositorio:
 
 ```bash
 npm run dev:web
 ```
 
-Queda disponible en `http://localhost:5173`. Variables en `frontend/.env`:
+Queda en `http://localhost:5173`. Variables en `frontend/.env`:
 
 ```dotenv
 VITE_API_BASE_URL=/api/organizador/v1/panel
-VITE_AUTH_LOGIN_URL=<completar: login de Auth en workstation>
+VITE_AUTH_LOGIN_URL=http://localhost:3000/auth/admin/login
 ```
 
 El proxy de Vite (`frontend/vite.config.js`) envía `/api` al API Gateway (`http://localhost:8080`), que enruta `/api/organizador/*` al backend del Panel.
-
-La interfaz del Panel también está integrada en el Frontend Unificado de TicketU (`FWizav/FrontendTitec`, ruta `/organizador`), con inicio de sesión real de Auth. Ver `docs/integracion-frontend-unificado.md`.
 
 ## 7. Usuarios de prueba
 
@@ -110,9 +118,12 @@ Creados y publicados por el equipo Auth. Las contraseñas se entregan por el can
 
 ## 8. Flujo principal
 
-1. Iniciar sesión con `organizador1@ticketu.test`.
-2. Abrir *Mis eventos*: se listan los eventos del organizador.
-3. Crear un evento con *Nuevo evento*: queda en estado BORRADOR.
-4. Verlo en *Mis eventos* y publicarlo: pasa a PUBLICADO.
+1. Abrir `http://localhost:3000/auth/admin/login` e iniciar sesión con `organizador1@ticketu.test`.
+2. El sistema redirige a `http://localhost:3000/organizador` (Mis eventos).
+3. Hacer clic en **+ Crear mi primer evento** (o **+ Nuevo evento**).
+4. Completar los campos obligatorios y presionar **Guardar evento**: queda en estado BORRADOR.
+5. En el listado o en el detalle, presionar **Publicar**: pasa a PUBLICADO.
+
+Para verificar el rechazo por rol, iniciar sesión con `comprador1@ticketu.test`: se muestra *Acceso restringido a organizadores* (403).
 
 Pruebas automatizadas del backend: `npm test`.

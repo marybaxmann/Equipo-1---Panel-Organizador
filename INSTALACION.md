@@ -62,8 +62,9 @@ BROKER_COLA_STOCK=panel-organizador.entradas.stock
 SEED_DEMO=true
 ```
 
-- `BROKER_URL`: RabbitMQ de la plataforma (`ticketu-rabbitmq`, vhost `ticketu`), con el usuario de pruebas definido en `FWizav/backendticketU/event-broker`. Si la plataforma cambia las credenciales en workstation, se ajusta solo esta variable.
-- `AUTH_INTERNAL_API_KEY`: debe coincidir con la clave configurada en Auth. No se publica en el repositorio.
+- `BROKER_URL`: RabbitMQ de la plataforma (`ticketu-rabbitmq`, vhost `ticketu`), con el usuario de pruebas definido en `FWizav/backendticketU/event-broker`. Si la plataforma cambia las credenciales en workstation, se ajusta solo esta variable. **Es obligatoria para I3:** sin ella la API funciona, pero los mensajes quedan `PENDIENTE` en `mensajes_salientes` y no se publican.
+- `AUTH_INTERNAL_API_KEY`: clave privada que entrega el equipo Auth. Debe coincidir con la configurada en Auth y no se publica en el repositorio. Sin ella, Auth rechaza la validación y el Panel responde `502 AUTH_ERROR`.
+- `ENTRADAS_SERVICE_URL`: consulta de stock antes de eliminar un evento publicado, directo al contenedor de Entradas (sin Gateway). Sin ella, eliminar un evento PUBLICADO responde `503`.
 - `SEED_DEMO=true`: carga 7 eventos de demostración y reemplaza los existentes. Usar solo en el ambiente de pruebas.
 
 ## 5. Iniciar el backend y la base de datos

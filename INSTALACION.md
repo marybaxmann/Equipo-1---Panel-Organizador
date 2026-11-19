@@ -52,7 +52,7 @@ AUTH_REINTENTOS=0
 ENTRADAS_SERVICE_URL=http://entradas-service:3000
 ENTRADAS_TIMEOUT_MS=1000
 
-BROKER_URL=<completar en workstation>
+BROKER_URL=amqp://ticketu:ticketu_dev@ticketu-rabbitmq:5672/ticketu
 EVENT_EXCHANGE=ticketu.events
 TOPIC_ENTRADAS=panel.evento.entradas.v1
 BROKER_TOPICOS_CON_SOBRE=panel.evento.entradas.v1
@@ -62,7 +62,7 @@ BROKER_COLA_STOCK=panel-organizador.entradas.stock
 SEED_DEMO=true
 ```
 
-- `BROKER_URL`: dirección AMQP con usuario, contraseña y virtual host de la plataforma en workstation.
+- `BROKER_URL`: RabbitMQ de la plataforma (`ticketu-rabbitmq`, vhost `ticketu`), con el usuario de pruebas definido en `FWizav/backendticketU/event-broker`. Si la plataforma cambia las credenciales en workstation, se ajusta solo esta variable.
 - `AUTH_INTERNAL_API_KEY`: debe coincidir con la clave configurada en Auth. No se publica en el repositorio.
 - `SEED_DEMO=true`: carga 7 eventos de demostración y reemplaza los existentes. Usar solo en el ambiente de pruebas.
 
@@ -108,7 +108,7 @@ El proxy de Vite (`frontend/vite.config.js`) envía `/api` al API Gateway (`http
 
 ## 7. Usuarios de prueba
 
-Creados y publicados por el equipo Auth. Las contraseñas se entregan por el canal autorizado y no se incluyen en el repositorio.
+Creados y publicados por el equipo Auth (seed de QA). La contraseña común de estas cuentas ficticias está publicada en `INSTALACION.md` del repo `equipo-auth/arquitectura` (sección 4, *Usuarios de prueba Auth*).
 
 | Usuario | Rol | Uso |
 |---|---|---|

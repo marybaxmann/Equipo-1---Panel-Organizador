@@ -89,3 +89,24 @@ Las capturas 4.2.3 y 4.2.5 usan el frontend propio del Panel (`:5173`), que llam
 ![Colas en RabbitMQ](broker-01-colas-rabbitmq.png)
 
 Cola durable `panel-organizador.entradas.stock` del Panel (ADR-0018) junto a las de Entradas y Auth, en el vhost `ticketu`, sin mensajes pendientes.
+
+---
+
+## 5. Notificaciones por el exchange `panel.evento.notificaciones.v1` (18/11/2026)
+
+Detalle en [`../notificaciones-2026-11-18.md`](../notificaciones-2026-11-18.md).
+
+| Captura | Qué demuestra |
+|---|---|
+| ![](notificaciones-01-pasos.png) | Los pasos por el Gateway: reprogramar (200) y eliminar con ventas (`CANCELADO`), la traza `cambios-estado`, los dos mensajes recibidos y el log del Panel. Es la salida real de la terminal, convertida en imagen. |
+| ![](notificaciones-02-cola-rabbitmq.png) | Consola de RabbitMQ: la cola ligada sólo al exchange `panel.evento.notificaciones.v1` contiene `evento_reprogramado` y `evento_actualizado`, con `type`, headers y cuerpo JSON del contrato. |
+
+---
+
+## 6. Re-prueba de los hallazgos de Entradas (18/11/2026)
+
+Detalle en [`../reprueba-entradas-2026-11-18.md`](../reprueba-entradas-2026-11-18.md).
+
+| Captura | Qué demuestra |
+|---|---|
+| ![](entradas-04-reprueba-hallazgos.png) | Por el Gateway, con el código nuevo de Entradas: el stock sigue en 7 después de editar (H2) y eliminar cancela; el evento eliminado ya no existe en su inventario (H3); la compra gratuita que agota deja el evento AGOTADO en el Panel (H1); `precio_unitario` es 0 (H4). Es la salida real de la terminal, convertida en imagen. |

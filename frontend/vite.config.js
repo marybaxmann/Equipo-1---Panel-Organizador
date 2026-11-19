@@ -1,8 +1,8 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// El proxy deja front y API en el mismo origen, así la cookie jwt viaja sin CORS ni SameSite
+// El proxy apunta al API Gateway de TicketU (:8080), que enruta /api/organizador/* al microservicio
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173, proxy: { "/api": "http://localhost:3000" } },
+  server: { port: 5173, proxy: { "/api": "http://localhost:8080" } },
 });

@@ -221,32 +221,36 @@ GET /api/v1/panel/eventos/{id_evento}
 
 #### Errores
 
-| Código | `error` | Situación |
+| Código HTTP | `error.codigo` | Situación |
 |---|---|---|
-| `400` | `ID_EVENTO_INVALIDO` | `id_evento` con formato inválido. |
-| `401` | `SESION_INVALIDA` | Auth indica sesión ausente, inválida, expirada o revocada. |
-| `403` | `ROL_NO_AUTORIZADO` | El rol vigente no es `staff` ni `organizador`, o Auth responde `403`. |
-| `404` | `EVENTO_NO_ENCONTRADO` | Evento no encontrado. |
-| `500` | `ERROR_INTERNO` | Error interno de Panel Organizador o de Auth. |
-| `503` | `SERVICIO_NO_DISPONIBLE` | Panel Organizador o Auth no disponible (Fail-Secure). |
+| `400` | `INVALID_EVENT_ID` | `id_evento` con formato inválido. |
+| `401` | `SESSION_INVALID` | Sesión ausente, inválida, expirada o revocada. |
+| `403` | `FORBIDDEN_ROLE` | El rol vigente no es `staff` ni `organizador`. |
+| `404` | `EVENT_NOT_FOUND` | Evento no encontrado. |
+| `500` | `INTERNAL_ERROR` | Error interno de Panel Organizador. |
+| `502` | `AUTH_ERROR` | Auth rechaza la clave interna `x-api-key`, devuelve un error interno o una respuesta inesperada. |
+| `503` | `AUTH_UNAVAILABLE` | Auth está indisponible o excede el timeout (Fail-Secure). |
 
 #### Estructura de la respuesta de error
 
-Se utiliza el mismo formato de error definido por Auth:
+Panel utiliza el formato definido en ADR-0006:
 
 ```json
 {
-  "codigo_http": 404,
-  "error": "EVENTO_NO_ENCONTRADO",
-  "mensaje": "No existe un evento con id_evento evt-001."
+  "error": {
+    "codigo": "FORBIDDEN_ROLE",
+    "mensaje": "No tienes permisos para realizar esta operación."
+  }
 }
 ```
 
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `codigo_http` | integer | Código HTTP. |
-| `error` | string | Identificador del error, para que Check-in lo procese. |
-| `mensaje` | string | Descripción legible del error. |
+El `403 FORBIDDEN_ROLE` corresponde a un usuario autenticado sin permisos.
+
+El `502 AUTH_ERROR` corresponde a un error de integración con Auth, no a permisos del usuario.
+
+El `503 AUTH_UNAVAILABLE` se utiliza ante indisponibilidad o timeout de Auth.
+
+Este formato corresponde a la respuesta de Panel hacia Check-in, no a la respuesta interna que Auth entrega a Panel.
 
 **SLA propuesto:**
 
@@ -300,7 +304,7 @@ Para ello, Check-in puede utilizar los eventos con `estado_gestion = PUBLICADO` 
 | 1.0 | Propuesta inicial de Check-in: `GET` `consultar_evento`. |
 | 1.1 | Propuesta de Panel: solo broker, sin hora de término. |
 | 1.2 | Unificación: broker principal + `GET` de respaldo, `hora_fin_evento`, `estado_gestion`, `tipo_cambio`, estructura de error alineada con Auth, ACK/reintentos, autenticación confirmada por Auth y QR fuera del contrato. |
-
+| 1.2 — Ajuste Avance 4 (18/11/2026) | Se alinean los códigos de error REST con el backend: 403 FORBIDDEN_ROLE y 502 AUTH_ERROR, y se actualiza la estructura de respuesta conforme a ADR-0006. |
 ---
 
 ## 6. Dueños del contrato

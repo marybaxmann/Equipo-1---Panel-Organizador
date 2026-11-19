@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: TicketU — Panel Organizador API
-  version: 1.1.0-sprint2
+  version: 1.1.0-sprint4
   description: |-
     API REST del microservicio Panel Organizador (TicketU). Expone los servicios propios del organizador
     (HU-01, HU-02, HU-04, HU-05, HU-06; HU-03 planificada) y los servicios que consumen otros squads: Catálogo, Entradas, Check-in,

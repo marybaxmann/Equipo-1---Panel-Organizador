@@ -1,0 +1,26 @@
+Entradas: 430a9f3 actualizado archivos entrega 3 | levantado con su docker-compose.yml, sin override
+id_usuario de organizador1 en Auth: e03fb2aa-8a3e-4d97-b46a-30553d424fcd
+
+=== H2 + H4: editar un evento con ventas ya no reinicia el stock, y el gratuito queda con precio 0 ===
+crear (10 entradas GRATUITA): 6afe46dd228fc39849e08930
+publicar: 200
+comprar 3 (comprador1): "nuevo_stock":7
+inventario de Entradas tras la compra : {"stock_inicial":10,"stock_actual":7,"compradas":3,"reservadas":0,"tipo_entrada":"GRATUITA","precio_unitario":0,"id_usuario":"e03fb2aa-8a3e-4d97-b46a-30553d424fcd","estado_gestion":"PUBLICADO"}
+editar nombre en el Panel (PATCH, envia evento_actualizado): 200
+inventario de Entradas tras la edicion: {"stock_inicial":10,"stock_actual":7,"compradas":3,"reservadas":0,"tipo_entrada":"GRATUITA","precio_unitario":0,"id_usuario":"e03fb2aa-8a3e-4d97-b46a-30553d424fcd","estado_gestion":"PUBLICADO"}
+eliminar en el Panel (debe CANCELAR, porque hay ventas): "resultado":"CANCELADO"
+
+=== H3: un evento eliminado en el Panel sale del inventario de Entradas ===
+crear (20 entradas): 6afe46ea228fc39849e08941
+publicar: 200
+inventario antes de eliminar: {"stock_inicial":20,"stock_actual":20,"compradas":0,"reservadas":0,"tipo_entrada":"GRATUITA","precio_unitario":0,"id_usuario":"e03fb2aa-8a3e-4d97-b46a-30553d424fcd","estado_gestion":"PUBLICADO"}
+eliminar en el Panel (sin ventas): "resultado":"ELIMINADO"
+inventario despues de eliminar: NO EXISTE en inventario_evento
+compra sobre el evento eliminado: {"detail":"El evento solicitado no existe."} HTTP 404
+
+=== H1: la compra gratuita que agota el evento avisa al Panel (entradas.evento.stock.v1) ===
+crear (2 entradas): 6afe46f3228fc39849e0894c
+publicar: 200
+comprar 2 (agota): "nuevo_stock":0
+Catalogo del Panel: "estado_disponibilidad":"AGOTADO"
+log del Panel: [stock] 6afe46f3228fc39849e0894c stock=0 → ACTUALIZADO

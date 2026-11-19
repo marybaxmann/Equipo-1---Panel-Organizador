@@ -204,6 +204,69 @@ pm.test("Historial tiene 2 transiciones", () => {
     pm.expect(data.length).to.eql(2);
     pm.expect(data[0].nuevo_estado).to.eql("PUBLICADO");
     pm.expect(data[1].nuevo_estado).to.eql("BORRADOR");
+});`,
+  hu03_crear_borrador: `
+pm.test("Status is 201", () => pm.response.to.have.status(201));
+pm.test("Guarda el id del borrador a eliminar", () => {
+    const data = pm.response.json();
+    pm.expect(data.estado_gestion).to.eql("BORRADOR");
+    pm.environment.set("borradorEliminarId", data.id_evento);
+});`,
+  hu03_eliminar_borrador: `
+pm.test("Status is 200", () => pm.response.to.have.status(200));
+pm.test("Resultado ELIMINADO con el id del borrador", () => {
+    const data = pm.response.json();
+    pm.expect(data.resultado).to.eql("ELIMINADO");
+    pm.expect(data.id_evento).to.eql(pm.environment.get("borradorEliminarId"));
+});
+pm.sendRequest({
+    url: pm.environment.get("baseUrl") + "/panel/eventos/mios/" + pm.environment.get("borradorEliminarId"),
+    method: "GET",
+    header: { "Cookie": "jwt=token-org-a" }
+}, (err, res) => {
+    pm.test("Ya no existe: 404 EVENT_NOT_FOUND", () => {
+        pm.expect(res).to.have.status(404);
+        pm.expect(res.json().error.codigo).to.eql("EVENT_NOT_FOUND");
+    });
+});`,
+  hu03_sin_cookie: `
+pm.test("Status is 401", () => pm.response.to.have.status(401));
+pm.test("Error es SESSION_INVALID", () => pm.expect(pm.response.json().error.codigo).to.eql("SESSION_INVALID"));`,
+  hu03_org_b: `
+pm.test("Status is 403", () => pm.response.to.have.status(403));
+pm.test("Error es EVENT_NOT_OWNED", () => pm.expect(pm.response.json().error.codigo).to.eql("EVENT_NOT_OWNED"));`,
+  hu03_cancelado: `
+pm.test("Status is 409", () => pm.response.to.have.status(409));
+pm.test("Error es INVALID_STATE_TRANSITION", () => pm.expect(pm.response.json().error.codigo).to.eql("INVALID_STATE_TRANSITION"));`,
+  hu03_publicado_con_ventas: `
+pm.test("Status is 200", () => pm.response.to.have.status(200));
+pm.test("Con entradas vendidas no se borra: pasa a CANCELADO", () => {
+    const data = pm.response.json();
+    pm.expect(data.resultado).to.eql("CANCELADO");
+    pm.expect(data.evento.id_evento).to.eql("66f1a0000000000000000003");
+    pm.expect(data.evento.estado_gestion).to.eql("CANCELADO");
+});
+pm.sendRequest({
+    url: pm.environment.get("baseUrl") + "/panel/eventos/66f1a0000000000000000003/cambios-estado",
+    method: "GET"
+}, (err, res) => {
+    pm.test("La transición PUBLICADO → CANCELADO queda en cambios-estado", () => {
+        pm.expect(res).to.have.status(200);
+        pm.expect(res.json()[0].nuevo_estado).to.eql("CANCELADO");
+    });
+});`,
+  hu03_publicado_sin_ventas: `
+pm.test("Status is 200", () => pm.response.to.have.status(200));
+pm.test("Sin entradas vendidas se borra: resultado ELIMINADO", () => {
+    const data = pm.response.json();
+    pm.expect(data.resultado).to.eql("ELIMINADO");
+    pm.expect(data.id_evento).to.eql("66f1a0000000000000000002");
+});
+pm.sendRequest({
+    url: pm.environment.get("baseUrl") + "/organizador/eventos/66f1a0000000000000000002",
+    method: "GET"
+}, (err, res) => {
+    pm.test("Catálogo ya no lo encuentra: 404", () => pm.expect(res).to.have.status(404));
 });`
 };
 
@@ -297,6 +360,19 @@ pm.test("El BORRADOR recién creado no aparece en Catálogo", () => {
         req("Caso: Publicarlo otra vez / Resultado esperado: 409 INVALID_STATE_TRANSITION", "POST", "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}/publicar", { Cookie: "jwt=token-org-a" }, null, tests.sprint2_publicar_otra_vez),
         req("Caso: Editar el publicado (hora_evento) / Resultado esperado: 200, y Catálogo devuelve la hora nueva", "PATCH", "{{baseUrl}}/panel/eventos/mios/{{nuevoEventoId}}", { "Content-Type": "application/json", Cookie: "jwt=token-org-a" }, { hora_evento: "16:00" }, tests.sprint2_editar_publicado),
         req("Caso: Historial /cambios-estado / Resultado esperado: 200 con 2 transiciones", "GET", "{{baseUrl}}/panel/eventos/{{nuevoEventoId}}/cambios-estado", {}, null, tests.sprint2_historial_cambios)
+      ]
+    },
+    {
+      name: "09 HU-03 Eliminar (con stock de Entradas)",
+      description: "Necesita el stock de Entradas: tools/mock-entradas en :4002 (Feria 66f1a…02 sin ventas, Charla 66f1a…03 con 25 vendidas). Va al final porque borra y cancela eventos del seed: para repetirla hay que volver a cargar el seed.",
+      item: [
+        req("Caso: Crear un borrador para eliminar / Resultado esperado: 201", "POST", "{{baseUrl}}/panel/eventos", { "Content-Type": "application/json", Cookie: "jwt=token-org-a" }, { nombre_evento: "Evento HU-03 a eliminar", descripcion: "Borrador para probar la eliminación", fecha_evento: "2030-10-10", hora_evento: "10:00", hora_fin_evento: "12:00", direccion_evento: "Sala 1", cantidad_entradas: 10, tipo_entrada: "GRATUITA" }, tests.hu03_crear_borrador),
+        req("Caso: Eliminar sin sesión / Resultado esperado: 401 SESSION_INVALID", "DELETE", "{{baseUrl}}/panel/eventos/mios/{{borradorEliminarId}}", {}, null, tests.hu03_sin_cookie),
+        req("Caso: Eliminar el borrador (no consulta a Entradas) / Resultado esperado: 200 ELIMINADO y luego 404", "DELETE", "{{baseUrl}}/panel/eventos/mios/{{borradorEliminarId}}", { Cookie: "jwt=token-org-a" }, null, tests.hu03_eliminar_borrador),
+        req("Caso: Org B elimina un evento de A / Resultado esperado: 403 EVENT_NOT_OWNED", "DELETE", "{{baseUrl}}/panel/eventos/mios/66f1a0000000000000000003", { Cookie: "jwt=token-org-b" }, null, tests.hu03_org_b),
+        req("Caso: Eliminar un evento CANCELADO / Resultado esperado: 409 INVALID_STATE_TRANSITION", "DELETE", "{{baseUrl}}/panel/eventos/mios/66f1a0000000000000000005", { Cookie: "jwt=token-org-a" }, null, tests.hu03_cancelado),
+        req("Caso: Eliminar un PUBLICADO con entradas vendidas (Charla) / Resultado esperado: 200 CANCELADO y transición registrada", "DELETE", "{{baseUrl}}/panel/eventos/mios/66f1a0000000000000000003", { Cookie: "jwt=token-org-a" }, null, tests.hu03_publicado_con_ventas, "Caso: Eliminar un PUBLICADO con entradas vendidas / Resultado esperado: 200 CANCELADO. El Panel consulta GET {ENTRADAS_SERVICE_URL}/api/v1/entradas/eventos/{id}/stock: 95 < 120 = hay ventas. Notificaciones recibe evento_actualizado con nuevo_estado CANCELADO (exchange panel.evento.notificaciones.v1)."),
+        req("Caso: Eliminar un PUBLICADO sin entradas vendidas (Feria) / Resultado esperado: 200 ELIMINADO y Catálogo da 404", "DELETE", "{{baseUrl}}/panel/eventos/mios/66f1a0000000000000000002", { Cookie: "jwt=token-org-a" }, null, tests.hu03_publicado_sin_ventas, "Caso: Eliminar un PUBLICADO sin ventas / Resultado esperado: 200 ELIMINADO. Stock 300 = cantidad_entradas 300. Entradas recibe evento_eliminado en panel.evento.entradas.v1.")
       ]
     }
   ]

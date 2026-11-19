@@ -2,6 +2,8 @@
 
 Este directorio reúne las evidencias oficiales con fecha de las pruebas de integración e interoperabilidad del **Panel Organizador** con el ecosistema de la plataforma TicketU, cubriendo tanto el canal asíncrono (Broker RabbitMQ) como el canal síncrono (API Gateway).
 
+Para repetir las pruebas con los servicios reales (Auth, Gateway, Entradas y Notificaciones) se usan los scripts de [`tools/pruebas-integracion/`](../../../tools/pruebas-integracion/README.md).
+
 ---
 
 ## 1. Integración Asíncrona (I1 — RabbitMQ Broker)
@@ -113,3 +115,26 @@ Este directorio reúne las evidencias oficiales con fecha de las pruebas de inte
   - I2 + HU-03: al eliminar un PUBLICADO, Entradas registra `GET /api/v1/entradas/eventos/{id}/stock` desde el contenedor del Panel.
   - Aviso de stock: con el mensaje `entradas.evento.stock.v1` de Entradas, el Panel marca `AGOTADO`, avisa a Catálogo y la consulta pública lo muestra.
 * **Hallazgos para Entradas:** la compra gratuita no publica `entradas.evento.stock.v1`; `evento_actualizado` reinicia el stock (por eso se eliminó un evento con 3 entradas vendidas); `evento_eliminado` se guarda como PUBLICADO con 100 entradas; precio 10000 en eventos gratuitos; clave de ejemplo fija en su compose.
+
+---
+
+## 9. Notificaciones por el exchange acordado (18/11/2026)
+
+* **Documento de verificación:** [`notificaciones-2026-11-18.md`](notificaciones-2026-11-18.md)
+* **Componente evaluado:** publicación de los mensajes de Notificaciones también en el exchange `panel.evento.notificaciones.v1` (ADR-0019, contrato Notificaciones v1.4 §2.2), con el Panel de `main` en la red compartida, el Gateway, Auth real y Entradas.
+* **Resultado:** una cola ligada sólo a ese exchange recibe `evento_reprogramado` al cambiar la fecha de un evento publicado, y `evento_actualizado` con `nuevo_estado: CANCELADO` al eliminar un evento con entradas vendidas, con el cuerpo plano del contrato. Al crear y publicar no se envía nada.
+* **Límite:** Notificaciones no estaba levantado. La cola de prueba reemplaza a su consumidor y está ligada igual que la suya.
+
+---
+
+## 10. Re-prueba de los hallazgos de Entradas (18/11/2026)
+
+* **Documento de verificación:** [`reprueba-entradas-2026-11-18.md`](reprueba-entradas-2026-11-18.md)
+* **Componente evaluado:** los arreglos que publicó Entradas (`430a9f3`) para los hallazgos H1–H6 de la sesión del 17/11. Entradas se levantó con su propio compose, sin override.
+* **Resultado:** los seis quedan corregidos:
+  * editar un evento con ventas mantiene el stock (H2), y eliminarlo lo cancela;
+  * un evento eliminado sale del inventario (H3);
+  * la compra gratuita que agota avisa al Panel (H1);
+  * el precio de un evento gratuito es 0 (H4);
+  * la clave se toma del entorno (H5);
+  * el `id_usuario` es el de Auth (H6).

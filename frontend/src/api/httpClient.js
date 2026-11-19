@@ -2,7 +2,7 @@
  * Cliente HTTP central de la app.
  */
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1/panel";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/organizador/v1/panel";
 export const AUTH_LOGIN_URL = import.meta.env.VITE_AUTH_LOGIN_URL || "/login";
 
 export class ApiError extends Error {

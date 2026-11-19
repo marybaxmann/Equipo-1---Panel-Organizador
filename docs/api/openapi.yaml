@@ -17,7 +17,7 @@ info:
     - La identidad (`id_usuario`) se toma sólo de la respuesta de Auth; el body nunca define dueño ni estado.
     - Validación de propiedad: un evento ajeno → 403 `EVENT_NOT_OWNED`.
     - Si Auth no responde en 1 s → 503 `AUTH_UNAVAILABLE` (fail-secure, sin reintento automático: contrato Auth v1.1 §6).
-    - Endpoints de integración: sin cookie de usuario; acceso restringido a red interna vía API Gateway (mecanismo pendiente de acuerdo).
+    - Endpoint compartido con Entradas y Check-in (`GET /api/v1/panel/eventos/{id_evento}`): requiere sesión validada con Auth y rol `staff` u `organizador`.
 
     **Acceso por el API Gateway de TicketU**
     El Gateway compartido (puerto 8080) reenvía a este servicio todo lo que empieza con `/api/organizador/`, sin recortar el path.
@@ -50,7 +50,7 @@ tags:
     description: Eventos publicados para que Promociones les asocie descuentos (id evento).
   - name: "Sprint 2 · HU-02 — Editar un evento"
     description: |-
-      Lo nuevo del Sprint 2 en la API. Junto con él llegaron cambios que no son endpoints nuevos:
+      Lo nuevo del Sprint 2 en la API. Junto con él llegaron cambios que no son s nuevos:
       - **INT-02 (mensajes salientes):** crear, publicar y editar dejan un mensaje por squad en la colección `mensajes_salientes` (outbox, ADR-0003). Se ven en Compass; el envío al broker llega con HU-07 en el Sprint 3.
       - **Publicar** ahora exige también `cantidad_entradas` y `tipo_entrada` (criterio de HU-04).
       - Un id con formato inválido responde 400 `INVALID_EVENT_ID` y una ruta inexistente responde un 404 en JSON.

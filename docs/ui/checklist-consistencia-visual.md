@@ -56,8 +56,10 @@ Fuente: *Acuerdos-Header-Footer* (desarrolladores front-end de Ticket-U, enviado
 | 35 | Header: posición y alto | Sticky, 64px en escritorio. Fondo #2F4374, texto e íconos #FFFFFF |
 | 36 | Header: logo | Ícono de ticket sin fondo, trazo blanco 2px, sin separador + "TICKET-U" Poppins 24px 700 con letter-spacing amplio |
 | 37 | Header: navegación | Inicio, Mis eventos, Promociones, Configuración, Mi cuenta. Poppins 14px 600, gap 16px. Activa: fondo blanco 18% redondeado |
-| 38 | Header: BUSCAR | Transparente, borde blanco 1.5px, radio 6px, lupa 20px trazo 2px + "BUSCAR" 10px negrita. Lleva al listado principal y enfoca su buscador |
-| 39 | Header: campana y avatar | Círculo blanco de 36px (campana #2F4374, 20px, trazo 2px) y de 32px (iniciales #2F4374, 12px, 600). Área táctil 44×44px |
+| 38 | Header: BUSCAR | Transparente, borde blanco 1.5px, radio 6px, lupa 20px trazo 2px + "BUSCAR" 10px negrita. El acuerdo pide ir al catálogo; en el front de Vite no existe, así que se usa el listado propio (/mis-eventos con Date.now() para enfocar su buscador). En el Frontend Unificado el Header lo pone la plataforma |
+| 39 | Header: campana y avatar | Campana: círculo azul #2F4374 de 36px con ícono blanco (20px, trazo 2px) y hover rgba(255,255,255,.12). Avatar: círculo blanco de 32px (iniciales #2F4374, 12px, 600). Área táctil 44×44px |
 | 40 | Header: <1024px | La navegación pasa a una segunda fila con scroll horizontal (barra oculta) y el mismo fondo |
 | 41 | Footer | Al final del flujo, margin-top 3rem, padding 1.5rem 2rem, fondo #2F4374, Inter 14px blanco. Centrado, gap 24px: "TICKET-U © 2026" (600) · "Centro de Ayuda" · "Términos de Servicio", separados por borde izquierdo blanco de 1px |
 | 42 | Footer: <640px | Apilado vertical, centrado y sin separadores |
+| 43 | Header: panel notificaciones | ✓ Cumplido · Pop-up flotante ~320px bajo la campana, fondo blanco (#FFFFFF), radio 12px, sombra suave (0 4px 12px rgba(47,67,116,.15)) y borde #D8DFF0. Título "Notificaciones", estado vacío "No tienes notificaciones nuevas". En móvil (<640px) ocupa calc(100vw - 32px) sin desbordar |
+| 44 | Header: interacción campana (Escape y clic fuera) | ✓ Cumplido · Alterna abierto/cerrado al hacer clic. Cierra al hacer clic fuera (useRef mousedown en document) y con tecla Escape (keydown), retornando el foco al botón de la campana. Accesible con aria-expanded, aria-controls="panel-notificaciones" y role="dialog" |

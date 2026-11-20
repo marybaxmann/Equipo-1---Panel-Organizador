@@ -94,26 +94,82 @@
   cursor: pointer;
 }
 
-.header__campana,
+.header__campana {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  transition: background-color 0.15s ease;
+}
+
+.header__circulo-tactil:hover .header__campana,
+.header__circulo-tactil:focus-visible .header__campana,
+.header__circulo-tactil[aria-expanded="true"] .header__campana {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .header__avatar {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--color-text-on-accent);
-  color: var(--color-accent);
-}
-
-.header__campana {
-  width: 36px;
-  height: 36px;
-}
-
-.header__avatar {
   width: 32px;
   height: 32px;
+  background: var(--color-text-on-accent);
+  color: var(--color-accent);
   font-size: var(--fs-caption);
   font-weight: var(--fw-semibold);
+}
+
+/* Panel de notificaciones desplegable desde la campana */
+.header__notificaciones-contenedor {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.header__panel-notificaciones {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  width: 320px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-modal);
+  color: var(--color-text-primary);
+  z-index: 50;
+  overflow: hidden;
+  text-align: left;
+}
+
+.header__panel-notificaciones-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__panel-notificaciones-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+}
+
+.header__panel-notificaciones-cuerpo {
+  padding: var(--space-4);
+}
+
+.header__panel-notificaciones-vacio {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-text-secondary);
+  text-align: center;
 }
 
 /* < 1024px: la navegación baja a una segunda fila con scroll horizontal (barra oculta) */
@@ -170,5 +226,10 @@
     overflow: hidden;
     clip: rect(0 0 0 0);
     white-space: nowrap;
+  }
+
+  .header__panel-notificaciones {
+    width: calc(100vw - 32px);
+    right: -48px;
   }
 }

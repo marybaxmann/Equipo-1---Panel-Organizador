@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Bell, Search, Ticket } from "lucide-react";
 import "./Header.css";
@@ -5,6 +6,9 @@ import "./Header.css";
 /** Header común de Ticket-U, según Acuerdos-Header-Footer (equipo front-end). */
 export default function Header({ nombreUsuario }) {
   const navigate = useNavigate();
+  const [abierto, setAbierto] = useState(false);
+  const notifRef = useRef(null);
+  const campanaBtnRef = useRef(null);
 
   const iniciales = nombreUsuario
     ? nombreUsuario
@@ -15,7 +19,34 @@ export default function Header({ nombreUsuario }) {
         .toUpperCase()
     : "OR";
 
-  // Atajo: lleva al listado principal y pone el cursor en su buscador
+  // Cierre al hacer clic fuera y con la tecla Escape (retornando foco a la campana)
+  useEffect(() => {
+    if (!abierto) return;
+
+    const handleClickAfuera = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setAbierto(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setAbierto(false);
+        campanaBtnRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickAfuera);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickAfuera);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [abierto]);
+
+  // El acuerdo pide ir al catálogo; en el front de Vite no existe, así que
+  // se usa el listado propio. En el Frontend Unificado el Header lo pone la plataforma.
   const handleBuscar = () => {
     navigate("/mis-eventos", { state: { enfocarBuscador: Date.now() } });
   };
@@ -45,11 +76,42 @@ export default function Header({ nombreUsuario }) {
           <Search size={20} strokeWidth={2} aria-hidden="true" />
           <span className="header__buscar-texto">BUSCAR</span>
         </button>
-        <button className="header__circulo-tactil" type="button" aria-label="Notificaciones" title="Notificaciones (módulo de otro equipo)">
-          <span className="header__campana">
-            <Bell size={20} strokeWidth={2} aria-hidden="true" />
-          </span>
-        </button>
+
+        <div className="header__notificaciones-contenedor" ref={notifRef}>
+          <button
+            ref={campanaBtnRef}
+            className="header__circulo-tactil"
+            type="button"
+            aria-label="Notificaciones"
+            aria-expanded={abierto}
+            aria-controls="panel-notificaciones"
+            title="Notificaciones"
+            onClick={() => setAbierto((prev) => !prev)}
+          >
+            <span className="header__campana">
+              <Bell size={20} strokeWidth={2} aria-hidden="true" />
+            </span>
+          </button>
+
+          {abierto && (
+            <div
+              id="panel-notificaciones"
+              className="header__panel-notificaciones"
+              role="dialog"
+              aria-label="Notificaciones"
+            >
+              <div className="header__panel-notificaciones-header">
+                <h3 className="header__panel-notificaciones-titulo">Notificaciones</h3>
+              </div>
+              <div className="header__panel-notificaciones-cuerpo">
+                <p className="header__panel-notificaciones-vacio">
+                  No tienes notificaciones nuevas
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
         <button className="header__circulo-tactil" type="button" aria-label="Cerrar sesión" title="Cerrar sesión" onClick={handleLogout}>
           <span className="header__avatar">{iniciales}</span>
         </button>

@@ -45,8 +45,8 @@ npm run db:init && npm run db:seed
 # 5. Iniciar la API
 npm run dev:api
 
-# 6. Iniciar el Frontend (en otra terminal)
-npm run dev:web
+# 6. Iniciar el Frontend (en otra terminal). Sin Gateway, el proxy de Vite apunta directo a la API
+API_PROXY_TARGET=http://localhost:3000 npm run dev:web
 ```
 
 La aplicación estará disponible en [http://localhost:5173](http://localhost:5173). La API en [http://localhost:3000](http://localhost:3000) y Swagger UI en [http://localhost:3000/api-docs](http://localhost:3000/api-docs).

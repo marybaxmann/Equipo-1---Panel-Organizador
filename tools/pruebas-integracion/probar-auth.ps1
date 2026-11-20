@@ -19,6 +19,7 @@ param(
   [string]$ContenedorPanel = 'panel-organizador-integracion-organizador-service-1'
 )
 . "$PSScriptRoot\comun.ps1"
+$ClaveQA = Get-ClaveQA
 if (-not $AuthEnv) { $AuthEnv = Join-Path $CarpetaRepos 'auth-arquitectura\backend\.env' }
 $tmp = New-CarpetaTemporal 'prueba-auth'
 

@@ -14,6 +14,7 @@ param(
   [string]$Exchange = 'panel.evento.notificaciones.v1'
 )
 . "$PSScriptRoot\comun.ps1"
+$ClaveQA = Get-ClaveQA
 $tmp = New-CarpetaTemporal 'prueba-notificaciones'
 $panel = "$Gateway/api/organizador/v1/panel/eventos"
 
